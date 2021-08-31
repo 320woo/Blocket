@@ -1,5 +1,5 @@
 ## develop 브랜치 생성
-![image](/uploads/c942a905b6076e7c708f2a5497a267a0/image.png)
+![1](/uploads/00aeb24532283d7ee9a5b7bf378bf694/1.PNG)
 - 반드시 feature 브랜치는 develop에서 생성해야함!
 
 ## 작업 후에 커밋하는 과정
@@ -7,7 +7,7 @@
 소문자와 언더바만 사용! (`feature/user_create`)
 
 ## 작업 전
-![image](/uploads/5959c9d0eb5b3c2a83f58b1fcfa3c8e1/image.png)
+![2](/uploads/0337468028c4b83a003263f249509ce6/2.PNG)
 1. 내가 작업할 브랜치 만들기
 
     `git branch <브랜치 이름>`
@@ -17,7 +17,7 @@
     `git checkout <브랜치 이름>`
 
 ### 작업 후
-![image](/uploads/33028c9234c370658e6e54b3e54e993d/image.png)
+![3](/uploads/235a41330c66288b4c749eb76b203d90/3.PNG)
 1. 작업 완료하고 브랜치 확인하기
 
     **현재 나의 터미널 브랜치가 `feature/example` 인지 확인!**
