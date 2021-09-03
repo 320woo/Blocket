@@ -4,18 +4,18 @@
 | ------ | ------ |
 | Boolean | bool | True or False | True, False |
 | Uint | uint8 | 부호가 없는 정수 표현 | 0~255 |
-| | uint16 | 부호가 없는 정수 표현 | 0~65,535 |
-| | uint24 | 부호가 없는 정수 표현 | 0~16,777,216 |
-| | uint256 | 부호가 없는 정수 표현 | 0~2^256 |
-| | uint | 부호가 없는 정수 표현 | 0~4,294,967,295 |
+| - | uint16 | 부호가 없는 정수 표현 | 0~65,535 |
+| - | uint24 | 부호가 없는 정수 표현 | 0~16,777,216 |
+| - | uint256 | 부호가 없는 정수 표현 | 0~2^256 |
+| - | uint | 부호가 없는 정수 표현 | 0~4,294,967,295 |
 | String | string |	문자열 | - |
 | Address |	address | 주소 잔액 조회 | - |
-| | address | payable | 이더리움 전송 | - |
+| - | address | payable | 이더리움 전송 | - |
 | Array | DataType[] | 배열 선언 | - |
-| | push | 가장 마지막 데이터 추가 | - |
-| | pop | 가장 마지막 데이터를 가져오고 제거 | - |
-| | length | 배열의 길이 | - |
-| | struct | 구조체 선언 | - |
+| - | push | 가장 마지막 데이터 추가 | - |
+| - | pop | 가장 마지막 데이터를 가져오고 제거 | - |
+| - | length | 배열의 길이 | - |
+| - | struct | 구조체 선언 | - |
 | Map | Mapping (key type=>value type) | 맵 | - |
 
 ### Solidity 함수 및 옵션
