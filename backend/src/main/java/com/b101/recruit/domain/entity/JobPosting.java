@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 
@@ -24,7 +26,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class JobPosting extends BaseEntity {
 	
-//	private CompanyInfo companyinfo; // 기업정보 id
+	@ManyToOne
+	@JoinColumn(name = "company_info_id")
+	private CompanyInfo companyinfo; // 기업정보 id
+	
 	private String title; // 채용공고 제목
 	private String recruitmentPart; // 모집부분
 	private String employmentForm; // 고용형태
