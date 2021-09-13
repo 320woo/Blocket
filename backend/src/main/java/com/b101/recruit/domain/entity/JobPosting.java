@@ -1,11 +1,16 @@
 package com.b101.recruit.domain.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -15,6 +20,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class JobPosting extends BaseEntity {
 	
 //	private CompanyInfo companyinfo; // 기업정보 id
@@ -33,5 +40,8 @@ public class JobPosting extends BaseEntity {
 	public void createdAt() {
 		this.registrationDate = new Date();
 	}
+	
+	@OneToMany
+    private List<UserRecruit> users; // 지원자들
 	
 }

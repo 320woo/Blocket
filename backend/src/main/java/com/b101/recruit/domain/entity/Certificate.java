@@ -2,7 +2,10 @@ package com.b101.recruit.domain.entity;
 
 import javax.persistence.Entity;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -12,6 +15,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Certificate extends BaseEntity {
 	
 //	private PersonalInfo personalinfo; // 신상정보 id

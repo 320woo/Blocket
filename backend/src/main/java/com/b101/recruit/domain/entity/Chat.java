@@ -5,12 +5,21 @@ import java.sql.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+/**
+ * 채팅 모델 정의.
+ */
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class Chat extends BaseEntity {
 	
 	private Long userId; 	// 회원 ID(FK)

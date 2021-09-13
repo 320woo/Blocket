@@ -4,15 +4,29 @@ import java.sql.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+/**
+ * 신상정보 모델 정의.
+ */
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class PersonalInfo extends BaseEntity {
 	
-	private Long userId; 			// 회원 ID(FK)
+	@OneToOne
+	@JoinColumn(name = "user_id")
+	private User user; 			    // 회원 ID(FK)
 	
 	private Date dateBirth; 		// 생년월일
 	
