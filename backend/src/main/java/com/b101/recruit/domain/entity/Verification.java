@@ -19,14 +19,14 @@ import lombok.Setter;
 public class Verification extends BaseEntity {
 	
 //	private PersonalInfo personalinfo; // 신상정보 id
-	private Date add_time; // 등록일
-	private String currentstatus; // 현재상태(대기중, 승인완료, 거절)
+	private Date registrationDate; // 등록일
+	private String currentStatus; // 현재상태(대기중, 승인완료, 거절)
 	
 	@Column(columnDefinition = "LONGTEXT")
-	private String reasonsrejection; // 반려사유
+	private String reasonsRejection; // 반려사유
 	
 	@PrePersist
 	public void createdAt() {
-		this.add_time = new Date();
+		this.registrationDate = new Date();
 	}
 }
