@@ -18,7 +18,7 @@ import lombok.Setter;
 @Setter
 public class Verification extends BaseEntity {
 	
-	private PersonalInfo personalinfo; // 신상정보 id
+//	private PersonalInfo personalinfo; // 신상정보 id
 	private Date add_time; // 등록일
 	private String currentstatus; // 현재상태(대기중, 승인완료, 거절)
 	
