@@ -14,7 +14,7 @@ import lombok.Setter;
 @Setter
 public class UserLike extends BaseEntity {
 	
-	private User user;
-	private CompanyInfo companyinfo;
+//	private User user;
+//	private CompanyInfo companyinfo;
 	
 }
