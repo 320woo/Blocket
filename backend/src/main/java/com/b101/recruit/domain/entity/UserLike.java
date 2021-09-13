@@ -21,7 +21,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserLike extends BaseEntity {
 	
-//	private User user; // 여기 우쨰야함?
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user; // 셀프참조
 	
 	@ManyToOne
 	@JoinColumn(name = "company_info_id")
