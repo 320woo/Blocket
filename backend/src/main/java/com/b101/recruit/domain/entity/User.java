@@ -5,8 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+
+/**
+ * 유저 모델 정의.
+ */
 
 @Entity
 @Getter
@@ -33,4 +40,7 @@ public class User extends BaseEntity {
     private int withdrawal; // 탈퇴 여부
 
     private int brn; // 사업자등록 번호
+    
+    @OneToMany
+    private List<UserRecruit> jobPosting; // 지원한 채용공고들
 }
