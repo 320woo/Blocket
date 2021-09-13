@@ -32,11 +32,8 @@ public class File extends BaseEntity {
     private Activity activity;
 
     private String filepath;
-
     private String originName;
-
     private String saveName;
-
     private String sortation; // 구분
 
 }

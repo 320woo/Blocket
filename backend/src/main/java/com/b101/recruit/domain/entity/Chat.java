@@ -4,6 +4,8 @@ import java.sql.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -22,7 +24,10 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Chat extends BaseEntity {
 	
-	private Long userId; 	// 회원 ID(FK)
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user; 	// 회원 ID(FK)
+	
 	private String content; // 내용
 	private Date regDate;	// 작성일
 	
