@@ -69,12 +69,11 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	
-	// QueryDSL
+// QueryDSL
 implementation ("com.querydsl:querydsl-jpa:${queryDslVersion}")
 annotationProcessor ("com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
 testImplementation ("com.querydsl:querydsl-jpa:${queryDslVersion}")
 testAnnotationProcessor ("com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
-
 
 }
 
