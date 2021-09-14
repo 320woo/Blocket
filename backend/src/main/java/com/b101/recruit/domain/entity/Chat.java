@@ -1,11 +1,13 @@
 package com.b101.recruit.domain.entity;
 
-import java.sql.Date;
+import java.util.Date; 
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.PrePersist;
+
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -31,4 +33,8 @@ public class Chat extends BaseEntity {
 	private String content; // 내용
 	private Date regDate;	// 작성일
 	
+	@PrePersist
+	public void createdAt() {
+		this.regDate = new Date();
+	}
 }
