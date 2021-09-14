@@ -1,6 +1,6 @@
 package com.b101.recruit.domain.entity;
 
-import java.util.Date;
+import java.util.Date; 
 
 import javax.persistence.Entity;
 import javax.persistence.PrePersist;
