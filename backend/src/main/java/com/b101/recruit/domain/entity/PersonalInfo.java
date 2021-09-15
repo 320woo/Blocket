@@ -35,9 +35,11 @@ public class PersonalInfo extends BaseEntity {
 	private String repProfile; 		// 대표 프로필
 	private String militaryService; // 병역사항
 	private String veteransAffairs; // 보훈사항
+	private String finalEducation;  // 최종학력
 	private String disabled; 		// 장애여부
 	
 	/**/
+	private String transcript;      // 성적증명서
 	private String intExtAct; 		// 대/내외 활동
 	private String prosCons; 		// 자신의 장/단점
 	private String selfIntro; 		// 간단한 자기소개
