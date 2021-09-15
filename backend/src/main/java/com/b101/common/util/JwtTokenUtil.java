@@ -1,4 +1,4 @@
-package com.b101.recruit.util;
+package com.b101.common.util;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
