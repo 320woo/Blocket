@@ -75,6 +75,9 @@ annotationProcessor ("com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
 testImplementation ("com.querydsl:querydsl-jpa:${queryDslVersion}")
 testAnnotationProcessor ("com.querydsl:querydsl-apt:${queryDslVersion}:jpa")
 
+implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+
 
 }
 
