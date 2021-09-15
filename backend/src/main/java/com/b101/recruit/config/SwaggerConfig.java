@@ -31,8 +31,8 @@ public class SwaggerConfig {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2).useDefaultResponseMessages(false)
                 .select()
-                .apis(RequestHandlerSelectors.any())
-//                .paths(PathSelectors.ant("/api/**"))
+//                .apis(RequestHandlerSelectors.any())
+                .paths(PathSelectors.ant("/api/**"))
                 .paths(PathSelectors.any())
                 .build()
                 .securityContexts(newArrayList(securityContext()))
