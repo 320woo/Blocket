@@ -17,7 +17,7 @@ import org.springframework.util.StringUtils;
 
 import com.b101.common.util.JwtTokenUtil;
 import com.b101.recruit.domain.entity.User;
-import com.b101.recruit.service.UserService;
+import com.b101.recruit.service.impl.UserService;
 
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter{
 

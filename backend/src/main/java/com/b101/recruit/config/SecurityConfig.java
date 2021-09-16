@@ -16,7 +16,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import com.b101.recruit.auth.CustomUserDetailService;
 import com.b101.recruit.auth.JwtAuthenticationFilter;
-import com.b101.recruit.service.UserService;
+import com.b101.recruit.service.impl.UserService;
 
 
 /**
