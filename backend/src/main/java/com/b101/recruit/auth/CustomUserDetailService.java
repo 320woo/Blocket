@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import com.b101.recruit.domain.entity.User;
-import com.b101.recruit.service.UserService;
+import com.b101.recruit.service.impl.UserService;
 
 
 @Component
