@@ -9,6 +9,10 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+/**
+ * 지원내역 모델 정의.
+ */
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -22,4 +26,5 @@ public class UserRecruit extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "job_posting_id")
     private JobPosting jobPosting;
+    
 }

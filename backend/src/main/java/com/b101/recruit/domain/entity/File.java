@@ -9,6 +9,10 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+/**
+ * 파일 모델 정의.
+ */
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,11 +32,8 @@ public class File extends BaseEntity {
     private Activity activity;
 
     private String filepath;
-
     private String originName;
-
     private String saveName;
-
     private String sortation; // 구분
 
 }
