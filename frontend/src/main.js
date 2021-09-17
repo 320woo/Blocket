@@ -12,5 +12,6 @@ import 'primeicons/primeicons.css'
 createApp(App)
   .use(store).use(router).use(PrimeVue)
   .component("InputText", InputText)
+  
   .mount("#app");
 
