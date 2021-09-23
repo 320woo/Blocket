@@ -2,7 +2,9 @@ package com.b101.recruit.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,8 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.b101.common.model.response.BaseResponseBody;
 import com.b101.common.util.JwtTokenUtil;
+import com.b101.recruit.auth.CustomUserDetails;
 import com.b101.recruit.domain.entity.User;
 import com.b101.recruit.reponse.UserLoginPostRes;
+import com.b101.recruit.request.PasswordUpdatePatchReq;
 import com.b101.recruit.request.UserLoginPostReq;
 import com.b101.recruit.request.UserRegisterPostReq;
 import com.b101.recruit.service.impl.UserService;
@@ -21,6 +25,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import springfox.documentation.annotations.ApiIgnore;
 
 @Api(value = "유저 API", tags = { "User." })
 @RestController
@@ -65,4 +70,41 @@ public class UserController {
 		}
 		return ResponseEntity.status(404).body(UserLoginPostRes.of(404, "아이디 또는 비밀번호가 일치하지 않습니다.", null));
 	}
+	// 회원 가입에 필요한 아이디 중복체크
+	// 로그인한 회원의 정보 조회
+	// 로그인된 회원의 회원 탈퇴
+	
+	// 로그인된 회원의 회원정보 수정
+	// 로그인된 회원의 비밀번호 수정
+	// 로그인된 회원의 비밀번호 수정
+		@PatchMapping("/me/password")
+		@ApiOperation(value = "회원 비밀번호 수정", notes = "회원 비밀번호 수정")
+		@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
+				@ApiResponse(code = 404, message = "수정 실패"), @ApiResponse(code = 500, message = "서버 오류") })
+		public ResponseEntity<BaseResponseBody> patchPassword(@ApiIgnore Authentication authentication,
+				@RequestBody @ApiParam(value = "수정 정보") PasswordUpdatePatchReq passwordUpdatePatchReq) {
+
+			if (authentication == null) {
+				return ResponseEntity.status(404).body(BaseResponseBody.of(401, "로그인 인증 실패"));
+			} else {
+				CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
+				String userId = userDetails.getUsername();
+				
+				User user = userService.findByUserId(userId);
+//				long user = userService.updatePassword(userId, passwordUpdatePatchReq);
+				
+				if (user != null) {
+					if (passwordEncoder.matches(passwordUpdatePatchReq.getPassword(), user.getPassword())) {
+						long result = userService.updatePassword(userId, passwordUpdatePatchReq.getNewPassword());
+						if(result > 0)
+							return ResponseEntity.status(200).body(BaseResponseBody.of(200, "수정이 완료됐습니다!"));
+					}
+				}
+				return ResponseEntity.status(404).body(BaseResponseBody.of(404, "수정이 실패됐습니다!"));
+			}
+		}
+	
+	// 이메일 확인
+	// 로그인된 회원의 비밀번호 찾기
+	
 }
