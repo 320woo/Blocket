@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.b101.recruit.domain.entity.User;
+import com.b101.recruit.domain.repository.JpaUserRepository;
 import com.b101.recruit.domain.repository.UserRepository;
 import com.b101.recruit.request.UserRegisterPostReq;
 import com.b101.recruit.service.IUserSerive;
@@ -15,6 +16,10 @@ public class UserService implements IUserSerive {
 	
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	JpaUserRepository jpaUserRepository;
+
 	
 	@Autowired
 	PasswordEncoder passwordEncoder;
@@ -38,6 +43,12 @@ public class UserService implements IUserSerive {
 		user.setBrn(registerInfo.getBrn());
 		user.setType(registerInfo.getType());
 		userRepository.save(user);
+	}
+	
+	@Override
+	public long updatePassword(String userId, String newPassword) {
+		long result = jpaUserRepository.updatePassword(userId, passwordEncoder.encode(newPassword));
+		return result;
 	}
 
 }
