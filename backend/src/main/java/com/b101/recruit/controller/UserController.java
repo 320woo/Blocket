@@ -46,7 +46,8 @@ public class UserController {
 			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "회원가입에 실패하였습니다."));
 		}
 	}
-
+	
+	// 로그인
 	@PostMapping("/login")
 	@ApiOperation(value = "로그인", notes = "<strong>아이디와 패스워드</strong>를 통해 로그인 한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "로그인 성공", response = UserLoginPostRes.class) })
@@ -58,9 +59,8 @@ public class UserController {
 		User user = userService.findByUserId(userId);
 		System.out.println(user.getEmail());
 		if (user != null) {
-//			String passTmp = passwordEncoder.encode(user.getPassword());
 			if (passwordEncoder.matches(password, user.getPassword())) {
-				return ResponseEntity.ok(UserLoginPostRes.of(200, "로그인에 성공하였습니다.", JwtTokenUtil.createToken(userId)));
+				return ResponseEntity.ok(UserLoginPostRes.of(200, "로그인에 성공하였습니다.", JwtTokenUtil.createToken(user.getEmail())));
 			}
 		}
 		return ResponseEntity.status(404).body(UserLoginPostRes.of(404, "아이디 또는 비밀번호가 일치하지 않습니다.", null));
