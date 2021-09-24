@@ -17,6 +17,7 @@ import java.util.UUID;
 import javax.transaction.Transactional;
 
 import com.b101.recruit.domain.entity.PersonalInfo;
+import com.b101.recruit.domain.entity.User;
 import com.b101.recruit.domain.repository.PersonalInfoRepository;
 import com.b101.recruit.domain.repository.UserRepository;
 import com.b101.recruit.reponse.PersonalInfoPostRes;
@@ -32,6 +33,9 @@ public class PersonalInfoService implements IPersonalInfoService {
 	@Autowired
 	UserRepository userRepository;
 	
+	@Autowired
+	UserService userService;
+	
 	// 저장할 기본 디렉토리 설정 application.property 파일에 설정하고 가져온다.
 	@Value("${server.tomcat.basedir}")
 	private String basedir;
@@ -41,7 +45,8 @@ public class PersonalInfoService implements IPersonalInfoService {
 	public PersonalInfo createPersonalInfo(PersonalInfoPostReq personalinfoPostReq, MultipartFile[] files)
 			throws IllegalStateException, IOException {
 		PersonalInfo personalinfo = new PersonalInfo();
-//		personalinfo.setUser(userRepository.findByEmail(personalinfoPostReq.getEmail()));
+		User user = userService.findByUserId(personalinfoPostReq.getEmail());
+		personalinfo.setUser(user); // 유저 셋팅
 		personalinfo.setDateBirth(personalinfoPostReq.getDateBirth());
 		personalinfo.setAddress(personalinfoPostReq.getAddress());
 		personalinfo.setEnglishName(personalinfoPostReq.getEnglishName());
@@ -90,7 +95,7 @@ public class PersonalInfoService implements IPersonalInfoService {
 	@Override
 	public PersonalInfoPostRes getonePersonalInfo(Long id, String email) {
 		PersonalInfo personalinfo = personalinfoRepository.findById(id).get();
-//		Long uid = userRepository.findByEmail(email).get().getEmail();
+		String u = userRepository.findByEmail(email).get().getEmail();
 		PersonalInfoPostRes p = new PersonalInfoPostRes();
 		p.setId(personalinfo.getId());
 		p.setDateBirth(personalinfo.getDateBirth());
@@ -150,7 +155,7 @@ public class PersonalInfoService implements IPersonalInfoService {
 	
 	@Override
 	public List<PersonalInfoPostReq> getAllPersonalInfo(Pageable pageable, String email) {
-//		Long uid = userRepository.findByEmail(email).get().getEmail();
+		String uid = userRepository.findByEmail(email).get().getEmail();
 		List<PersonalInfo> list = personalinfoRepository.findAll(pageable).getContent();
 		List<PersonalInfoPostReq> copy = new ArrayList<>();
 		PersonalInfoPostReq resp;
