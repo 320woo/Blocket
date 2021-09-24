@@ -78,12 +78,12 @@ public class UserController {
 	}
 	
 	// 회원 가입에 필요한 아이디 중복체크
-	@GetMapping("{users_id}")
+	@GetMapping("/{userEmail}")
 	@ApiOperation(value = "아이디 중복체크", notes = "존재하는 아이디인지 아닌지 확인한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "회원가입 가능한 아이디입니다."),
 			@ApiResponse(code = 404, message = "url error"), @ApiResponse(code = 409, message = "이미 존재하는 사용자 아이디입니다."),
 			@ApiResponse(code = 500, message = "server error") })
-	public ResponseEntity<? extends BaseResponseBody> confirmUserId(@PathVariable("users_id") String userEmail) {
+	public ResponseEntity<? extends BaseResponseBody> confirmUserId(@PathVariable("userEmail") String userEmail) {
 		if (!userService.confirmUserEmail(userEmail)) {
 			return ResponseEntity.status(200).body(BaseResponseBody.of(200, "회원가입 가능한 아이디입니다."));
 		}
@@ -164,7 +164,6 @@ public class UserController {
 				String userEmail = userDetails.getUsername();
 				
 				User user = userService.findByUserEmail(userEmail);
-//				long result = userService.updatePassword(userId, passwordUpdatePatchReq);
 				
 				if (user != null) {
 					if (passwordEncoder.matches(passwordUpdatePatchReq.getPassword(), user.getPassword())) {

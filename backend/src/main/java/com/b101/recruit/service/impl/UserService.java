@@ -34,8 +34,7 @@ public class UserService implements IUserSerive {
 	
 	@Override
 	public boolean confirmUserEmail(String userEmail) {
-		// TODO Auto-generated method stub
-		return false;
+		return userRepository.existsByEmail(userEmail);
 	}
 	
 	@Override
@@ -54,20 +53,32 @@ public class UserService implements IUserSerive {
 	
 	@Override
 	public long updateUser(String userEmail, UserUpdatePatchReq UserUpdatePatchReq) {
-		long result = jpaUserRepository.updateUser(userEmail, UserUpdatePatchReq);
-		return result;
+		Optional<User> user = userRepository.findByEmail(userEmail);
+		if (!user.isPresent()) return 0;
+		else {
+			long result = jpaUserRepository.updateUser(userEmail, UserUpdatePatchReq);
+			return result;			
+		}
 	}
 	
 	@Override
 	public long updatePassword(String userEmail, String newPassword) {
-		long result = jpaUserRepository.updatePassword(userEmail, passwordEncoder.encode(newPassword));
-		return result;
+		Optional<User> user = userRepository.findByEmail(userEmail);
+		if (!user.isPresent()) return 0;
+		else {
+			long result = jpaUserRepository.updatePassword(userEmail, passwordEncoder.encode(newPassword));
+			return result;
+		}
 	}
 
 	@Override
 	public long deleteUser(String userEmail) {
-		long result = jpaUserRepository.deleteUser(userEmail);
-		return result;
+		Optional<User> user = userRepository.findByEmail(userEmail);
+		if (!user.isPresent()) return 0;
+		else {
+			long result = jpaUserRepository.deleteUser(userEmail);
+			return result;
+		}
 	}
 
 }
