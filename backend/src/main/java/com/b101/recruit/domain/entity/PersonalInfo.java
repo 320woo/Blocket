@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import com.google.common.base.Optional;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -45,4 +47,7 @@ public class PersonalInfo extends BaseEntity {
 	private String selfIntro; 		// 간단한 자기소개
 	private String jobExperience; 	// 지원 직무와 관련된 경험
 	
+	public void setUser(User user) {
+		this.user=user;
+	}
 }
