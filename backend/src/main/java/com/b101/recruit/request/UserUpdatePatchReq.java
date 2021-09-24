@@ -7,13 +7,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@ApiModel("UserRegisterPostRequest")
-public class UserRegisterPostReq {
-
-	@ApiModelProperty(name = "유저 Email", example = "user_email@ssafy.com")
-	private String email;
-	@ApiModelProperty(name = "유저 Password", example = "user_password")
-	private String password;
+@ApiModel("UserUpdatePatchRequest")
+public class UserUpdatePatchReq {
+	
 	@ApiModelProperty(name = "유저 Name", example = "user_name")
 	private String name;
 	@ApiModelProperty(name = "유저 Type", example = "0")
@@ -24,5 +20,4 @@ public class UserRegisterPostReq {
 	private String phoneNumber; // 휴대폰번호
 	@ApiModelProperty(name = "유저 Brn", example = "0123456789")
 	private int brn; // 사업자등록 번호
-
 }

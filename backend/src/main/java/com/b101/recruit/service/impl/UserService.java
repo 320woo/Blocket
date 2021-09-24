@@ -8,6 +8,7 @@ import com.b101.recruit.domain.entity.User;
 import com.b101.recruit.domain.repository.JpaUserRepository;
 import com.b101.recruit.domain.repository.UserRepository;
 import com.b101.recruit.request.UserRegisterPostReq;
+import com.b101.recruit.request.UserUpdatePatchReq;
 import com.b101.recruit.service.IUserSerive;
 import com.google.common.base.Optional;
 
@@ -25,10 +26,16 @@ public class UserService implements IUserSerive {
 	PasswordEncoder passwordEncoder;
 	
 	@Override
-	public User findByUserId(String userId) {
-		Optional<User> user = userRepository.findByEmail(userId);
+	public User findByUserEmail(String userEmail) {
+		Optional<User> user = userRepository.findByEmail(userEmail);
 		if(user.isPresent()) return user.get();
 		return null;
+	}
+	
+	@Override
+	public boolean confirmUserEmail(String userEmail) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	@Override
@@ -46,8 +53,20 @@ public class UserService implements IUserSerive {
 	}
 	
 	@Override
-	public long updatePassword(String userId, String newPassword) {
-		long result = jpaUserRepository.updatePassword(userId, passwordEncoder.encode(newPassword));
+	public long updateUser(String userEmail, UserUpdatePatchReq UserUpdatePatchReq) {
+		long result = jpaUserRepository.updateUser(userEmail, UserUpdatePatchReq);
+		return result;
+	}
+	
+	@Override
+	public long updatePassword(String userEmail, String newPassword) {
+		long result = jpaUserRepository.updatePassword(userEmail, passwordEncoder.encode(newPassword));
+		return result;
+	}
+
+	@Override
+	public long deleteUser(String userEmail) {
+		long result = jpaUserRepository.deleteUser(userEmail);
 		return result;
 	}
 
