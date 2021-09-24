@@ -45,7 +45,7 @@ public class PersonalInfoService implements IPersonalInfoService {
 	public PersonalInfo createPersonalInfo(PersonalInfoPostReq personalinfoPostReq, MultipartFile[] files)
 			throws IllegalStateException, IOException {
 		PersonalInfo personalinfo = new PersonalInfo();
-		User user = userService.findByUserId(personalinfoPostReq.getEmail());
+		User user = userService.findByUserEmail(personalinfoPostReq.getEmail());
 		personalinfo.setUser(user); // 유저 셋팅
 		personalinfo.setDateBirth(personalinfoPostReq.getDateBirth());
 		personalinfo.setAddress(personalinfoPostReq.getAddress());
