@@ -20,7 +20,7 @@
 <script>
 import { createWeb3 } from '@/utils/itemInventory.js'
 import { reactive } from '@vue/reactivity'
-import axios from 'axios'
+
 
 export default {
 name: 'personalInfo',
