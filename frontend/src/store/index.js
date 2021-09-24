@@ -19,6 +19,14 @@ export default createStore({
       state.user.walletAddress = null
     }
   },
-  actions: {},
-  modules: {},
+  actions: {
+    saveWalletInDB({ state }, payload) {
+      console.log(state)
+      console.log(payload)
+    }
+
+  },
+  modules: {
+
+  },
 });

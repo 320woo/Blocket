@@ -16,13 +16,13 @@ public class DemoApplication {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
-	//http post í†µì‹ ì‹œì— utf-8 ì¸ì½”ë”© ì„¤ì •
+	//http post ?†µ?‹ ?‹œ?— utf-8 ?¸ì½”ë”© ?„¤? •
     @Bean
     public HttpMessageConverter<String> responseBodyConverter() {
         return new StringHttpMessageConverter(Charset.forName("UTF-8"));
     }
 
-    //utf-8 ì¸ì½”ë”© ë§ì¶°ì£¼ëŠ” í•„í„°
+    //utf-8 ?¸ì½”ë”© ë§ì¶°ì£¼ëŠ” ?•„?„°
     @Bean
     public CharacterEncodingFilter characterEncodingFilter() {
         CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
