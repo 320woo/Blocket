@@ -56,6 +56,19 @@ compileQuerydsl {
     options.annotationProcessorPath = configurations.querydsl
 }
 
+compileQuerydsl.doFirst {
+	if ( file(querydslDir).exists() )
+		delete(file(querydslDir))
+}
+
+tasks.withType(JavaCompile) {
+	options.generatedSourceOutputDirectory = file(querydslDir)
+}
+
+clean.doLast {
+	delete file(querydslDir)
+}
+
 configurations {
     querydsl.extendsFrom compileClasspath
 }

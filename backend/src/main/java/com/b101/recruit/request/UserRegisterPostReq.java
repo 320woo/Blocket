@@ -18,11 +18,11 @@ public class UserRegisterPostReq {
 	private String name;
 	@ApiModelProperty(name = "유저 Type", example = "0")
 	private int type; // 0: 회원, 1: 기업
-	@ApiModelProperty(name = "유저 Belong", example = "user_belong")
+	@ApiModelProperty(name = "유저 Belong", example = "SSAFY")
 	private String belong; // 소속
-	@ApiModelProperty(name = "유저 PhoneNumber", example = "user_phoneNumber")
+	@ApiModelProperty(name = "유저 PhoneNumber", example = "01012345678")
 	private String phoneNumber; // 휴대폰번호
-	@ApiModelProperty(name = "유저 Brn", example = "user_brn")
+	@ApiModelProperty(name = "유저 Brn", example = "0123456789")
 	private int brn; // 사업자등록 번호
 
 }

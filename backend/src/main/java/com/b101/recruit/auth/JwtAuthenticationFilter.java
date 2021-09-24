@@ -55,15 +55,15 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter{
 			JwtTokenUtil.handleError(jwtToken);
 			String token = jwtToken.substring(7, jwtToken.length());
 				
-				String userId = JwtTokenUtil.getUserId(token);
-				if (userId != null) {
+				String userEmail = JwtTokenUtil.getUserId(token);
+				if (userEmail != null) {
 					// 회원 조회
-					User user = userService.findByUserId(userId);
+					User user = userService.findByUserEmail(userEmail);
 					if (user != null) {
 						//인증 정보 생성.
 						CustomUserDetails userDetails = new CustomUserDetails(user);
 						UsernamePasswordAuthenticationToken jwtAuthentication = new UsernamePasswordAuthenticationToken(
-								userId, null, userDetails.getAuthorities());
+								userEmail, null, userDetails.getAuthorities());
 						jwtAuthentication.setDetails(userDetails);
 						return jwtAuthentication;
 					}
