@@ -1,4 +1,4 @@
-package com.b101.recruit;
+package com.b101;
 
 import java.nio.charset.Charset;
 
