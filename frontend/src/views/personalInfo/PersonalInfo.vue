@@ -1,21 +1,5 @@
 <template>
 <div style="background-color: #F9F7F7;">
-  <h1>ETH 트랜잭션</h1>
-
-  <h1>1. 지갑 생성하기</h1>
-  <Button label="Submit" @click="createWallet" />
-  <InputText v-model="state.walletAddress" />
-  <InputText v-model="state.privateKey" />
-
-  <h1>2. 생성한 지갑 정보 DB에 저장하기</h1>
-  <Button label="DB에 저장하기" @click="saveWalletInDB" />
-
-
-  <h1>3. 지갑 정보 트랜잭션 전송 통해 infura 퍼블릭 노드에 저장하기</h1>
-  <Button label="Submit" @click="saveWalletInEther" />
-
-
-  <h1>신상 정보 입력</h1>
   <!-- container -->
   <div class="p-grid p-jc-center"> <!-- 내부 요소를 가운데 정렬한다. -->
     <div class="p-col-6 p-flex-column"> <!-- 내부 요소의 너비를 col-4로 지정 -->
@@ -47,55 +31,154 @@
       
       <!-- 생년월일, 주소, 영문이름, 성별 기재 -->
       <div class="p-col profile">
-        <span class="header-font">정보</span>
+        <div class="p-grid">
+          <div class="p-col-8">
+            <span class="header-font">정보</span>
+          </div>
+          <div class="p-col-4">
+            <span>정보 수정</span>
+          </div>
+        </div>
+        
+        <div>영문 이름: {{ }}</div>
+        <div>생년월일: {{ }}</div>
+        <div>주소: {{ }}</div>
+        <div>성별: {{ }}</div>
       </div> 
 
       <!-- 간단한 자기소개 -->
       <div class="p-col profile">
-        <div>
-          <span class="header-font">자기소개 질문1.</span>
-        </div>
-        <div>
-          <span class="header-font">자기소개 질문2.</span>  
-        </div>
-        <div>
-          <span class="header-font">자기소개 질문3.</span>
-        </div>
+        <Panel header="간단한 자기소개를 해주세요." :toggleable="true" >
+          <template #icons>
+            <Button icon="pi pi-user-edit" class="p-button-rounded p-button-success p-button-text" />
+          </template>
+          <Menu id="config_menu" ref="menu" :model="items" :popup="true" />
+          <!-- 질문에 대한 내용 -->
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+              cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          </p>
+        </Panel>
+
+        <Panel header="본인이 생각하는 본인의 강점과 약점을 얘기해 주세요." :toggleable="true" >
+          <template #icons>
+            <Button icon="pi pi-user-edit" class="p-button-rounded p-button-success p-button-text" />
+          </template>
+          <Menu id="config_menu" ref="menu" :model="items" :popup="true" />
+          <!-- 질문에 대한 내용 -->  
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+              cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          </p>
+        </Panel>
+
+        <Panel header="최근 목표하는 기업의 입사를 위해 준비하고 있는 것이 있나요?" :toggleable="true" >
+          <template #icons>
+            <Button icon="pi pi-user-edit" class="p-button-rounded p-button-success p-button-text" />
+          </template>
+          <Menu id="config_menu" ref="menu" :model="items" :popup="true" />
+          <!-- 질문에 대한 내용 -->
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+              cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+          </p>
+        </Panel>
+
+        
       </div>
 
       <!-- 활동 사항 -->
       <div class="p-col profile">
-        <span class="header-font">활동 사항</span>
+        <div class="p-grid">
+          <div class="p-col-10">
+            <span class="header-font">활동 사항</span>
+          </div>
+
+          <div class="p-col-2 edit-div">
+            <Button icon="pi pi-user-edit" class="p-button-rounded p-button-success p-button-text" />
+          </div>
+        </div>
+
+        <div class="p-col">내용내용</div>
+
       </div>
 
       <!-- 어학, 자격증 -->
       <div class="p-col profile">
-        <span class="header-font">어학 , 자격증</span>
+        <div class="p-grid">
+          <div class="p-col-10">
+            <span class="header-font">어학, 자격증</span>
+          </div>
+
+          <div class="p-col-2 edit-div">
+            <Button icon="pi pi-user-edit" class="p-button-rounded p-button-success p-button-text" />
+          </div>
+        </div>
+
+        <div class="p-col">내용내용</div>
+
       </div>
 
 
       <!-- 병역사항 기재 -->
       <div class="p-col profile">
-        <span class="header-font">병역 사항</span>
+        <div class="p-grid">
+          <div class="p-col-10">
+            <span class="header-font">병역 사항</span>
+          </div>
+
+          <div class="p-col-2 edit-div">
+            <Button icon="pi pi-user-edit" class="p-button-rounded p-button-success p-button-text" />
+          </div>
+        </div>
+
+        <div class="p-col">내용내용</div>
+
       </div>
 
       <!-- 보훈사항 기재 -->
       <div class="p-col profile">
-        <span class="header-font">보훈 사항</span>
+        <div class="p-grid">
+          <div class="p-col-10">
+            <span class="header-font">보훈 사항</span>
+          </div>
+
+          <div class="p-col-2 edit-div">
+            <Button icon="pi pi-user-edit" class="p-button-rounded p-button-success p-button-text" />
+          </div>
+        </div>
+
+        <div class="p-col">내용내용</div>
+
       </div>
 
       <!-- 장애인 여부 기재 -->
       <div class="p-col profile">
-        <span class="header-font">장애 여부</span>
+        <div class="p-grid">
+          <div class="p-col-10">
+            <span class="header-font">장애 여부</span>
+          </div>
+
+          <div class="p-col-2 edit-div">
+            <Button icon="pi pi-user-edit" class="p-button-rounded p-button-success p-button-text" />
+          </div>
+        </div>
+
+        <div class="p-col">내용내용</div>
+
       </div>
 
 
-    </div> 
-  </div> <!-- end of Container -->
-</div>
+    </div> <!-- end of vertical container -->
+  </div> <!-- end of sub Container -->
+</div> <!-- end of top Container -->
 
 
 <!-- 각 사항들은 모두 Modal창으로 수정할 예정 -->
+<!-- https://primefaces.org/primevue/showcase/#/dialog 참고... -->
 
 
 
@@ -191,5 +274,9 @@ methods: {
 .header-font{ /* 각 부분 별 타이틀 폰트 */
   font-size: 20px;
   font-weight: bold;
+  display: inline-block;
+}
+.edit-div {
+  text-align: end;
 }
 </style>
