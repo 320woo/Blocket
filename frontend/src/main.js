@@ -11,7 +11,9 @@ import 'primevue/resources/themes/bootstrap4-light-blue/theme.css'
 import 'primeicons/primeicons.css'
 
 createApp(App)
-  .use(store).use(router).use(PrimeVue)
+  .use(PrimeVue)  
+  .use(store)
+  .use(router)
   .component("InputText", InputText)
   .component("Button", Button)  
   .mount("#app");
