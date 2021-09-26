@@ -207,8 +207,10 @@
     </template>
 </Dialog>
 
-<!-- 경력 사항 추가 modal 창 -->
-<Dialog header="경력 입력" v-model:visible="state.displayActivityModal" :style="{width: '50vw'}" :modal="true">
+
+
+<!-- 활동 사항 추가 modal 창 -->
+<Dialog header="활동사항 입력" v-model:visible="state.displayActivityModal" :style="{width: '50vw'}" :modal="true">
     
   <div class="p-field">
     <label for="activityName">이름*</label><br>
