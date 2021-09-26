@@ -7,6 +7,7 @@ import InputText from 'primevue/inputtext/sfc'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog';
 import Panel from 'primevue/panel';
+import Textarea from 'primevue/textarea'
 import 'primeflex/primeflex.css'
 import 'primevue/resources/primevue.min.css'
 import 'primevue/resources/themes/bootstrap4-light-blue/theme.css'
@@ -20,5 +21,6 @@ createApp(App)
   .component("Button", Button)  
   .component("Dialog", Dialog)  
   .component("Panel", Panel)
+  .component("Textarea", Textarea)
   .mount("#app");
 
