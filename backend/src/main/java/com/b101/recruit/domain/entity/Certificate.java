@@ -17,8 +17,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+//@NoArgsConstructor(access = AccessLevel.PROTECTED)
+//@AllArgsConstructor
 public class Certificate extends BaseEntity {
 	
 	@ManyToOne

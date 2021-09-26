@@ -16,11 +16,14 @@ import java.util.UUID;
 
 import javax.transaction.Transactional;
 
+import com.b101.recruit.domain.entity.Certificate;
 import com.b101.recruit.domain.entity.PersonalInfo;
 import com.b101.recruit.domain.entity.User;
+import com.b101.recruit.domain.repository.CertificateRepository;
 import com.b101.recruit.domain.repository.PersonalInfoRepository;
 import com.b101.recruit.domain.repository.UserRepository;
 import com.b101.recruit.reponse.PersonalInfoPostRes;
+import com.b101.recruit.request.CertificatePostReq;
 import com.b101.recruit.request.PersonalInfoPostReq;
 import com.b101.recruit.service.IPersonalInfoService;
 
@@ -29,6 +32,9 @@ public class PersonalInfoService implements IPersonalInfoService {
 
 	@Autowired
 	PersonalInfoRepository personalinfoRepository;
+	
+	@Autowired
+	CertificateRepository certificateRepository;
 	
 	@Autowired
 	UserRepository userRepository;
@@ -167,6 +173,33 @@ public class PersonalInfoService implements IPersonalInfoService {
 			copy.add(resp);
 		}
 		return copy;
+	}
+
+	@Override
+	public Certificate createCertificate(Long id, CertificatePostReq certificate) {
+		Certificate cer = new Certificate();
+		cer.setName(certificate.getName());
+		cer.setSortation(certificate.getSortation());
+		cer.setAcquisitionDate(certificate.getAcquisitionDate());
+		cer.setScore(certificate.getScore());
+		PersonalInfo per = personalinfoRepository.getOne(id);
+		cer.setPersonalinfo(per);
+		return certificateRepository.save(cer);
+	}
+
+	@Override
+	public Certificate updateCertificate(Long pId, Long cId, CertificatePostReq certificate) {
+		Certificate cer = certificateRepository.getOne(cId);
+		cer.setName(certificate.getName());
+		cer.setSortation(certificate.getSortation());
+		cer.setAcquisitionDate(certificate.getAcquisitionDate());
+		cer.setScore(certificate.getScore());
+		return certificateRepository.save(cer);
+	}
+
+	@Override
+	public void deleteCertificate(Long pId, Long cId) {
+		certificateRepository.deleteById(cId);
 	}
 	
 }
