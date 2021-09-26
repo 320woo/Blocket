@@ -16,13 +16,13 @@ public class DemoApplication {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
-	//http post 통신시에 utf-8 인코딩 설정
+	//http
     @Bean
     public HttpMessageConverter<String> responseBodyConverter() {
         return new StringHttpMessageConverter(Charset.forName("UTF-8"));
     }
 
-    //utf-8 인코딩 맞춰주는 필터
+    //utf-8
     @Bean
     public CharacterEncodingFilter characterEncodingFilter() {
         CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();

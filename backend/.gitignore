@@ -36,6 +36,8 @@ out/
 ### VS Code ###
 .vscode/
 
+/.metadata/
+
 ### Gradle ###
 .gradle
 build/
