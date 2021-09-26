@@ -30,9 +30,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.b101.common.model.response.BaseResponseBody;
 import com.b101.recruit.auth.CustomUserDetails;
+import com.b101.recruit.domain.entity.Activity;
 import com.b101.recruit.domain.entity.Certificate;
 import com.b101.recruit.domain.entity.PersonalInfo;
 import com.b101.recruit.reponse.PersonalInfoPostRes;
+import com.b101.recruit.request.ActivityPostReq;
 import com.b101.recruit.request.CertificatePostReq;
 import com.b101.recruit.request.PersonalInfoPostReq;
 import com.b101.recruit.service.impl.PersonalInfoService;
@@ -181,6 +183,36 @@ public class PersonalInfoController {
 	public ResponseEntity<BaseResponseBody> deleteCertificate(@PathVariable(name = "personalinfoId") Long pId,
 			@PathVariable(name = "certificateId") Long cId) {
 		service.deleteCertificate(pId, cId);
+		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+	}
+	
+	@PostMapping("/{personalinfoId}/activity")
+	@ApiOperation(value = "활동사항 등록", notes = "활동사항을 등록한다.")
+	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
+		@ApiResponse(code = 500, message = "서버 오류") })
+	public ResponseEntity<BaseResponseBody> createActivity(@PathVariable(name = "personalinfoId") Long id,
+			@RequestBody ActivityPostReq activity) {
+		Activity activity2 = service.createActivity(id, activity);
+		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+	}
+	
+	@PutMapping("/{personalinfoId}/{activityId}")
+	@ApiOperation(value = "활동사항 수정", notes = "활동사항을 수정한다.")
+	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
+		@ApiResponse(code = 500, message = "서버 오류") })
+	public ResponseEntity<Activity> updateActivity(@PathVariable(name = "personalinfoId") Long pId,
+			@PathVariable(name = "activityId") Long aId, @RequestBody ActivityPostReq activity) {
+		Activity activity2 = service.updateActivity(pId, aId, activity);
+		return ResponseEntity.status(200).body(activity2);
+	}
+	
+	@DeleteMapping("/{personalinfoId}/{activityId}")
+	@ApiOperation(value = "활동사항 삭제", notes = "활동사항을 삭제한다.")
+	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
+		@ApiResponse(code = 500, message = "서버 오류") })
+	public ResponseEntity<BaseResponseBody> deleteActivity(@PathVariable(name = "personalinfoId") Long pId,
+			@PathVariable(name = "activityId") Long aId) {
+		service.deleteActivity(pId, aId);
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
 	}
 	
