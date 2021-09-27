@@ -8,9 +8,9 @@ import org.springframework.stereotype.Repository;
 import com.b101.recruit.domain.entity.Activity;
 import com.google.common.base.Optional;
 
-@Repository
+//@Repository
 public interface ActivityRepository extends JpaRepository<Activity, Long>{
 
-//	Optional<List<Activity>> findByPersonalInfo_id(Long personal_info_id);
+	Optional<List<Activity>> findByPersonalinfo_id(Long personal_info_id);
 	
 }
