@@ -7,6 +7,7 @@ import com.b101.recruit.domain.dto.FileDto;
 import com.b101.recruit.domain.entity.Certificate;
 import com.b101.recruit.request.ActivityPostReq;
 import com.b101.recruit.request.CertificatePostReq;
+import com.b101.recruit.request.FinalEducationPostReq;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -56,5 +57,8 @@ public class PersonalInfoPostRes {
 	
 	@ApiModelProperty(name="활동사항")
 	private List<ActivityPostReq> activity;
+	
+	@ApiModelProperty(name="최종학력")
+	private List<FinalEducationPostReq> finaleducation;
 	
 }
