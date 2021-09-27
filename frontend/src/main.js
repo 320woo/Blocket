@@ -8,6 +8,7 @@ import Button from 'primevue/button'
 import Dialog from 'primevue/dialog';
 import Panel from 'primevue/panel';
 import Textarea from 'primevue/textarea'
+import Calendar from 'primevue/calendar'
 import 'primeflex/primeflex.css'
 import 'primevue/resources/primevue.min.css'
 import 'primevue/resources/themes/bootstrap4-light-blue/theme.css'
@@ -22,5 +23,7 @@ createApp(App)
   .component("Dialog", Dialog)  
   .component("Panel", Panel)
   .component("Textarea", Textarea)
+  .component("Calendar", Calendar)
   .mount("#app");
+
 
