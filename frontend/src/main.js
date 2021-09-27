@@ -11,6 +11,7 @@ import AutoComplete from 'primevue/autocomplete';
 import Dialog from 'primevue/dialog';
 import Panel from 'primevue/panel';
 import Textarea from 'primevue/textarea'
+import Calendar from 'primevue/calendar'
 
 import 'primeflex/primeflex.css'
 import 'primevue/resources/primevue.min.css'
@@ -29,6 +30,7 @@ createApp(App)
   .component("Dialog", Dialog)  
   .component("Panel", Panel)
   .component("Textarea", Textarea)
-
+  .component("Calendar", Calendar)
   .mount("#app");
+
 

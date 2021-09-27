@@ -1,5 +1,7 @@
 package com.b101.recruit.controller;
 
+import javax.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -17,13 +19,16 @@ import com.b101.common.model.response.BaseResponseBody;
 import com.b101.common.util.JwtTokenUtil;
 import com.b101.recruit.auth.CustomUserDetails;
 import com.b101.recruit.domain.entity.User;
+import com.b101.recruit.reponse.EmailConfirmPostRes;
 import com.b101.recruit.reponse.UserLoginPostRes;
 import com.b101.recruit.reponse.UserRes;
 import com.b101.recruit.reponse.UserUpdatePatchRes;
+import com.b101.recruit.request.EmailConfirmPostReq;
 import com.b101.recruit.request.PasswordUpdatePatchReq;
 import com.b101.recruit.request.UserLoginPostReq;
 import com.b101.recruit.request.UserRegisterPostReq;
 import com.b101.recruit.request.UserUpdatePatchReq;
+import com.b101.recruit.service.impl.PasswordFindPatchReq;
 import com.b101.recruit.service.impl.UserService;
 
 import io.swagger.annotations.Api;
@@ -179,6 +184,41 @@ public class UserController {
 		
 		
 	// 이메일 확인
+		@PostMapping("/emailConfirm")
+		@ApiOperation(value = "이메일 인증", notes = "이메일 인증")
+		@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
+				@ApiResponse(code = 404, message = "수정 실패"), @ApiResponse(code = 500, message = "서버 오류") })
+		public ResponseEntity<BaseResponseBody> AuthEmail(
+				@RequestBody @ApiParam(value = "이메일 정보") EmailConfirmPostReq emailConfirmPostReq) {
+			String emailToken = userService.AuthEmail(emailConfirmPostReq);
+			if (emailToken != null) {
+				return ResponseEntity.status(200).body(EmailConfirmPostRes.of(200, "메일이 발송되었습니다!", emailToken));
+			} else {
+				return ResponseEntity.status(404).body(EmailConfirmPostRes.of(404, "메일 발송에 실패하였습니다!", null));
+			}
+		}
+		
 	// 로그인된 회원의 비밀번호 찾기
+		@PatchMapping("/passwordFind")
+		@ApiOperation(value = "회원 비밀번호 찾기", notes = "회원 비밀번호 찾기")
+		@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "회원 정보 불일치"),
+				@ApiResponse(code = 405, message = "메일 전송 실패"), @ApiResponse(code = 409, message = "존재하지 않는 회원 ID"),
+				@ApiResponse(code = 500, message = "서버 오류") })
+		public ResponseEntity<BaseResponseBody> findPassword(
+				@RequestBody @ApiParam(value = "유저 정보") PasswordFindPatchReq passwordFindPatchReq) {
+			long user;
+			try {
+				user = userService.findPassword(passwordFindPatchReq);
+				if (user == 1) {
+					return ResponseEntity.status(401).body(BaseResponseBody.of(401, "회원 정보가 일치하지 않습니다!"));
+				} else if (user == 0){
+					return ResponseEntity.status(409).body(BaseResponseBody.of(409, "존재하지 않는 회원 ID 입니다!"));
+				} else{
+					return ResponseEntity.status(200).body(BaseResponseBody.of(200, "메일이 발송되었습니다!"));
+				}
+			} catch (MessagingException e) {
+				return ResponseEntity.status(405).body(BaseResponseBody.of(405, "메일 발송 중 오류가 발생하였습니다!"));
+			}
+		}
 	
 }

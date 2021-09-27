@@ -4,6 +4,9 @@ import java.sql.Date;
 import java.util.List;
 
 import com.b101.recruit.domain.dto.FileDto;
+import com.b101.recruit.domain.entity.Certificate;
+import com.b101.recruit.request.ActivityPostReq;
+import com.b101.recruit.request.CertificatePostReq;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -51,5 +54,11 @@ public class PersonalInfoPostRes {
 	
 	@ApiModelProperty(name="파일")
 	private List<FileDto> files;
+	
+	@ApiModelProperty(name="어학, 자격증")
+	private List<CertificatePostReq> certificates;
+	
+	@ApiModelProperty(name="활동사항")
+	private List<ActivityPostReq> activity;
 	
 }

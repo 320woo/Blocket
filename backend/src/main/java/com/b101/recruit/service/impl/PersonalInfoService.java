@@ -16,11 +16,17 @@ import java.util.UUID;
 
 import javax.transaction.Transactional;
 
+import com.b101.recruit.domain.entity.Activity;
+import com.b101.recruit.domain.entity.Certificate;
 import com.b101.recruit.domain.entity.PersonalInfo;
 import com.b101.recruit.domain.entity.User;
+import com.b101.recruit.domain.repository.ActivityRepository;
+import com.b101.recruit.domain.repository.CertificateRepository;
 import com.b101.recruit.domain.repository.PersonalInfoRepository;
 import com.b101.recruit.domain.repository.UserRepository;
 import com.b101.recruit.reponse.PersonalInfoPostRes;
+import com.b101.recruit.request.ActivityPostReq;
+import com.b101.recruit.request.CertificatePostReq;
 import com.b101.recruit.request.PersonalInfoPostReq;
 import com.b101.recruit.service.IPersonalInfoService;
 
@@ -29,6 +35,12 @@ public class PersonalInfoService implements IPersonalInfoService {
 
 	@Autowired
 	PersonalInfoRepository personalinfoRepository;
+	
+	@Autowired
+	CertificateRepository certificateRepository;
+	
+	@Autowired
+	ActivityRepository activityRepository;
 	
 	@Autowired
 	UserRepository userRepository;
@@ -123,6 +135,36 @@ public class PersonalInfoService implements IPersonalInfoService {
 //			}
 //			p.setFiles(copy);
 //		}
+		
+		List<Certificate> clist = certificateRepository.findByPersonalinfo_id(personalinfo.getId()).get();
+		if(clist != null) {
+			List<CertificatePostReq> certificates = new ArrayList<>();
+			for(Certificate c : clist) {
+				CertificatePostReq cpr = new CertificatePostReq();
+				cpr.setId(c.getId());
+				cpr.setName(c.getName());
+				cpr.setSortation(c.getSortation());
+				cpr.setAcquisitionDate(c.getAcquisitionDate());
+				cpr.setScore(c.getScore());
+				certificates.add(cpr);
+			}
+			p.setCertificates(certificates);
+		}
+		
+		List<Activity> alist = activityRepository.findByPersonalinfo_id(personalinfo.getId()).get();
+		if(alist != null) {
+			List<ActivityPostReq> activitys = new ArrayList<>();
+			for(Activity a : alist) {
+				ActivityPostReq apr = new ActivityPostReq();
+				apr.setId(a.getId());
+				apr.setName(a.getName());
+				apr.setActivity(a.getActivity());
+				apr.setPeriod(a.getPeriod());
+				apr.setDescription(a.getDescription());
+				activitys.add(apr);
+			}
+			p.setActivity(activitys);
+		}
 		return p;
 	}
 	
@@ -167,6 +209,60 @@ public class PersonalInfoService implements IPersonalInfoService {
 			copy.add(resp);
 		}
 		return copy;
+	}
+
+	@Override
+	public Certificate createCertificate(Long id, CertificatePostReq certificate) {
+		Certificate cer = new Certificate();
+		cer.setName(certificate.getName());
+		cer.setSortation(certificate.getSortation());
+		cer.setAcquisitionDate(certificate.getAcquisitionDate());
+		cer.setScore(certificate.getScore());
+		PersonalInfo per = personalinfoRepository.getOne(id);
+		cer.setPersonalinfo(per);
+		return certificateRepository.save(cer);
+	}
+
+	@Override
+	public Certificate updateCertificate(Long pId, Long cId, CertificatePostReq certificate) {
+		Certificate cer = certificateRepository.getOne(cId);
+		cer.setName(certificate.getName());
+		cer.setSortation(certificate.getSortation());
+		cer.setAcquisitionDate(certificate.getAcquisitionDate());
+		cer.setScore(certificate.getScore());
+		return certificateRepository.save(cer);
+	}
+
+	@Override
+	public void deleteCertificate(Long pId, Long cId) {
+		certificateRepository.deleteById(cId);
+	}
+
+	@Override
+	public Activity createActivity(Long id, ActivityPostReq activity) {
+		Activity act = new Activity();
+		act.setName(activity.getName());
+		act.setActivity(activity.getActivity());
+		act.setPeriod(activity.getPeriod());
+		act.setDescription(activity.getDescription());
+		PersonalInfo per = personalinfoRepository.getOne(id);
+		act.setPersonalinfo(per);
+		return activityRepository.save(act);
+	}
+
+	@Override
+	public Activity updateActivity(Long pId, Long aId, ActivityPostReq activity) {
+		Activity act = activityRepository.getOne(aId);
+		act.setName(activity.getName());
+		act.setActivity(activity.getActivity());
+		act.setPeriod(activity.getPeriod());
+		act.setDescription(activity.getDescription());
+		return activityRepository.save(act);
+	}
+
+	@Override
+	public void deleteActivity(Long pId, Long aId) {
+		activityRepository.deleteById(aId);
 	}
 	
 }
