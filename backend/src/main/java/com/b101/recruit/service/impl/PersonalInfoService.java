@@ -66,9 +66,9 @@ public class PersonalInfoService implements IPersonalInfoService {
 		personalinfo.setRepProfile(personalinfoPostReq.getRepProfile());
 		personalinfo.setMilitaryService(personalinfoPostReq.getMilitaryService());
 		personalinfo.setVeteransAffairs(personalinfoPostReq.getVeteransAffairs());
-		personalinfo.setFinalEducation(personalinfoPostReq.getFinalEducation());
+//		personalinfo.setFinalEducation(personalinfoPostReq.getFinalEducation());
 		personalinfo.setDisabled(personalinfoPostReq.getDisabled());
-		personalinfo.setTranscript(personalinfoPostReq.getTranscript());
+//		personalinfo.setTranscript(personalinfoPostReq.getTranscript());
 		personalinfo.setIntExtAct(personalinfoPostReq.getIntExtAct());
 		personalinfo = personalinfoRepository.save(personalinfo);
 		
@@ -117,9 +117,9 @@ public class PersonalInfoService implements IPersonalInfoService {
 		p.setRepProfile(personalinfo.getRepProfile());
 		p.setMilitaryService(personalinfo.getMilitaryService());
 		p.setVeteransAffairs(personalinfo.getVeteransAffairs());
-		p.setFinalEducation(personalinfo.getFinalEducation());
+//		p.setFinalEducation(personalinfo.getFinalEducation());
 		p.setDisabled(personalinfo.getDisabled());
-		p.setTranscript(personalinfo.getTranscript());
+//		p.setTranscript(personalinfo.getTranscript());
 		p.setIntExtAct(personalinfo.getIntExtAct());
 		
 		// 파일 처리
@@ -178,9 +178,9 @@ public class PersonalInfoService implements IPersonalInfoService {
 		personalinfo.setRepProfile(personalinfoPostReq.getRepProfile());
 		personalinfo.setMilitaryService(personalinfoPostReq.getMilitaryService());
 		personalinfo.setVeteransAffairs(personalinfoPostReq.getVeteransAffairs());
-		personalinfo.setFinalEducation(personalinfoPostReq.getFinalEducation());
+//		personalinfo.setFinalEducation(personalinfoPostReq.getFinalEducation());
 		personalinfo.setDisabled(personalinfoPostReq.getDisabled());
-		personalinfo.setTranscript(personalinfoPostReq.getTranscript());
+//		personalinfo.setTranscript(personalinfoPostReq.getTranscript());
 		personalinfo.setIntExtAct(personalinfoPostReq.getIntExtAct());
 		return personalinfoRepository.save(personalinfo);
 	}
