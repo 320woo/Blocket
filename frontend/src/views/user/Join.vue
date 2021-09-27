@@ -1,83 +1,95 @@
 <template>
     <div>
         <div class="login-form">
-            <div>
+            <Panel header="Blocket을 체험해보세요." id="panel">
+                <div>
+                    <label for="username1">이메일</label>
+                </div>
                 <InputText
                     type="text"
                     id="email"
                     name="email"
                     v-model="email"
                     ref="email"
-                    placeholder="이메일"
-                    class="form-control mt-5 mb-2"/>
-            </div>
-            <div>
+                    class="InputText"/>
+                <div>
+                    <label for="username1">비밀번호</label>
+                </div>
                 <InputText
                     type="password"
                     id="password"
                     name="password"
                     v-model="password"
                     ref="password"
-                    placeholder="비밀번호"
-                    class="form-control mb-2"/>
-            </div>
-            <div>
+                    class="InputText"
+                    placeholder="6자 이상"/>
+                <div>
+                    <label for="username1">이름</label>
+                </div>
                 <InputText
                     type="text"
                     id="name"
                     name="name"
                     v-model="name"
                     ref="name"
-                    placeholder="이름"
-                    class="form-control mb-2"/>
-            </div>
-            <div>
-                <SelectButton v-model="value1" :options="options" class="form-control mb-2"/>
-            </div>
-            <div>
+                    class="InputText"/>
+                <div>
+                <span class="center-btn">
+                    <div>
+                <input type="checkbox" id="checkbox" v-model="solo" @click="Solo">
+                    <label for="checkbox" class="checkbox">개인</label>
+                <input type="checkbox" id="checkbox" v-model="company" @click="Company">
+                    <label for="checkbox" class="checkbox">기업</label>
+                    </div>
+                </span>
+                </div>
+                <div>
+                    <label for="username1">소속</label>
+                </div>
                 <InputText
                     type="text"
                     id="belong"
                     name="belong"
                     v-model="belong"
                     ref="belong"
-                    placeholder="소속"
-                    class="form-control mb-2"/>
-            </div>
-            <div>
+                    class="InputText"/>
+                <div>
+                    <label for="username1">연락처</label>
+                </div>
                 <InputText
                     type="text"
                     id="phoneNumber"
                     name="phoneNumber"
                     v-model="phoneNumber"
+                    maxlength="11"
                     ref="phoneNumber"
-                    placeholder="연락처"
-                    class="form-control mb-2"/>
-            </div>
-            <div>
+                    class="InputText"
+                    placeholder="-를 제외하고 입력해주세요."
+                    />
+                <div>
+                    <label for="username1">사업자 등록번호</label>
+                </div>
                 <InputText
                     type="text"
                     id="brn"
                     name="brn"
                     v-model="brn"
                     ref="brn"
-                    placeholder="사업자 등록번호"
-                    class="form-control mb-3"/>
-            </div>
-            <div>
-                <Button
-                    class="btn mb-5"
-                    id="login-btn"
-                    @keyup.enter="checkValue"
-                    @click="checkValue">
-                    회원가입
-                </Button>
-                <div class="d-flex justify-content-between">
-                    <span @click="home" class="goback-link">
-                        홈으로 돌아가기
-                    </span>
+                    class="InputText"/>
+                <div>
+                    <div class="center-btn">
+                        <Button class="" id="login-btn" @keyup.enter="checkValue" @click="checkValue">
+                            회원가입
+                        </Button>
+                        <div>
+                            <span @click="home" class="goback-link">
+                                홈으로 돌아가기
+                            </span>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </Panel>
+
         </div>
     </div>
 </template>
@@ -89,6 +101,8 @@
         computed: {},
         data() {
             return {
+                solo: true,
+                company : false,
                 email: "",
                 password: "",
                 name: "",
@@ -96,12 +110,18 @@
                 belong: "",
                 brn: "",
                 type: "",
-                withdrawal: "",
-                value1: '회원',
-                options: ['회원', '기업']
+                withdrawal: ""
             };
         },
         methods: {
+            Solo() {
+                this.solo = true;
+                this.company = false;
+            },
+            Company() {
+                this.solo = false;
+                this.company = true;
+            },
             checkValue() {
                 // 사용자 입력값 체크하기
                 let err = true;
@@ -155,21 +175,50 @@
 <style scoped="scoped">
     .login-form {
         padding: 0 40px;
-        text-align: center;
+        margin-top: 35px;
+    }
+
+    .login-form div {
+        padding: 10px;
+    }
+
+    .login-form label {
+        color: #888;
+    }
+    .login-form .checkbox {
+        color: black;
+    }
+
+    .InputText {
+        width: 100%;
+    }
+
+    #panel {
+        display: block;
+        width: 25%;
+        margin: auto;
     }
 
     #login-btn {
-        background-color: #3F72AF;
+        background-color: #3f72af;
         color: #fff;
     }
 
     #login-btn:hover {
-        background-color: #F9F7F7;
-        color: #112D4E;
+        background-color: #f9f7f7;
+        color: #112d4e;
+    }
+
+    #checkbox {
+        padding : 20px;
     }
 
     .goback-link {
         color: #888;
         cursor: pointer;
+    }
+
+    .center-btn {
+        text-align: center;
     }
 </style>

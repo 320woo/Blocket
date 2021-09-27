@@ -1,62 +1,55 @@
 <template>
     <div>
         <div class="login-form">
-            <div>
-                <InputText
-                    type="text"
-                    id="email_id"
-                    name="email_id"
-                    v-model="email_id"
-                    ref="email_id"
-                    placeholder="이메일"
-                    class="form-control mt-5 mb-2"/>
-            </div>
-            <div>
-                <InputText
-                    type="password"
-                    id="password"
-                    name="password"
-                    v-model="password"
-                    ref="password"
-                    placeholder="비밀번호"
-                    class="form-control mb-3"
-                    @keyup.enter="checkValue"/>
-            </div>
-            <div>
-                <Button
-                    class="btn mb-5"
-                    id="login-btn"
-                    @keyup.enter="checkValue"
-                    @click="checkValue">
-                    로그인
-                </Button>
-                <div class="d-flex justify-content-between">
-                    <span style="color:#888;">
-                        아직 계정이 없으신가요?
-                    </span>
-                    <span @click="join" class="sign-up-link">
-                        회원가입
-                    </span>
+            <Panel header="로그인하세요" id="panel">
+                <div>
+                    <InputText
+                        type="text"
+                        id="email_id"
+                        name="email_id"
+                        v-model="email_id"
+                        ref="email_id"
+                        placeholder="이메일"
+                        class="InputText"/>
                 </div>
-                <!-- <button style="width: 100%" class="btn btn-mint btn-primary" @click="join"
-                > 회원가입 </button> -->
+                <div>
+                    <InputText
+                        type="password"
+                        id="password"
+                        name="password"
+                        v-model="password"
+                        ref="password"
+                        placeholder="비밀번호"
+                        @keyup.enter="checkValue"
+                        class="InputText"/>
+                </div>
+                <div>
+                    <Button id="login-btn" @keyup.enter="checkValue" @click="checkValue">
+                        로그인
+                    </Button>
+                    <!-- <button style="width: 100%" class="btn btn-mint btn-primary" @click="join"
+                    > 회원가입 </button> -->
+                </div>
+            </Panel>
+            <div>
+                <span style="color:#888;">
+                    아직 계정이 없으신가요?
+                </span>
+                <span @click="join" class="sign-up-link">
+                    회원가입
+                </span>
             </div>
         </div>
     </div>
 </template>
 <script>
-    import {mapGetters} from "vuex";
+    // import {mapGetters} from "vuex";
     export default {
-        name: "bottom",
-        computed: {
-            //getter에 있는 userInfo 함수를 불러옵니다.
-            ...mapGetters(["userInfo"])
-        },
+        name: "login",
+        computed: {},
 
         data() {
-            return {
-                email_id: "", 
-                password: ""};
+            return {email_id: "", password: ""};
         },
         methods: {
             join() {
@@ -94,9 +87,26 @@
 </script>
 
 <style scoped="scoped">
+    #panel {
+        display: block;
+        width: 25%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top : auto;
+        margin-bottom: auto;
+    }
+    .InputText {
+        width : 100%;
+    }
+
     .login-form {
         padding: 0 40px;
+        margin-top: 15%;
         text-align: center;
+    }
+
+    .login-form div {
+        padding: 10px;
     }
 
     #login-btn {

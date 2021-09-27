@@ -1,18 +1,15 @@
 <template>
   <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> |
-    <router-link to="/login">Login</router-link> |
-    <router-link to="/join">Join</router-link>
+    <Header></Header>
+  <router-view id="view"/>
   </div>
-  <router-view />
 </template>
 
 <script>
-
+import Header from "@/layout/Header.vue";
 export default {
-  setup() {
-    
+  components: {
+    Header,
   },
 }
 </script>
@@ -24,10 +21,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
 }
-
 #nav {
-  padding: 30px;
-  text-align: center;
 }
 
 #nav a {
