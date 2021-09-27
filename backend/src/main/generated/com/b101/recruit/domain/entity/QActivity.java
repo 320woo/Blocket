@@ -37,8 +37,6 @@ public class QActivity extends EntityPathBase<Activity> {
 
     public final QPersonalInfo personalinfo;
 
-    public final BooleanPath verified = createBoolean("verified");
-
     public QActivity(String variable) {
         this(Activity.class, forVariable(variable), INITS);
     }
