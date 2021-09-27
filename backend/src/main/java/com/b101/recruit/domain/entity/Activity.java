@@ -30,6 +30,6 @@ public class Activity extends BaseEntity{
 	private String activity;	//활동 구분
 	private String period;		//기간
 	private String description;	// 설명
-	boolean verified;			// 검증여부(PASS/FAIL)
+//	boolean verified;			// 검증여부(PASS/FAIL)
 	
 }

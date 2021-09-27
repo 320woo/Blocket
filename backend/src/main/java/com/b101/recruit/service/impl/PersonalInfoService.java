@@ -150,6 +150,21 @@ public class PersonalInfoService implements IPersonalInfoService {
 			}
 			p.setCertificates(certificates);
 		}
+		
+		List<Activity> alist = activityRepository.findByPersonalinfo_id(personalinfo.getId()).get();
+		if(alist != null) {
+			List<ActivityPostReq> activitys = new ArrayList<>();
+			for(Activity a : alist) {
+				ActivityPostReq apr = new ActivityPostReq();
+				apr.setId(a.getId());
+				apr.setName(a.getName());
+				apr.setActivity(a.getActivity());
+				apr.setPeriod(a.getPeriod());
+				apr.setDescription(a.getDescription());
+				activitys.add(apr);
+			}
+			p.setActivity(activitys);
+		}
 		return p;
 	}
 	
