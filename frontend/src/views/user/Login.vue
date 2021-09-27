@@ -44,12 +44,16 @@
 </template>
 <script>
     // import {mapGetters} from "vuex";
+    import http from "@/utils/http-common";
+
     export default {
         name: "login",
         computed: {},
-
         data() {
-            return {email_id: "", password: ""};
+            return {
+            email_id: "", 
+            password: ""
+            };
         },
         methods: {
             join() {
@@ -67,36 +71,37 @@
                 if (!err) 
                     alert(msg);
                 else 
-                    this
-                        .$store
-                        .dispatch("login", {
-                            email_id: this.email_id,
+                    {
+                    http
+                        .post("/api/recruit/users/login", {
+                            email: this.email_id,
                             password: this.password
+                        })
+                        .then(({data}) => {
+                            if (data.statusCode == 404) {
+                                alert("아이디 또는 비밀번호가 일치하지 않습니다.");
+                            } else {
+                                alert("로그인 성공!");
+                            }
+                        })
+                        .catch((error) => {
+                            alert("로그인 오류");
+                            console.dir(error);
                         });
-                
-                if (this.$store.state.user.nickname !== undefined) {
-                    console.log(this.$store.state.user.email_id + " 로그인성공");
-
-                    this
-                        .$router
-                        .push("/");
                 }
             }
         }
-    };
+    }
 </script>
 
 <style scoped="scoped">
     #panel {
         display: block;
         width: 25%;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top : auto;
-        margin-bottom: auto;
+        margin: auto;
     }
     .InputText {
-        width : 100%;
+        width: 100%;
     }
 
     .login-form {

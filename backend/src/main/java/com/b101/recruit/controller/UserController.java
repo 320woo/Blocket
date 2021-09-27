@@ -71,7 +71,6 @@ public class UserController {
 			@RequestBody @ApiParam(value = "로그인 정보", required = true) UserLoginPostReq userLoginPostReq) {
 		String userEmail = userLoginPostReq.getEmail();
 		String password = userLoginPostReq.getPassword();
-
 		User user = userService.findByUserEmail(userEmail);
 		System.out.println(user.getEmail());
 		if (user != null) {

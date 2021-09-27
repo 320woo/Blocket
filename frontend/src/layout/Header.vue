@@ -37,13 +37,24 @@
 		background-color : white; color : black; border : 1px solid black;
 	}
 
+	#login:hover {
+        background-color: black;
+        color: white;
+    }
+
 	#join {
 		position: absolute;
         top: -5px;
         right: 5px;
 		height: 30px;
 		width: 95px;
+		background-color: #3F72AF;
 	}
+
+	#join:hover {
+        background-color: #f9f7f7;
+        color: #112d4e;
+    }
 
     header {
         width: 100%;
@@ -55,7 +66,7 @@
     header h1 {
         position: absolute;
         top: -20px;
-        left: 50px;
+        left: 90px;
     }
     header ul.menu:after {
         display: block;

@@ -66,9 +66,11 @@
                     class="InputText"
                     placeholder="-를 제외하고 입력해주세요."
                     />
+                <span v-if="show_brn">
                 <div>
                     <label for="username1">사업자 등록번호</label>
                 </div>
+                
                 <InputText
                     type="text"
                     id="brn"
@@ -76,9 +78,10 @@
                     v-model="brn"
                     ref="brn"
                     class="InputText"/>
+                </span>
                 <div>
                     <div class="center-btn">
-                        <Button class="" id="login-btn" @keyup.enter="checkValue" @click="checkValue">
+                        <Button id="login-btn" @keyup.enter="checkValue" @click="checkValue">
                             회원가입
                         </Button>
                         <div>
@@ -101,6 +104,7 @@
         computed: {},
         data() {
             return {
+                show_brn : "",
                 solo: true,
                 company : false,
                 email: "",
@@ -110,17 +114,22 @@
                 belong: "",
                 brn: "",
                 type: "",
-                withdrawal: ""
+                withdrawal: "",
+                id: ""
             };
         },
         methods: {
             Solo() {
                 this.solo = true;
                 this.company = false;
+                this.type = "회원"
+                this.show_brn = false;
             },
             Company() {
                 this.solo = false;
                 this.company = true;
+                this.type = "기업"
+                this.show_brn = true;
             },
             checkValue() {
                 // 사용자 입력값 체크하기
@@ -139,23 +148,22 @@
             insertUser() {
                 http
                     .post("/api/recruit/users/register", {
-                        email: this.email,
-                        password: this.password,
-                        name: this.name,
-                        phoneNumber: this.phoneNumber,
+                        id: 0,
                         belong: this.belong,
                         brn: this.brn,
-                        type: this.type,
+                        email: this.email,
+                        name: this.name,
+                        password: this.password,
+                        phoneNumber: this.phoneNumber,
+                        type: 0,
                         withdrawal: 0
                     })
                     .then(({data}) => {
                         console.log(data);
                         let msg = "회원가입 실패!!";
-                        if (data === "success") {
+                        if (data.statusCode == 200) {
                             msg = "회원가입 완료";
-                            this
-                                .$router
-                                .push("/");
+                            this.$router.push("/login");
                         }
                         alert(msg);
                     })
@@ -210,7 +218,7 @@
     }
 
     #checkbox {
-        padding : 20px;
+        padding : 15px;
     }
 
     .goback-link {
