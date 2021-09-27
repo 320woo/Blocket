@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.List;
 
 import com.b101.recruit.domain.dto.FileDto;
+import com.b101.recruit.domain.entity.Certificate;
 import com.b101.recruit.request.ActivityPostReq;
 import com.b101.recruit.request.CertificatePostReq;
 
