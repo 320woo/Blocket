@@ -135,6 +135,21 @@ public class PersonalInfoService implements IPersonalInfoService {
 //			}
 //			p.setFiles(copy);
 //		}
+		
+		List<Certificate> clist = certificateRepository.findByPersonalinfo_id(personalinfo.getId()).get();
+		if(clist != null) {
+			List<CertificatePostReq> certificates = new ArrayList<>();
+			for(Certificate c : clist) {
+				CertificatePostReq cpr = new CertificatePostReq();
+				cpr.setId(c.getId());
+				cpr.setName(c.getName());
+				cpr.setSortation(c.getSortation());
+				cpr.setAcquisitionDate(c.getAcquisitionDate());
+				cpr.setScore(c.getScore());
+				certificates.add(cpr);
+			}
+			p.setCertificates(certificates);
+		}
 		return p;
 	}
 	

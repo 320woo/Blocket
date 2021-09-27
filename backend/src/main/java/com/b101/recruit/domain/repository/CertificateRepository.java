@@ -8,8 +8,8 @@ import org.springframework.stereotype.Repository;
 import com.b101.recruit.domain.entity.Certificate;
 import com.google.common.base.Optional;
 
-@Repository
+//@Repository
 public interface CertificateRepository extends JpaRepository<Certificate, Long> {
 
-//	Optional<List<Certificate>> findByPersonalInfo_id(Long personal_info_id);
+	Optional<List<Certificate>> findByPersonalinfo_id(Long personal_info_id);
 }
