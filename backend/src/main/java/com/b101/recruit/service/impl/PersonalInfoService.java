@@ -18,15 +18,18 @@ import javax.transaction.Transactional;
 
 import com.b101.recruit.domain.entity.Activity;
 import com.b101.recruit.domain.entity.Certificate;
+import com.b101.recruit.domain.entity.FinalEducation;
 import com.b101.recruit.domain.entity.PersonalInfo;
 import com.b101.recruit.domain.entity.User;
 import com.b101.recruit.domain.repository.ActivityRepository;
 import com.b101.recruit.domain.repository.CertificateRepository;
+import com.b101.recruit.domain.repository.FinalEducationRepository;
 import com.b101.recruit.domain.repository.PersonalInfoRepository;
 import com.b101.recruit.domain.repository.UserRepository;
 import com.b101.recruit.reponse.PersonalInfoPostRes;
 import com.b101.recruit.request.ActivityPostReq;
 import com.b101.recruit.request.CertificatePostReq;
+import com.b101.recruit.request.FinalEducationPostReq;
 import com.b101.recruit.request.PersonalInfoPostReq;
 import com.b101.recruit.service.IPersonalInfoService;
 
@@ -41,6 +44,9 @@ public class PersonalInfoService implements IPersonalInfoService {
 	
 	@Autowired
 	ActivityRepository activityRepository;
+	
+	@Autowired
+	FinalEducationRepository finaleducationRepository;
 	
 	@Autowired
 	UserRepository userRepository;
@@ -66,9 +72,9 @@ public class PersonalInfoService implements IPersonalInfoService {
 		personalinfo.setRepProfile(personalinfoPostReq.getRepProfile());
 		personalinfo.setMilitaryService(personalinfoPostReq.getMilitaryService());
 		personalinfo.setVeteransAffairs(personalinfoPostReq.getVeteransAffairs());
-		personalinfo.setFinalEducation(personalinfoPostReq.getFinalEducation());
+//		personalinfo.setFinalEducation(personalinfoPostReq.getFinalEducation());
 		personalinfo.setDisabled(personalinfoPostReq.getDisabled());
-		personalinfo.setTranscript(personalinfoPostReq.getTranscript());
+//		personalinfo.setTranscript(personalinfoPostReq.getTranscript());
 		personalinfo.setIntExtAct(personalinfoPostReq.getIntExtAct());
 		personalinfo = personalinfoRepository.save(personalinfo);
 		
@@ -117,9 +123,9 @@ public class PersonalInfoService implements IPersonalInfoService {
 		p.setRepProfile(personalinfo.getRepProfile());
 		p.setMilitaryService(personalinfo.getMilitaryService());
 		p.setVeteransAffairs(personalinfo.getVeteransAffairs());
-		p.setFinalEducation(personalinfo.getFinalEducation());
+//		p.setFinalEducation(personalinfo.getFinalEducation());
 		p.setDisabled(personalinfo.getDisabled());
-		p.setTranscript(personalinfo.getTranscript());
+//		p.setTranscript(personalinfo.getTranscript());
 		p.setIntExtAct(personalinfo.getIntExtAct());
 		
 		// 파일 처리
@@ -136,6 +142,7 @@ public class PersonalInfoService implements IPersonalInfoService {
 //			p.setFiles(copy);
 //		}
 		
+		// 어학, 자격증 
 		List<Certificate> clist = certificateRepository.findByPersonalinfo_id(personalinfo.getId()).get();
 		if(clist != null) {
 			List<CertificatePostReq> certificates = new ArrayList<>();
@@ -151,6 +158,7 @@ public class PersonalInfoService implements IPersonalInfoService {
 			p.setCertificates(certificates);
 		}
 		
+		// 활동사항
 		List<Activity> alist = activityRepository.findByPersonalinfo_id(personalinfo.getId()).get();
 		if(alist != null) {
 			List<ActivityPostReq> activitys = new ArrayList<>();
@@ -165,6 +173,21 @@ public class PersonalInfoService implements IPersonalInfoService {
 			}
 			p.setActivity(activitys);
 		}
+		
+		// 최종학력
+		List<FinalEducation> flist = finaleducationRepository.findByPersonalinfo_id(personalinfo.getId()).get();
+		if(flist != null) {
+			List<FinalEducationPostReq> finaleducations = new ArrayList<>();
+			for(FinalEducation f : flist) {
+				FinalEducationPostReq fpr = new FinalEducationPostReq();
+				fpr.setId(f.getId());
+				fpr.setName(f.getName());
+				fpr.setSortation(f.getSortation());
+				fpr.setGrades(f.getGrades());
+				finaleducations.add(fpr);
+			}
+			p.setFinaleducation(finaleducations);
+		}
 		return p;
 	}
 	
@@ -178,9 +201,9 @@ public class PersonalInfoService implements IPersonalInfoService {
 		personalinfo.setRepProfile(personalinfoPostReq.getRepProfile());
 		personalinfo.setMilitaryService(personalinfoPostReq.getMilitaryService());
 		personalinfo.setVeteransAffairs(personalinfoPostReq.getVeteransAffairs());
-		personalinfo.setFinalEducation(personalinfoPostReq.getFinalEducation());
+//		personalinfo.setFinalEducation(personalinfoPostReq.getFinalEducation());
 		personalinfo.setDisabled(personalinfoPostReq.getDisabled());
-		personalinfo.setTranscript(personalinfoPostReq.getTranscript());
+//		personalinfo.setTranscript(personalinfoPostReq.getTranscript());
 		personalinfo.setIntExtAct(personalinfoPostReq.getIntExtAct());
 		return personalinfoRepository.save(personalinfo);
 	}
@@ -263,6 +286,31 @@ public class PersonalInfoService implements IPersonalInfoService {
 	@Override
 	public void deleteActivity(Long pId, Long aId) {
 		activityRepository.deleteById(aId);
+	}
+
+	@Override
+	public FinalEducation createFinalEducation(Long id, FinalEducationPostReq finaleducation) {
+		FinalEducation fin = new FinalEducation();
+		fin.setName(finaleducation.getName());
+		fin.setSortation(finaleducation.getSortation());
+		fin.setGrades(finaleducation.getGrades());
+		PersonalInfo per = personalinfoRepository.getOne(id);
+		fin.setPersonalinfo(per);
+		return finaleducationRepository.save(fin);
+	}
+
+	@Override
+	public FinalEducation updateFinalEducation(Long pId, Long fId, FinalEducationPostReq finaleducation) {
+		FinalEducation fin = finaleducationRepository.getOne(fId);
+		fin.setName(finaleducation.getName());
+		fin.setSortation(finaleducation.getSortation());
+		fin.setGrades(finaleducation.getGrades());
+		return finaleducationRepository.save(fin);
+	}
+
+	@Override
+	public void deleteFinalEducation(Long pId, Long fId) {
+		finaleducationRepository.deleteById(fId);		
 	}
 	
 }

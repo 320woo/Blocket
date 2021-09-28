@@ -1,8 +1,12 @@
 package com.b101.recruit.service;
 
+import javax.mail.MessagingException;
+
 import com.b101.recruit.domain.entity.User;
+import com.b101.recruit.request.EmailConfirmPostReq;
 import com.b101.recruit.request.UserRegisterPostReq;
 import com.b101.recruit.request.UserUpdatePatchReq;
+import com.b101.recruit.service.impl.PasswordFindPatchReq;
 
 public interface IUserSerive {
 	
@@ -12,4 +16,7 @@ public interface IUserSerive {
 	long deleteUser(String userEmail);
 	long updateUser(String userEmail, UserUpdatePatchReq UserUpdatePatchReq);
 	boolean confirmUserEmail(String userEmail);
+	long findPassword(PasswordFindPatchReq passwordFindPatchReq) throws MessagingException;
+	String AuthEmail(EmailConfirmPostReq emailConfirmPostReq);
+
 }
