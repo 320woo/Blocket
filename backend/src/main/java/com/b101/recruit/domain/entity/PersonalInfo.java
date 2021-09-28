@@ -34,7 +34,7 @@ public class PersonalInfo extends BaseEntity {
 	private String address; 		// 주소
 	private String englishName; 	// 영문이름
 	private String gender; 			// 성별
-	private String repProfile; 		// 대표 프로필
+	private String repProfile; 		// 대표 프로필 ( 이미지 경로 )
 	private String militaryService; // 병역사항
 	private String veteransAffairs; // 보훈사항
 	private String finalEducation;  // 최종학력
