@@ -1,7 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/Home.vue";
+import Login from "../views/user/Login.vue";
+import Join from "../views/user/Join.vue";
 import PersonalInfo from "../views/personalInfo/PersonalInfo.vue"
 import Test from "../views/test.vue"
+
 
 const routes = [
   {
@@ -17,6 +20,16 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
+  },
+  {
+    path: "/login",
+    name: "Login",
+    component: Login,
+  },
+  {
+    path: "/join",
+    name: "Join",
+    component: Join,
   },
   {
     path: "/personalInfo",
