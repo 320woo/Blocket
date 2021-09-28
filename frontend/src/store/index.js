@@ -51,7 +51,6 @@ export default createStore({
                     if (data.statusCode == 404) {
                         alert("아이디 또는 비밀번호가 일치하지 않습니다.");
                     } else {
-                        alert("로그인 성공!");
                         context.commit("login", data);
                     }
                 })
@@ -63,6 +62,23 @@ export default createStore({
         logout(context) {
             console.log("로그아웃");
             context.commit("logout");
+        },
+        checkEmail(context, {email}) {
+            console.log("중복체크 : " + email);
+            console.log(context);
+            http
+                .get("/api/recruit/users/" + email , {
+                    email: email
+                })
+                .then(({ data }) => {
+                    console.log(data)
+                    if (data.statusCode == 200) {
+                        alert("가입이 가능한 이메일입니다.")
+                    }
+                    else {
+                        alert("이미 있는 이메일입니다.")
+                    }
+                })
         }
     },
     modules: {}
