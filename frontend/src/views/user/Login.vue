@@ -43,17 +43,15 @@
     </div>
 </template>
 <script>
-    // import {mapGetters} from "vuex";
-    import http from "@/utils/http-common";
+    import {mapGetters} from "vuex";
 
     export default {
         name: "login",
-        computed: {},
+        computed: {
+            ...mapGetters(["user"])
+        },
         data() {
-            return {
-            email_id: "", 
-            password: ""
-            };
+            return {email_id: "", password: ""};
         },
         methods: {
             join() {
@@ -70,24 +68,21 @@
 
                 if (!err) 
                     alert(msg);
-                else 
-                    {
-                    http
-                        .post("/api/recruit/users/login", {
+                else {
+                    this
+                        .$store
+                        .dispatch("login", {
+                            //form에서 받은 값을 action에 있는 login 함수로 들고
                             email: this.email_id,
                             password: this.password
-                        })
-                        .then(({data}) => {
-                            if (data.statusCode == 404) {
-                                alert("아이디 또는 비밀번호가 일치하지 않습니다.");
-                            } else {
-                                alert("로그인 성공!");
-                            }
-                        })
-                        .catch((error) => {
-                            alert("로그인 오류");
-                            console.dir(error);
                         });
+
+                    if (this.$store.state.user.accessToken != null) {
+                        alert("로그인 성공!");
+                        this
+                            .$router
+                            .push("/");
+                    }
                 }
             }
         }

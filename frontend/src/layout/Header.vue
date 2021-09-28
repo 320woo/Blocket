@@ -4,12 +4,17 @@
             <router-link to="/"><img :src="require(`@/assets/images/Blocket-logo.png`)"/></router-link>
         </h1>
         <div class="menuWrap">
-            <ul class="menu">
+            <ul class="menu" v-if="this.$store.state.user.show">
                 <li>
                     <router-link to="/login"><Button id="login">로그인</Button></router-link>
                 </li>
                 <li>
                     <router-link to="/join"><Button id="join">회원 가입</Button></router-link>
+                </li>
+            </ul>
+            <ul class="menu" v-else>
+                <li>
+                    <Button id="join" @click="logout">로그 아웃</Button>
                 </li>
             </ul>
         </div>
@@ -20,7 +25,13 @@
     export default {
         data() {
             return {}
-        }
+        },
+        methods: {
+            logout() {
+                this.$store.dispatch("logout");
+                alert("로그아웃 완료")
+            }
+        },
     }
 </script>
 
