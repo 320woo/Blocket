@@ -30,6 +30,10 @@ public class File extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "activity_id")
     private Activity activity;
+    
+    @ManyToOne
+    @JoinColumn(name = "final_education_id")
+    private FinalEducation finaleducation;
 
     private String filepath;
     private String originName;

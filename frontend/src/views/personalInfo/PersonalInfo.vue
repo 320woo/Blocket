@@ -56,41 +56,22 @@
           </div>
         </div> 
 
-        <!-- 자기소개 문항 1번 -->
+        <!-- 최종 학력 -->
         <div class="p-col profile">
-          <Panel :header="state.question1" :toggleable="true" >
-            <template #icons>
-              <Button icon="pi pi-pencil" class="p-button-rounded p-button-text" @click="openQ1Modal"/>
-            </template>
-            <!-- :model="items" 를 통해 부가 메뉴를 생성할 수 있다. -->
-            <!-- <Menu id="config_menu" ref="menu" :popup="true" /> -->
-            <!-- 질문에 대한 내용 -->
-            <p> {{ state.answer1 }} </p>
-            
-          </Panel>
+          <div class="p-grid">
+            <div class="p-col-10">
+              <span class="header-font">최종 학력</span>
+            </div>
 
-          <!-- 자기소개 문항 2번 -->
-          <Panel :header="state.question2" :toggleable="true" >
-            <template #icons>
-              <Button icon="pi pi-pencil" class="p-button-rounded p-button-text" @click="openQ2Modal" />
-            </template>
-            
-            <!-- 질문에 대한 내용 -->  
-            <p> {{ state.answer2 }} </p>
-          </Panel>
+            <div class="p-col-2 edit-div">
+              <Button icon="pi pi-pencil" class="p-button-rounded p-button-text" @click="openEducationModal" />
+            </div>
+          </div>
 
-          <!-- 자기소개 문항 3번 -->
-          <Panel :header="state.question3" :toggleable="true" >
-            <template #icons>
-              <Button icon="pi pi-pencil" class="p-button-rounded p-button-text" @click="openQ3Modal" />
-            </template>
-            
-            <!-- 질문에 대한 내용 -->
-            <p> {{ state.answer3 }} </p>
-          </Panel>
+          <div class="p-col">내용내용</div>
 
-          
         </div>
+
 
         <!-- 활동 사항 -->
         <div class="p-col profile">
@@ -116,7 +97,7 @@
             </div>
 
             <div class="p-col-2 edit-div">
-              <Button icon="pi pi-plus" class="p-button-rounded p-button-text" />
+              <Button icon="pi pi-plus" class="p-button-rounded p-button-text" @click="openCertModal" />
             </div>
           </div>
 
@@ -133,7 +114,7 @@
             </div>
 
             <div class="p-col-2 edit-div">
-              <Button icon="pi pi-plus" class="p-button-rounded p-button-text" />
+              <Button icon="pi pi-plus" class="p-button-rounded p-button-text" @click="openArmyModal" />
             </div>
           </div>
 
@@ -178,76 +159,177 @@
     </div> <!-- end of sub Container -->
   </div> <!-- end of top Container -->
 
-
-  <!-- 각 사항들은 모두 Modal창으로 수정할 예정 -->
+  <!-- ============================== Modal ============================== -->
   <!-- https://primefaces.org/primevue/showcase/#/dialog 참고... -->
 
-  <!-- 자기소개 1번 문항 수정 -->
-  <Dialog :header="state.question1" v-model:visible="state.displayQ1Modal" :style="{width: '50vw'}" :modal="true">
-      <Textarea class="textarea" v-model="state.answer1" :autoResize="true" maxlength="1000" placeholder="내용을 입력하세요" rows="10" />
-      <template #footer>
-          <Button label="닫기" icon="pi pi-check" @click="closeQ1Modal" autofocus />
-      </template>
-  </Dialog>
-
-  <!-- 자기소개 2번 문항 수정 -->
-  <Dialog :header="state.question2" v-model:visible="state.displayQ2Modal" :style="{width: '50vw'}" :modal="true">
-      <Textarea class="textarea" v-model="state.answer2" :autoResize="true" maxlength="1000" placeholder="내용을 입력하세요" rows="10" />
-      <template #footer>
-          <Button label="닫기" icon="pi pi-check" @click="closeQ2Modal" autofocus />
-      </template>
-  </Dialog>
-
-  <!-- 자기소개 3번 문항 수정 -->
-  <Dialog :header="state.question3" v-model:visible="state.displayQ3Modal" :style="{width: '50vw'}" :modal="true">
-      <Textarea class="textarea" v-model="state.answer3" :autoResize="true" maxlength="800" placeholder="내용을 입력하세요" rows="10" />    
+  <!-- 학력 사항 Modal 창 -->
+  <Dialog header="최종 학력 입력" v-model:visible="state.displayEducationModal" :style="{width: '30vw'}" :modal="true">
       
+      <div class="p-grid">
+        <!-- 대학교 이름 검색 -->
+        <div class="p-field p-col-6">
+          <label for="collegeName">학교명*</label>  
+          <AutoComplete id="collegeName" v-model="selectedCollege" 
+          :suggestions="filteredColleges" @complete="searchCollege($event)" field="schoolName" />
+        </div>
+        <!-- 학과 이름 검색 -->
+        <div class="p-field p-col-6">
+          <label for="majorName">학과명*</label>
+          <AutoComplete id="majorName" v-model="selectedMajor" 
+          :suggestions="filteredMajors" @complete="searchMajor($event)" field="mClass" />
+        </div>
+      </div>
+      <!-- 졸업 증명서 첨부 -->
+      <div class="p-field">
+        <label for="file" class="for">졸업 증명서 첨부*</label>
+        <FileUpload mode="basic" name="demo[]" url="./" accept="image/*" :maxFileSize="1000000" @upload="onUpload" />
+      </div>
       <template #footer>
-          <Button label="닫기" icon="pi pi-check" @click="closeQ3Modal" autofocus />
+          <Button label="저장" icon="pi pi-check" @click="saveEducationModal" autofocus />
       </template>
   </Dialog>
-
 
 
   <!-- 활동 사항 추가 modal 창 -->
-  <Dialog header="활동사항 입력" v-model:visible="state.displayActivityModal" :style="{width: '50vw'}" :modal="true">
-      
+  <Dialog header="활동사항 입력" v-model:visible="state.displayActivityModal" :style="{width: '30vw'}" :modal="true">
     <div class="p-field">
       <label for="activityName">이름*</label>
       <InputText id="activityName" class="input-text" type="activityName" aria-describedby="username1-help" placeholder="예: 소매관리자" />
     </div> 
-
     <div class="p-field">
-      <label for="activity">활동 구분*</label>
-      <select name="type" class="select">
+      <label for="activityType">활동 구분*</label>
+      <select name="type" id="activityType" class="select">
         <option value="1">정규직</option>
         <option value="2">계약직</option>
         <option value="3">프로젝트</option>
         <option value="4">인턴</option>
       </select>
     </div> 
-
-    <div class="p-fluid p-grid p-formgrid">
-      <div class="p-field p-col-12 p-md-5">
-        <label for="icon">시작일*</label>
-        <Calendar id="icon" class="calendar" v-model="startDate" :showIcon="true" />
-      </div>
-
-      <div class="p-field p-col-12 p-md-5">
-        <label for="icon">종료일*</label>
-        <Calendar id="icon" class="calendar" v-model="startDate" :showIcon="true" />
-      </div>
+    <div class="p-field">
+      <label for="description">설명*</label>
+      <InputText id="description" class="input-text" type="description" aria-describedby="username1-help" placeholder="간단한 설명을 적어 주세요." />
     </div>
-    
+    <div class="p-fluid p-grid p-formgrid">
+      <div class="p-field p-col-12">
+        <label for="icon">시작일*</label>
+        <Calendar id="icon" class="calendar" v-model="state.startDate" :showIcon="true" />
+        <!-- Error msg 출력 -->
+        <div></div>
+      </div>
+      <div class="p-field p-col-12">
+        <label for="icon">종료일*</label>
+        <Calendar id="icon" class="calendar" v-model="state.endDate" :showIcon="true" />
+        <!-- Error msg 출력 -->
+        <div></div>
+      </div>
+      <!-- 관련 서류 제출 -->
+      <div class="p-field p-md-6">
+        <label for="file" class="for">활동 증명서 첨부*</label>
+        <FileUpload mode="basic" name="demo[]" url="./" accept="image/*" :maxFileSize="1000000" @upload="onUpload" />
+      </div>
 
 
-
-
-
-
+    </div>
       <template #footer>
           <Button label="저장" icon="pi pi-check" @click="saveActivityModal" autofocus />
       </template>
+  </Dialog>
+
+
+  <!-- 어학, 자격증 관련 모달 창 -->
+  <Dialog header="어학, 자격증" v-model:visible="state.displayCertModal" :style="{width: '30vw'}" :modal="true">
+    <div class="p-field">
+      <label for="certName">이름*</label>
+      <InputText id="certName" class="input-text" type="certName" aria-describedby="username1-help" placeholder="예: 국제 공인 네트워크 자격증" />
+    </div>
+
+    <div class="p-field">
+      <label for="certType">구분*</label>
+      <select name="certType" id="certType" class="select">
+        <option value="1">어학</option>
+        <option value="2">국가공인 자격증 </option>
+        <option value="3">민간 자격증</option>
+        <option value="4">기타</option>
+      </select>
+    </div> 
+
+    <div class="p-fluid p-grid p-formgrid">
+      <div class="p-field p-col-12">
+        <label for="certScore">취득점수, 등급</label>
+        <!-- Error msg 출력 -->
+        <div></div>
+        <InputText id="certScore" class="input-text" type="certScore" aria-describedby="username1-help" />
+      </div>
+      
+      <div class="p-field p-col-12">
+        <label for="certIcon">취득기간*</label>
+        <Calendar id="certIcon" class="calendar" v-model="state.acquisitionDate" :showIcon="true" />
+        <!-- Error msg 출력 -->
+        <div></div>
+      </div>
+    </div>
+
+    <!-- 관련 서류 제출 -->
+    <div class="p-field p-md-6">
+      <label for="file" class="for">증명서 첨부*</label>
+      <FileUpload mode="basic" name="demo[]" url="./" accept="image/*" :maxFileSize="1000000" @upload="onUpload" />
+    </div>
+
+    <template #footer>
+      <Button label="저장" icon="pi pi-check" @click="saveCertModal" autofocus />
+    </template>
+  </Dialog>
+
+
+  <!-- 병역 사항 관련 Modal창 -->
+  <Dialog header="병역 사항 수정" v-model:visible="state.displayArmyModal" :style="{width: '30vw'}" :modal="true">
+    <div class="p-field">
+      <label for="armyType">병역 여부*</label>
+      <select name="armyType" id="armyType" class="select">
+        <option value="1">필</option>
+        <option value="2">무</option>
+      </select>
+    </div> 
+
+    <div class="p-field">
+      <label for="armyType2">군종*</label>
+      <select name="armyType2" id="armyType2" class="select">
+        <option value="1">육군</option>
+        <option value="2">해군</option>
+        <option value="3">공군</option>
+        <option value="4">해병대</option>
+        <option value="5">의경</option>
+      </select>
+    </div>
+
+    <div class="p-field">
+      <label for="armyType3">제대 종류*</label>
+      <select name="armyType3" id="armyType3" class="select">
+        <option value="1">만기전역</option>
+        <option value="2">의가사 전역</option>
+        <option value="3">기타</option>
+      </select>
+    </div>
+    
+    <div class="p-fluid p-grid p-formgrid">
+      <div class="p-field p-col-6 p-md-6">
+        <label for="certIcon">입대일*</label>
+        <Calendar id="certIcon" class="calendar" v-model="state.acquisitionDate" :showIcon="true" />
+        <!-- Error msg 출력 -->
+        <div></div>
+      </div>
+
+      <div class="p-field p-col-6 p-md-6">
+        <label for="certIcon">전역일*</label>
+        <Calendar id="certIcon" class="calendar" v-model="state.acquisitionDate" :showIcon="true" />
+        <!-- Error msg 출력 -->
+        <div></div>
+      </div>
+    </div>
+
+    <template #footer>
+      <Button label="저장" icon="pi pi-check" @click="saveArmyModal" autofocus />
+    </template>
   </Dialog>
 
 
@@ -256,15 +338,44 @@
 
 <script>
 import { createWeb3 } from '@/utils/itemInventory.js'
-import { reactive } from '@vue/reactivity'
+import { reactive, onMounted, ref } from 'vue'
 import defaultImage from "~/images/test.png"
 import defaultUserImage from "~/images/user.png"
+import { getAllColleges, getAllMajors } from '@/utils/colleges.js'
+import { FilterService, FilterMatchMode }  from 'primevue/api'
+// import { useToast } from 'primevue/usetoast'
 
 export default {
 name: 'personalInfo',
 components: {},
 setup() {
+  // 페이지가 로드되면
+  onMounted(() => {
+    // 모든 대학교 목록 불러오기
+    getAllColleges().then(res => {
+      colleges.value = res.data.dataSearch.content
+    })
+
+    // 학과 목록 불러오기
+    getAllMajors().then(res => {
+      majors.value = res.data.dataSearch.content
+    })
+  })
+
   const web3 = createWeb3()
+
+  // 학교 검색 관련 변수
+  const colleges = ref()         // 모든 학교
+  const filteredColleges = ref() // 검색 결과로 나온 학교들
+  const selectedCollege = ref()  // 내가 선택한 학교
+  
+  // 학과 검색 관련 변수
+  const majors = ref()          // 모든 전고
+  const filteredMajors = ref()  // 검색 결과로 나온 전공들
+  const selectedMajor = ref() // 내가 선택한 전공
+
+  // 파일 첨부 관련 변수 - 토스트
+  // const toast = useToast()
 
   const state = reactive({
     web3: web3,
@@ -272,33 +383,44 @@ setup() {
     privateKey: null,
     defaultImage: defaultImage,
     defaultUserImage: defaultUserImage,
-    displayQ1Modal: false,
-    displayQ2Modal: false,
-    displayQ3Modal: false,
+
+    // Modal창 on, off
+    displayEducationModal: false,
     displayActivityModal: false,
+    displayCertModal: false,
+    displayArmyModal: false,
+    
     // 개인 정보
     dateBirth: '',    // 생년월일
     address: '',      // 주소
     englishName: '',    // 영문이름
     gender: '',    // 성별
     repProfile: '',    // 대표 프로필 경로
-
-    // 자기소개 문항
-    question1: '간단한 자기소개를 해주세요. (800자 제한)',
-    question2: '본인이 생각하는 본인의 강점과 약점을 얘기해 주세요. (1000자 제한)',
-    question3: '최근 목표하는 기업의 입사를 위해 준비하고 있는 것이 있나요? (800자 제한)',
-    // 자기소개 문항 문답
-    answer1: 'answer1',
-    answer2: 'answer2',
-    answer3: 'answer3',
     
     // 활동 사항
     activityName: '', 
     startDate: '',
+    endDate: '',
+
+    // 어학, 자격증
+    certName: '',
+    certsortation: '',
+    acquisitionDate: '',
+    certScore: '',
   })
+  
   return {
-    state
+    state,
+    colleges,
+    filteredColleges,
+    selectedCollege,
+    majors, 
+    filteredMajors,
+    selectedMajor,
+    // toast,
   }
+  
+
 },
 
 methods: {
@@ -306,48 +428,74 @@ methods: {
     
   },
 
-  // Quesion 1. //
-  // 1번 질문 modal창 열고 닫기
-  openQ1Modal() {
-    this.state.displayQ1Modal = true
+  // ========== 학력 사항 ========== //
+  openEducationModal() {
+    this.state.displayEducationModal = true
   },
-  // Modal창 닫기
-  closeQ1Modal() {
-    this.state.displayQ1Modal = false
-    // axios 통해 답변 변경 사항 저장
+  saveEducationModal() {
+    this.state.displayEducationModal = false
+  },
+  // 대학교 검색
+  searchCollege(event) {
+    setTimeout(() => {
+      // 검색어가 존재하지 않는 경우
+      if (!event.query.trim().length) { // query는 검색어를 의미한다.
+        this.filteredColleges.value = [...this.colleges.value]
+      }
+      else {
+        this.filteredColleges = FilterService.filter(this.colleges, ['schoolName'], event.query.trim(), FilterMatchMode.CONTAINS)
+        
+      }
+    })
+  },
+  // 학과 검색
+  searchMajor(event) {
+    setTimeout(() => {
+      // 검색어가 존재하지 않는 경우
+      if (!event.query.trim().length) { 
+        this.filteredMajors.value = [...this.majors.value]
+      }
+      else {
+        this.filteredMajors = FilterService.filter(this.majors, ['mClass'], event.query.trim(), FilterMatchMode.CONTAINS)
+      }
+    })
+  },
+  // 졸업 증명서 파일 첨부
+  onUpload() {
+    // toast는 메시지를 오버레이하기 위해 필요한 툴이다.
+    // this.toast.add({severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000});
+  },
 
-  },
 
-  // Quesion 2. //
-  // 1번 질문 modal창 열고 닫기
-  openQ2Modal() {
-    this.state.displayQ2Modal = true
-  },
-  // Modal창 닫기
-  closeQ2Modal() {
-    this.state.displayQ2Modal = false
-    // axios 통해 답변 변경 사항 저장
-
-  },
-
-  // Quesion 3. //
-  // 1번 질문 modal창 열고 닫기
-  openQ3Modal() {
-    this.state.displayQ3Modal = true
-  },
-  // Modal창 닫기
-  closeQ3Modal() {
-    this.state.displayQ3Modal = false
-    // axios 통해 답변 변경 사항 저장
-
-  },
-  // 경력 사항 //
+  //  ========== 활동 사항 ========== //
   openActivityModal() {
     this.state.displayActivityModal = true
   },
+  // 활동 사항 저장
   saveActivityModal() {
     this.state.displayActivityModal = false
   },
+
+
+  // ========== 어학, 자격증 ========== //
+  openCertModal() {
+    this.state.displayCertModal = true
+  },
+  // 어학, 자격증 저장
+  saveCertModal() {
+    this.state.displayCertModal = false
+  },
+
+
+  // ========== 병역 사항 ========== //
+  openArmyModal() {
+    this.state.displayArmyModal = true
+  },
+  // 어학, 자격증 저장
+  saveArmyModal() {
+    this.state.displayArmyModal = false
+  },
+
 
 },
 }

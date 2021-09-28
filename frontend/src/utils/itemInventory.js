@@ -11,4 +11,11 @@ export function createWeb3() {
   return web3
 }
 
+// 관리자 계정에서 사용자 계정으로 0.1 이더씩 보내기
+export function sendEther() {
+  console.log("0.1 이더를 사용자 계정에 전송합니다. ")
+  const web3 = createWeb3()
+  web3.eth.
+}
+
 

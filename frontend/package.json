@@ -55,7 +55,8 @@
       "linebreak-style": [
         "error",
         "windows"
-      ]
+      ],
+      "vue/max-attributes-per-line": "off"
     },
     "overrides": [
       {

@@ -34,6 +34,5 @@ createApp(App)
   .component("Textarea", Textarea)
   .component("Checkbox", Checkbox)
   .component("Calendar", Calendar)
-  .component("AutoComplete", AutoComplete)
   .component("FileUpload", FileUpload)
   .mount("#app");
