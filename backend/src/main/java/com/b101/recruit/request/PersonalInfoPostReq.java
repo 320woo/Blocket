@@ -35,14 +35,10 @@ public class PersonalInfoPostReq {
 	private String militaryService;
 	@ApiModelProperty(name = "보훈사항")
 	private String veteransAffairs;
-	@ApiModelProperty(name = "최종학력")
-	private String finalEducation; 
 	@ApiModelProperty(name = "장애여부")
 	private String disabled; 		
 	
-	/**/
-	@ApiModelProperty(name = "성적증명서")
-	private String transcript;      
+	/**/     
 	@ApiModelProperty(name = "대내외 활동")
 	private String intExtAct; 
 //	private String prosCons; 		
