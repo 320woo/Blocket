@@ -124,6 +124,18 @@
             };
         },
         methods: {
+            Solo() {
+                this.solo = true;
+                this.company = false;
+                this.type = "회원"
+                this.show_brn = false;
+            },
+            Company() {
+                this.solo = false;
+                this.company = true;
+                this.type = "기업"
+                this.show_brn = true;
+            },
             modifyUser() {
                 let err = true;
                 let msg = "";
