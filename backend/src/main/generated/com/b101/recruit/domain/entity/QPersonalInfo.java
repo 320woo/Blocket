@@ -32,8 +32,6 @@ public class QPersonalInfo extends EntityPathBase<PersonalInfo> {
 
     public final StringPath englishName = createString("englishName");
 
-    public final StringPath finalEducation = createString("finalEducation");
-
     public final StringPath gender = createString("gender");
 
     //inherited
@@ -41,17 +39,9 @@ public class QPersonalInfo extends EntityPathBase<PersonalInfo> {
 
     public final StringPath intExtAct = createString("intExtAct");
 
-    public final StringPath jobExperience = createString("jobExperience");
-
     public final StringPath militaryService = createString("militaryService");
 
-    public final StringPath prosCons = createString("prosCons");
-
     public final StringPath repProfile = createString("repProfile");
-
-    public final StringPath selfIntro = createString("selfIntro");
-
-    public final StringPath transcript = createString("transcript");
 
     public final QUser user;
 
