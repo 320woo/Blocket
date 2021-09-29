@@ -55,16 +55,23 @@ public class JwtTokenUtil {
 		try {
 			Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 		} catch (SignatureException ex) {
+			ex.printStackTrace();
 			throw ex;
+			
 		} catch (MalformedJwtException ex) {
+			ex.printStackTrace();
 			throw ex;
 		} catch (ExpiredJwtException ex) {
+			ex.printStackTrace();
 			throw ex;
 		} catch (UnsupportedJwtException ex) {
+			ex.printStackTrace();
 			throw ex;
 		} catch (IllegalArgumentException ex) {
+			ex.printStackTrace();
 			throw ex;
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			throw ex;
 		}
 
