@@ -14,6 +14,12 @@
             </ul>
             <ul class="menu" v-else>
                 <li>
+                    <router-link to="/personalInfo"><Button id="personal">내 정보</Button></router-link>
+                </li>
+                <li>
+                    <router-link to="/modify"><Button id="modify" @click="me">회원 수정</Button></router-link>
+                </li>
+                <li>
                     <Button id="join" @click="logout">로그 아웃</Button>
                 </li>
             </ul>
@@ -22,12 +28,22 @@
 </template>
 
 <script>
+import http from "@/utils/http-common";
     export default {
         data() {
             return {}
         },
         methods: {
+            me() {
+                console.log("내 정보 가져오기")
+                http
+                .get("/api/recruit/users/me")
+                .then(({ data }) => {
+                    console.log("내 데이터 : " + data);
+                })
+            },
             logout() {
+                this.$router.push("/");
                 this.$store.dispatch("logout");
                 alert("로그아웃 완료")
             }
@@ -59,13 +75,42 @@
         right: 5px;
 		height: 30px;
 		width: 95px;
-		background-color: #3F72AF;
+        background-color : white; color : black; border : 1px solid black;
 	}
 
 	#join:hover {
-        background-color: #f9f7f7;
-        color: #112d4e;
+        background-color: black;
+        color: white;
     }
+
+    #modify {
+		position: absolute;
+        top: -5px;
+        right: 110px;
+		height: 30px;
+		width: 95px;
+		background-color : white; color : black; border : 1px solid black;
+	}
+
+	#modify:hover {
+        background-color: black;
+        color: white;
+    }
+
+    #personal {
+        position: absolute;
+        top: -5px;
+        right: 215px;
+		height: 30px;
+		width: 79px;
+		background-color : white; color : black; border : 1px solid black;
+    }
+
+    #personal:hover {
+        background-color: black;
+        color: white;
+    }
+
 
     header {
         width: 100%;

@@ -12,8 +12,9 @@ import Dialog from 'primevue/dialog';
 import Panel from 'primevue/panel';
 import Textarea from 'primevue/textarea'
 import Calendar from 'primevue/calendar'
-import AutoComplete from 'primevue/autocomplete'
+import Checkbox from 'primevue/checkbox';
 import FileUpload from 'primevue/fileupload'
+
 import 'primeflex/primeflex.css'
 import 'primevue/resources/primevue.min.css'
 import 'primevue/resources/themes/bootstrap4-light-blue/theme.css'
@@ -33,7 +34,5 @@ createApp(App)
   .component("Textarea", Textarea)
   .component("Checkbox", Checkbox)
   .component("Calendar", Calendar)
-  .component("AutoComplete", AutoComplete)
   .component("FileUpload", FileUpload)
   .mount("#app");
-

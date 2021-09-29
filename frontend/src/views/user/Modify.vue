@@ -11,10 +11,7 @@
                     name="email"
                     v-model="email"
                     ref="email"
-                    class="InputText"
-                    style="width:70%"
-                    />
-                    <Button style="margin-left : 8px;" @click="check">중복체크</Button>
+                    class="InputText"/>
                 <div>
                     <label for="username1">비밀번호</label>
                 </div>
@@ -84,13 +81,18 @@
                 </span>
                 <div>
                     <div class="center-btn">
-                        <Button id="login-btn" @keyup.enter="checkValue" @click="checkValue">
-                            가입하기
+                        <Button class="p-button-info" @click="modifyUser">
+                            수정하기
+                        </Button>
+                         <Button id="done" class="p-button-danger" @click="deleteUser">
+                            탈퇴하기
                         </Button>
                         <div>
+                            <div>
                             <span @click="home" class="goback-link">
                                 홈으로 돌아가기
                             </span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -134,49 +136,27 @@
                 this.type = "기업"
                 this.show_brn = true;
             },
-            check() {
-                this.$store.dispatch("checkEmail", { email: this.email });
-            },
-            checkValue() {
-                // 사용자 입력값 체크하기
+            modifyUser() {
                 let err = true;
                 let msg = "";
                 err && !this.email && ((msg = "이메일을 입력해주세요"), (err = false));
                 err && !this.password && ((msg = "비밀번호를 입력해주세요"), (err = false));
                 err && !this.name && ((msg = "이름을 입력해주세요"), (err = false));
                 err && !this.phoneNumber && ((msg = "연락처를 입력해주세요"), (err = false));
-                if (!err) 
-                    alert(msg);
-                else 
-                    this.insertUser();
+                if (!err)alert(msg);
+                
+                else {
+                        http.patch("/api/recruit/users/me");
+                        // alert("수정 완료!")
+                        // this.$router.push("/");
                 }
-            ,
-            insertUser() {
-                http
-                    .post("/api/recruit/users/register", {
-                        id: 0,
-                        belong: this.belong,
-                        brn: this.brn,
-                        email: this.email,
-                        name: this.name,
-                        password: this.password,
-                        phoneNumber: this.phoneNumber,
-                        type: 0,
-                        withdrawal: 0
-                    })
-                    .then(({data}) => {
-                        console.log(data);
-                        let msg = "회원가입 실패!!";
-                        if (data.statusCode == 200) {
-                            msg = "회원가입 완료";
-                            this.$router.push("/login");
-                        }
-                        alert(msg);
-                    })
-                    .catch((error) => {
-                        alert("회원가입 실패");
-                        console.dir(error);
-                    });
+            },
+            deleteUser() {
+                if (confirm("정말 탈퇴 하시겠습니까?")) {
+                http.delete("/api/recruit/users/me");
+                this.$store.dispatch("logout");
+                this.$router.push("/");
+                }
             },
             home() {
                 this
@@ -187,6 +167,11 @@
     };
 </script>
 <style scoped="scoped">
+    .p-button {
+    margin-right: .5rem;
+    margin-left: .5rem;
+    }
+
     .login-form {
         padding: 0 40px;
         margin-top: 35px;
@@ -216,11 +201,6 @@
     #login-btn {
         background-color: #3f72af;
         color: #fff;
-    }
-
-    #login-btn:hover {
-        background-color: #f9f7f7;
-        color: #112d4e;
     }
 
     #checkbox {

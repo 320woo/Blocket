@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/Home.vue";
 import Login from "../views/user/Login.vue";
 import Join from "../views/user/Join.vue";
+import Modify from "../views/user/Modify.vue";
 import PersonalInfo from "../views/personalInfo/PersonalInfo.vue"
 import Test from "../views/test.vue"
 
@@ -30,6 +31,11 @@ const routes = [
     path: "/join",
     name: "Join",
     component: Join,
+  },
+  {
+    path: "/modify",
+    name: "Modify",
+    component: Modify,
   },
   {
     path: "/personalInfo",
