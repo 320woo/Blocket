@@ -12,10 +12,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.b101.common.util.JwtTokenUtil;
+import com.b101.common.util.ResponseBodyWriteUtil;
 import com.b101.recruit.domain.entity.User;
 import com.b101.recruit.service.impl.UserService;
 
@@ -41,6 +43,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter{
 			Authentication authentication = getAuthentication(request);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		} catch (Exception ex) {
+			ResponseBodyWriteUtil.sendError(request, response, ex);
 			return;
 		}
 
@@ -51,9 +54,11 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter{
 	public Authentication getAuthentication(HttpServletRequest request) throws Exception {
 		String jwtToken = request.getHeader(JwtTokenUtil.HEADER_STRING);
 		// 토큰 검증 및 인증 처리 로직
-		if (jwtToken != null && StringUtils.hasText(jwtToken)&&jwtToken.startsWith(JwtTokenUtil.TOKEN_PREFIX)) {
-			JwtTokenUtil.handleError(jwtToken);
-			String token = jwtToken.substring(7, jwtToken.length());
+		System.out.println("누구냐 넌?! "+ jwtToken);
+		if (jwtToken != null &&jwtToken.startsWith(JwtTokenUtil.TOKEN_PREFIX)) {
+			String token = jwtToken.substring(7);
+			JwtTokenUtil.handleError(token);
+			System.out.println("누구냐 넌?!2222 "+ token);
 				
 				String userEmail = JwtTokenUtil.getUserId(token);
 				if (userEmail != null) {
@@ -61,10 +66,12 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter{
 					User user = userService.findByUserEmail(userEmail);
 					if (user != null) {
 						//인증 정보 생성.
+						System.out.println("이메일내놔:"+user.getEmail());
 						CustomUserDetails userDetails = new CustomUserDetails(user);
 						UsernamePasswordAuthenticationToken jwtAuthentication = new UsernamePasswordAuthenticationToken(
 								userEmail, null, userDetails.getAuthorities());
 						jwtAuthentication.setDetails(userDetails);
+						System.out.println("이메일내놔:"+jwtAuthentication.getDetails());
 						return jwtAuthentication;
 					}
 			}
