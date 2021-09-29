@@ -28,7 +28,7 @@
             <div class="p-col-4 ">
               <div style="font-size: 30px;">조웅현</div>
               <div><h4>SSAFY 교육생</h4></div>
-              <div><h5>tofan@naver.com</h5></div>
+              <div><h5>{{ this.$store.state.user.userEmail }}</h5></div>
             </div>
             <div class="p-col-8">
               내용내용내용
@@ -343,25 +343,13 @@ import defaultImage from "~/images/test.png"
 import defaultUserImage from "~/images/user.png"
 import { getAllColleges, getAllMajors } from '@/utils/colleges.js'
 import { FilterService, FilterMatchMode }  from 'primevue/api'
+import { useStore } from 'vuex'
 // import { useToast } from 'primevue/usetoast'
 
 export default {
 name: 'personalInfo',
 components: {},
 setup() {
-  // 페이지가 로드되면
-  onMounted(() => {
-    // 모든 대학교 목록 불러오기
-    getAllColleges().then(res => {
-      colleges.value = res.data.dataSearch.content
-    })
-
-    // 학과 목록 불러오기
-    getAllMajors().then(res => {
-      majors.value = res.data.dataSearch.content
-    })
-  })
-
   const web3 = createWeb3()
 
   // 학교 검색 관련 변수
@@ -376,8 +364,9 @@ setup() {
 
   // 파일 첨부 관련 변수 - 토스트
   // const toast = useToast()
-
+  const store = useStore()
   const state = reactive({
+    store: store,
     web3: web3,
     walletAddress: null,
     privateKey: null,
@@ -408,7 +397,21 @@ setup() {
     acquisitionDate: '',
     certScore: '',
   })
-  
+
+  // 페이지가 로드되면
+  onMounted(() => {
+
+    // 모든 대학교 목록 불러오기
+    getAllColleges().then(res => {
+      colleges.value = res.data.dataSearch.content
+    })
+
+    // 학과 목록 불러오기
+    getAllMajors().then(res => {
+      majors.value = res.data.dataSearch.content
+    })
+  })
+
   return {
     state,
     colleges,
@@ -419,6 +422,7 @@ setup() {
     selectedMajor,
     // toast,
   }
+  
   
 
 },
