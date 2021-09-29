@@ -15,7 +15,6 @@ export function createWeb3() {
 export function sendEther() {
   console.log("0.1 이더를 사용자 계정에 전송합니다. ")
   // const web3 = createWeb3()
-  
 }
 
 

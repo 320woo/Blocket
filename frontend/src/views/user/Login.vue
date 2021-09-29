@@ -78,10 +78,8 @@
                         });
 
                     if (this.$store.state.user.accessToken != null) {
+                        this.$router.push("/");
                         alert("로그인 성공!");
-                        this
-                            .$router
-                            .push("/");
                     }
                 }
             }
