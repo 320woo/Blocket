@@ -28,24 +28,19 @@
 </template>
 
 <script>
-import http from "@/utils/http-common";
+// import http from "@/utils/http-common";
+// import axios from "@/utils/bearer";
     export default {
         data() {
             return {}
         },
         methods: {
             me() {
-                console.log("내 정보 가져오기")
-                http
-                .get("/api/recruit/users/me")
-                .then(({ data }) => {
-                    console.log("내 데이터 : " + data);
-                })
+                this.$store.dispatch("modify");
             },
             logout() {
                 this.$router.push("/");
                 this.$store.dispatch("logout");
-                alert("로그아웃 완료")
             }
         },
     }

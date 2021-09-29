@@ -171,7 +171,7 @@
                             msg = "회원가입 완료";
                             this.$router.push("/login");
                         }
-                        alert(msg);
+                        console.log(msg);
                     })
                     .catch((error) => {
                         alert("회원가입 실패");
