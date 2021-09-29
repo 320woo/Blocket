@@ -103,6 +103,7 @@
 </template>
 <script>
     import http from "@/utils/http-common";
+    // import axios from "@/utils/bearer";
 
     export default {
         name: "signup",
@@ -153,9 +154,14 @@
             },
             deleteUser() {
                 if (confirm("정말 탈퇴 하시겠습니까?")) {
-                http.delete("/api/recruit/users/me");
-                this.$store.dispatch("logout");
-                this.$router.push("/");
+                if (localStorage.getItem("accessToken")) {
+                const url = "/api/recruit/users/me";
+                const headers = {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                };
+                console.log("에러" + http.delete(url), {headers});
+                return http.delete(url, { headers });
+            }
                 }
             },
             home() {

@@ -1,5 +1,6 @@
 import {createStore} from "vuex";
 import http from "@/utils/http-common";
+import axios from "@/utils/bearer";
 
 export default createStore({
     state: {
@@ -48,6 +49,8 @@ export default createStore({
                 })
                 .then(({data}) => {
                     console.log(data);
+                    console.log("토큰" + data.accessToken)
+                    localStorage.setItem("accessToken", data.accessToken);
                     if (data.statusCode == 404) {
                         alert("아이디 또는 비밀번호가 일치하지 않습니다.");
                     } else {
@@ -79,6 +82,16 @@ export default createStore({
                         alert("이미 있는 이메일입니다.")
                     }
                 })
+        },
+        modify(context) {
+            console.log(context);
+            if (localStorage.getItem("accessToken")) {
+                const url = "/api/recruit/users/me";
+                // const headers = {
+                //     Authorization: `Bearer ` + this.state.user.accessToken,
+                // };
+                return axios.delete(url);
+            }
         }
     },
     modules: {}
