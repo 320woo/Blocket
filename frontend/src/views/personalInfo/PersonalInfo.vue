@@ -27,11 +27,11 @@
           <div class="p-grid user-info" style="margin-top:50px;">
             <div class="p-col-4 ">
               <div style="font-size: 30px;">조웅현</div>
-              <div><h4>SSAFY 교육생</h4></div>
-              <div><h5>tofan@naver.com</h5></div>
+              <div><h4>{{ this.state.belong }}</h4></div>
+              <div><h5>{{ this.$store.state.user.userEmail }}</h5></div>
             </div>
             <div class="p-col-8">
-              내용내용내용
+              
             </div>
           </div>
         </div> <!-- end of 사용자 프로필 -->
@@ -343,26 +343,22 @@ import defaultImage from "~/images/test.png"
 import defaultUserImage from "~/images/user.png"
 import { getAllColleges, getAllMajors } from '@/utils/colleges.js'
 import { FilterService, FilterMatchMode }  from 'primevue/api'
+import { useStore } from 'vuex'
+import * as pService from '@/utils/pService.js' // default를 붙이면 중괄호 없이 가져올 수 있다..! 반대로 default가 없는 경우에는 중괄호 필수
 // import { useToast } from 'primevue/usetoast'
 
 export default {
 name: 'personalInfo',
 components: {},
 setup() {
-  // 페이지가 로드되면
-  onMounted(() => {
-    // 모든 대학교 목록 불러오기
-    getAllColleges().then(res => {
-      colleges.value = res.data.dataSearch.content
-    })
-
-    // 학과 목록 불러오기
-    getAllMajors().then(res => {
-      majors.value = res.data.dataSearch.content
-    })
-  })
-
+  
+  const store = useStore()
   const web3 = createWeb3()
+  
+  // 로그인 여부 가장 먼저 확인해야 함. 토큰이 없는 경우에는 로그인 페이지로 이동하게끔 한다.
+  pService.checkToken()
+
+  
 
   // 학교 검색 관련 변수
   const colleges = ref()         // 모든 학교
@@ -376,9 +372,11 @@ setup() {
 
   // 파일 첨부 관련 변수 - 토스트
   // const toast = useToast()
-
+  
   const state = reactive({
+    store: store,
     web3: web3,
+    belong: null,
     walletAddress: null,
     privateKey: null,
     defaultImage: defaultImage,
@@ -408,7 +406,27 @@ setup() {
     acquisitionDate: '',
     certScore: '',
   })
-  
+
+  // 페이지가 로드되면
+  onMounted(() => {
+
+    // 모든 대학교 목록 불러오기
+    getAllColleges().then(res => {
+      colleges.value = res.data.dataSearch.content
+    })
+
+    // 학과 목록 불러오기
+    getAllMajors().then(res => {
+      majors.value = res.data.dataSearch.content
+    })
+
+    // 소속 표시하기 위해, user 테이블에서 조회하기
+    pService.getUserBelong().then(res => {
+      state.belong = res.data.belong
+    })    
+    
+  })
+
   return {
     state,
     colleges,
@@ -419,6 +437,7 @@ setup() {
     selectedMajor,
     // toast,
   }
+  
   
 
 },

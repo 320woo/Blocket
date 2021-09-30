@@ -17,21 +17,23 @@ public class GalleryDto {
 	private Long id;
 	private String title;
 	private String filePath;
+	private String imgFullPath;
 	
 	public Gallery toEntity(){
-	  Gallery build = Gallery.builder()
-	        .id(id)
-	        .title(title)
-	        .filePath(filePath)
-	        .build();
-	  return build;
-	}
+        Gallery build = Gallery.builder()
+                .id(id)
+                .title(title)
+                .filePath(filePath)
+                .build();
+        return build;
+    }
 
-	@Builder
-	public GalleryDto(Long id, String title, String filePath) {
-	  this.id = id;
-	  this.title = title;
-	  this.filePath = filePath;
-	}
+    @Builder
+    public GalleryDto(Long id, String title, String filePath, String imgFullPath) {
+        this.id = id;
+        this.title = title;
+        this.filePath = filePath;
+        this.imgFullPath = imgFullPath;
+    }
 	
 }

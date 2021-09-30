@@ -157,7 +157,7 @@
                 if (localStorage.getItem("accessToken")) {
                 const url = "/api/recruit/users/me";
                 const headers = {
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    Authentication: `Bearer ${localStorage.getItem("accessToken")}`,
                 };
                 console.log("에러" + http.delete(url), {headers});
                 return http.delete(url, { headers });

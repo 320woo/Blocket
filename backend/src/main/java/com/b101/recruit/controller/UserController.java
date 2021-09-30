@@ -118,6 +118,9 @@ public class UserController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "인증 실패"),
 			@ApiResponse(code = 404, message = "탈퇴 실패"), @ApiResponse(code = 500, message = "서버 오류") })
 	public ResponseEntity<? extends BaseResponseBody> deleteUser(@ApiIgnore Authentication authentication) {
+		System.out.println("로그인한 회원의 탈퇴 로직 시작");
+		System.out.println("======");
+		System.out.println(authentication);
 		if (authentication == null) {
 			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
 		} else {
