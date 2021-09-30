@@ -16,13 +16,17 @@ import java.util.UUID;
 
 import javax.transaction.Transactional;
 
+import com.b101.recruit.domain.dto.FileDto;
+import com.b101.recruit.domain.dto.GalleryDto;
 import com.b101.recruit.domain.entity.Activity;
 import com.b101.recruit.domain.entity.Certificate;
 import com.b101.recruit.domain.entity.FinalEducation;
+import com.b101.recruit.domain.entity.Files;
 import com.b101.recruit.domain.entity.PersonalInfo;
 import com.b101.recruit.domain.entity.User;
 import com.b101.recruit.domain.repository.ActivityRepository;
 import com.b101.recruit.domain.repository.CertificateRepository;
+import com.b101.recruit.domain.repository.FilesRepository;
 import com.b101.recruit.domain.repository.FinalEducationRepository;
 import com.b101.recruit.domain.repository.PersonalInfoRepository;
 import com.b101.recruit.domain.repository.UserRepository;
@@ -58,9 +62,32 @@ public class PersonalInfoService implements IPersonalInfoService {
 	@Value("${server.tomcat.basedir}")
 	private String basedir;
 	
+	private S3Service s3Service;
+	
+	private FilesRepository fileRepository;
+	
+	public List<FileDto> getList() {
+        List<Files> fileEntityList = fileRepository.findAll();
+        List<FileDto> fileDtoList = new ArrayList<>();
+
+        for (Files fileEntity : fileEntityList) {
+            fileDtoList.add(convertEntityToDto(fileEntity));
+        }
+
+        return fileDtoList;
+    }
+
+	private FileDto convertEntityToDto(Files file) {
+        return FileDto.builder()
+                .id(file.getId())
+                .title(file.getTitle())
+                .filePath(file.getFilePath())
+                .imgFullPath("https://" + s3Service.CLOUD_FRONT_DOMAIN_NAME + "/" + file.getFilePath())
+                .build();
+    }
+	
 	@Override
-	@Transactional
-	public PersonalInfo createPersonalInfo(PersonalInfoPostReq personalinfoPostReq, MultipartFile[] files)
+	public PersonalInfo createPersonalInfo(PersonalInfoPostReq personalinfoPostReq, FileDto fileDto)
 			throws IllegalStateException, IOException {
 		PersonalInfo personalinfo = new PersonalInfo();
 		User user = userService.findByUserEmail(personalinfoPostReq.getEmail());
@@ -72,10 +99,9 @@ public class PersonalInfoService implements IPersonalInfoService {
 		personalinfo.setRepProfile(personalinfoPostReq.getRepProfile());
 		personalinfo.setMilitaryService(personalinfoPostReq.getMilitaryService());
 		personalinfo.setVeteransAffairs(personalinfoPostReq.getVeteransAffairs());
-//		personalinfo.setFinalEducation(personalinfoPostReq.getFinalEducation());
 		personalinfo.setDisabled(personalinfoPostReq.getDisabled());
-//		personalinfo.setTranscript(personalinfoPostReq.getTranscript());
 		personalinfo.setIntExtAct(personalinfoPostReq.getIntExtAct());
+		fileRepository.save(fileDto.toEntity());
 		personalinfo = personalinfoRepository.save(personalinfo);
 		
 		// 파일 처리
