@@ -31,4 +31,8 @@ public class Certificate extends BaseEntity {
 	private String acquisitionDate; // 취득기간
 	private String score; // 점수, 등급
 	
+	private String userEmail;
+	private Long verified; // 검증 여부. 0 : 대기, 1 : 승인, 2 :거부
+	
+	
 }
