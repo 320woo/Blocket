@@ -30,6 +30,8 @@ public class QFile extends EntityPathBase<File> {
 
     public final StringPath filepath = createString("filepath");
 
+    public final QFinalEducation finaleducation;
+
     //inherited
     public final NumberPath<Long> id = _super.id;
 
@@ -61,6 +63,7 @@ public class QFile extends EntityPathBase<File> {
         super(type, metadata, inits);
         this.activity = inits.isInitialized("activity") ? new QActivity(forProperty("activity"), inits.get("activity")) : null;
         this.certificate = inits.isInitialized("certificate") ? new QCertificate(forProperty("certificate"), inits.get("certificate")) : null;
+        this.finaleducation = inits.isInitialized("finaleducation") ? new QFinalEducation(forProperty("finaleducation"), inits.get("finaleducation")) : null;
         this.personalInfo = inits.isInitialized("personalInfo") ? new QPersonalInfo(forProperty("personalInfo"), inits.get("personalInfo")) : null;
     }
 

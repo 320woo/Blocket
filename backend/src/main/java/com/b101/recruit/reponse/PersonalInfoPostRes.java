@@ -4,6 +4,10 @@ import java.sql.Date;
 import java.util.List;
 
 import com.b101.recruit.domain.dto.FileDto;
+import com.b101.recruit.domain.entity.Certificate;
+import com.b101.recruit.request.ActivityPostReq;
+import com.b101.recruit.request.CertificatePostReq;
+import com.b101.recruit.request.FinalEducationPostReq;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -35,14 +39,10 @@ public class PersonalInfoPostRes {
 	private String militaryService;
 	@ApiModelProperty(name = "보훈사항")
 	private String veteransAffairs;
-	@ApiModelProperty(name = "최종학력")
-	private String finalEducation; 
 	@ApiModelProperty(name = "장애여부")
 	private String disabled; 		
 	
-	/**/
-	@ApiModelProperty(name = "성적증명서")
-	private String transcript;      
+	/**/ 
 	@ApiModelProperty(name = "대내외 활동")
 	private String intExtAct; 
 //	private String prosCons; 		
@@ -51,5 +51,14 @@ public class PersonalInfoPostRes {
 	
 	@ApiModelProperty(name="파일")
 	private List<FileDto> files;
+	
+	@ApiModelProperty(name="어학, 자격증")
+	private List<CertificatePostReq> certificates;
+	
+	@ApiModelProperty(name="활동사항")
+	private List<ActivityPostReq> activity;
+	
+	@ApiModelProperty(name="최종학력")
+	private List<FinalEducationPostReq> finaleducation;
 	
 }

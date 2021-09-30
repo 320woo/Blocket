@@ -1,5 +1,9 @@
 package com.b101.recruit.service.impl;
 
+import java.util.UUID;
+
+import javax.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -7,6 +11,8 @@ import org.springframework.stereotype.Service;
 import com.b101.recruit.domain.entity.User;
 import com.b101.recruit.domain.repository.JpaUserRepository;
 import com.b101.recruit.domain.repository.UserRepository;
+import com.b101.recruit.handler.MailHandler;
+import com.b101.recruit.request.EmailConfirmPostReq;
 import com.b101.recruit.request.UserRegisterPostReq;
 import com.b101.recruit.request.UserUpdatePatchReq;
 import com.b101.recruit.service.IUserSerive;
@@ -24,6 +30,9 @@ public class UserService implements IUserSerive {
 	
 	@Autowired
 	PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	MailHandler mailHandler;
 	
 	@Override
 	public User findByUserEmail(String userEmail) {
@@ -79,6 +88,29 @@ public class UserService implements IUserSerive {
 			long result = jpaUserRepository.deleteUser(userEmail);
 			return result;
 		}
+	}
+	
+	@Override
+	public String AuthEmail(EmailConfirmPostReq emailConfirmPostReq) {
+		String emailToken = UUID.randomUUID().toString();
+		mailHandler.sendAuthEmail(emailConfirmPostReq.getEmail(), emailToken);
+		return emailToken;
+	}
+
+	
+	@Override
+	public long findPassword(PasswordFindPatchReq passwordFindPatchReq) throws MessagingException {
+		Optional<User> user = userRepository.findByEmail(passwordFindPatchReq.getEmail());
+		if(!user.isPresent()) return 0;
+		else {
+			if ((user.get().getEmail()).equals(passwordFindPatchReq.getEmail())) {
+				String tempPassword = UUID.randomUUID().toString();
+				mailHandler.sendPasswordEmail(user.get(), tempPassword);
+				jpaUserRepository.updatePassword(user.get().getEmail(), passwordEncoder.encode(tempPassword));
+				return 2;
+			}
+		}
+		return 1;
 	}
 
 }
