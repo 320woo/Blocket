@@ -6,7 +6,7 @@ export default createStore({
     state: {
         user: {
             userId: 0,
-            userEmail: 'default',
+            userEmail: null,
             walletAddress: null,
             accessToken: null,
             show: true
@@ -28,7 +28,6 @@ export default createStore({
             state.user.show = true
         },
         login(state, payload) {
-            console.log("payload" + payload.accessToken)
             state.user.accessToken = payload.accessToken;
             state.user.show = false;
         }
@@ -102,8 +101,6 @@ export default createStore({
             }
         }
     },
-    getters: {
-        
-    },
+    getters: {},
     modules: {}
 });
