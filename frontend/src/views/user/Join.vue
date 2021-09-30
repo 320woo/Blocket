@@ -101,6 +101,7 @@
 </template>
 <script>
     import http from "@/utils/http-common";
+    import axios from 'axios'
 
     export default {
         name: "signup",
@@ -169,6 +170,22 @@
                         let msg = "회원가입 실패!!";
                         if (data.statusCode == 200) {
                             msg = "회원가입 완료";
+                            // 회원가입이 완료되면, 신상정보를 등록한다.
+                            console.log("신상정보를 등록합니다..")
+
+                            axios({
+                                url: 'http://localhost:8080/api/recruit/personalinfo',
+                                method: 'POST',
+                                headers: {
+                                    Authentication: 'Bearer ' + this.$store.state.accessToken, 
+                                    'Content-Type': 'application/json'
+                                },
+                                data: {
+                                    'email': this.$store.state.user.userEmail
+                                }
+                            })
+
+
                             this.$router.push("/login");
                         }
                         console.log(msg);
