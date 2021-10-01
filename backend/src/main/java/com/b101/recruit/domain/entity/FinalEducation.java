@@ -24,7 +24,6 @@ public class FinalEducation extends BaseEntity {
 	private String sortation; // 학교 구분
 	private String grades; // 성적
 	
-	private String userEmail;
-	private Long verified; // 검증 여부. 0 : 대기, 1 : 승인, 2 :거부
+	private Long userId; //user PK
 	
 }

@@ -14,16 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.b101.common.model.response.BaseResponseBody;
 import com.b101.recruit.auth.CustomUserDetails;
-import com.b101.recruit.domain.entity.Activity;
-import com.b101.recruit.domain.entity.Certificate;
-import com.b101.recruit.domain.entity.FinalEducation;
+import com.b101.recruit.domain.dto.VerificationDto;
 import com.b101.recruit.domain.entity.User;
-import com.b101.recruit.reponse.VerificationActivityPatchRes;
-import com.b101.recruit.reponse.VerificationCetificatePatchRes;
-import com.b101.recruit.reponse.VerificationFinalEducationPatchRes;
-import com.b101.recruit.request.VerificationActivityPatchReq;
-import com.b101.recruit.request.VerificationCetificatePatchReq;
-import com.b101.recruit.request.VerificationFinalEducationPatchReq;
+import com.b101.recruit.domain.entity.Verification;
+import com.b101.recruit.reponse.VerificationListRes;
+import com.b101.recruit.reponse.VerificationRes;
+import com.b101.recruit.reponse.VerificationUpdatePatchRes;
+import com.b101.recruit.request.VerificationListGetReq;
+import com.b101.recruit.request.VerificationUpdatePatchReq;
 import com.b101.recruit.service.impl.UserService;
 import com.b101.recruit.service.impl.VerificationService;
 
@@ -46,13 +44,13 @@ public class VerificationController {
 	VerificationService verificationService;
 	
 	
-	// 자격증 검증 상태 변경
+	// 검증 상태 변경
 	@PatchMapping("/certificate")
 	@ApiOperation(value = "자격증 검증 상태 변경", notes = "자격증 검증 상태를 변경한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
 		@ApiResponse(code = 401, message = "로그인 인증 실패"),@ApiResponse(code = 403, message = "잘못된 요청")})
 	public ResponseEntity<? extends BaseResponseBody> verifyCertificate(
-			@RequestBody @ApiParam(value = "검증 정보", required = true) VerificationCetificatePatchReq verificationCetificatePatchReq,
+			@RequestBody @ApiParam(value = "검증 정보", required = true) VerificationUpdatePatchReq vupr,
 			@ApiIgnore Authentication authentication) {
 		if (authentication == null) {
 			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
@@ -63,48 +61,74 @@ public class VerificationController {
 			User user = userService.findByUserEmail(userEmail);
 
 			if (user != null &&user.getType()==2) {
-				Certificate certificate = verificationService.verifyCertificate(verificationCetificatePatchReq);
-				if(certificate!=null)
-					return ResponseEntity.ok(VerificationCetificatePatchRes.of(200, "검증이 완료되었습니다.", certificate));
+				Verification verification = verificationService.updateVerification(vupr);
+				if(verification!=null)
+					return ResponseEntity.ok(VerificationUpdatePatchRes.of(200, "검증이 완료되었습니다.", verification));
 			}
 
 			return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
 		}
 	}
 	
-	// 활동내역 상태 변경
-	@PatchMapping("/activity")
-	@ApiOperation(value = "활동내역 검증 상태 변경", notes = "활동내역 검증 상태를 변경한다.")
-	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
-		@ApiResponse(code = 401, message = "로그인 인증 실패"),@ApiResponse(code = 403, message = "잘못된 요청")})
-	public ResponseEntity<? extends BaseResponseBody> verifyActivity(
-			@RequestBody @ApiParam(value = "검증 정보", required = true) VerificationActivityPatchReq verificationActivityPatchReq,
-			@ApiIgnore Authentication authentication) {
-		if (authentication == null) {
-			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
-		} else {
-			CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-			String userEmail = userDetails.getUsername();
-
-			User user = userService.findByUserEmail(userEmail);
-
-			if (user != null &&user.getType()==2) {
-				Activity activity = verificationService.verifyActivity(verificationActivityPatchReq);
-				if(activity!=null)
-				return ResponseEntity.ok(VerificationActivityPatchRes.of(200, "검증이 완료되었습니다.", activity));
-			}
-
-			return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
-		}
-	}
+//	// 활동내역 상태 변경
+//	@PatchMapping("/activity")
+//	@ApiOperation(value = "활동내역 검증 상태 변경", notes = "활동내역 검증 상태를 변경한다.")
+//	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
+//		@ApiResponse(code = 401, message = "로그인 인증 실패"),@ApiResponse(code = 403, message = "잘못된 요청")})
+//	public ResponseEntity<? extends BaseResponseBody> verifyActivity(
+//			@RequestBody @ApiParam(value = "검증 정보", required = true) VerificationActivityPatchReq verificationActivityPatchReq,
+//			@ApiIgnore Authentication authentication) {
+//		if (authentication == null) {
+//			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
+//		} else {
+//			CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
+//			String userEmail = userDetails.getUsername();
+//
+//			User user = userService.findByUserEmail(userEmail);
+//
+//			if (user != null &&user.getType()==2) {
+//				Activity activity = verificationService.verifyActivity(verificationActivityPatchReq);
+//				if(activity!=null)
+//				return ResponseEntity.ok(VerificationActivityPatchRes.of(200, "검증이 완료되었습니다.", activity));
+//			}
+//
+//			return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
+//		}
+//	}
+//	
+//	// 최종학력 상태 변경
+//	@PatchMapping("/finalEducation")
+//	@ApiOperation(value = "최종학력 검증 상태 변경", notes = "최종학력 검증 상태를 변경한다.")
+//	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
+//		@ApiResponse(code = 401, message = "로그인 인증 실패"),@ApiResponse(code = 403, message = "잘못된 요청")})
+//	public ResponseEntity<? extends BaseResponseBody> verifyFinalEducation(
+//			@RequestBody @ApiParam(value = "검증 정보", required = true) VerificationFinalEducationPatchReq verificationFinalEducationPatchReq,
+//			@ApiIgnore Authentication authentication) {
+//		if (authentication == null) {
+//			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
+//		} else {
+//			CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
+//			String userEmail = userDetails.getUsername();
+//
+//			User user = userService.findByUserEmail(userEmail);
+//
+//			if (user != null &&user.getType()==2) {
+//				FinalEducation finalEducation = verificationService.verifyFinalEducation(verificationFinalEducationPatchReq);
+//				if(finalEducation!=null)
+//					return ResponseEntity.ok(VerificationFinalEducationPatchRes.of(200, "검증이 완료되었습니다.", finalEducation));
+//			}
+//
+//			return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
+//		}
+//	}
 	
-	// 최종학력 상태 변경
-	@PatchMapping("/finalEducation")
-	@ApiOperation(value = "최종학력 검증 상태 변경", notes = "최종학력 검증 상태를 변경한다.")
+	// 검증 목록 조회
+	@GetMapping("/list")
+	@ApiOperation(value = "검증 목록 조회 조회", notes = "검증 목록을 조회한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
 		@ApiResponse(code = 401, message = "로그인 인증 실패"),@ApiResponse(code = 403, message = "잘못된 요청")})
-	public ResponseEntity<? extends BaseResponseBody> verifyFinalEducation(
-			@RequestBody @ApiParam(value = "검증 정보", required = true) VerificationFinalEducationPatchReq verificationFinalEducationPatchReq,
+	public ResponseEntity<? extends BaseResponseBody> getVerificationList(
+			@RequestBody @ApiParam(value = "검증 정보", required = true) VerificationListGetReq verificationListGetReq,
 			@ApiIgnore Authentication authentication) {
 		if (authentication == null) {
 			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
@@ -115,9 +139,8 @@ public class VerificationController {
 			User user = userService.findByUserEmail(userEmail);
 
 			if (user != null &&user.getType()==2) {
-				FinalEducation finalEducation = verificationService.verifyFinalEducation(verificationFinalEducationPatchReq);
-				if(finalEducation!=null)
-					return ResponseEntity.ok(VerificationFinalEducationPatchRes.of(200, "검증이 완료되었습니다.", finalEducation));
+				Page<VerificationDto> verificationList = verificationService.getVerificationList(verificationListGetReq);
+					return ResponseEntity.ok(VerificationListRes.of(200, "검증이 완료되었습니다.", verificationList));
 			}
 
 			return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
