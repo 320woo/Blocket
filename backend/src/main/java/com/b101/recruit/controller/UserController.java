@@ -125,7 +125,7 @@ public class UserController {
 			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
 		} else {
 			CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-			String userEmail = userDetails.getUsername();
+			String userEmail = userDetails.getUserEmail();
 			long user = userService.deleteUser(userEmail);
 			if (user > 0) {
 				return ResponseEntity.ok(BaseResponseBody.of(200, "탈퇴되었습니다."));

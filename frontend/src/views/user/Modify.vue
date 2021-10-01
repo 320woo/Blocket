@@ -102,12 +102,16 @@
     </div>
 </template>
 <script>
-    import http from "@/utils/http-common";
+    // import http from "@/utils/http-common";
+    import * as pService from '@/utils/pService.js'
     // import axios from "@/utils/bearer";
 
     export default {
         name: "signup",
         computed: {},
+        setup() {
+          pService.checkToken()  
+        },
         data() {
             return {
                 show_brn : "",
@@ -147,21 +151,14 @@
                 if (!err)alert(msg);
                 
                 else {
-                        http.patch("/api/recruit/users/me");
+                       pService.UserModify();
                         // alert("수정 완료!")
                         // this.$router.push("/");
                 }
             },
             deleteUser() {
                 if (confirm("정말 탈퇴 하시겠습니까?")) {
-                if (localStorage.getItem("accessToken")) {
-                const url = "/api/recruit/users/me";
-                const headers = {
-                    Authentication: `Bearer ${localStorage.getItem("accessToken")}`,
-                };
-                console.log("에러" + http.delete(url), {headers});
-                return http.delete(url, { headers });
-            }
+                    pService.UserDelete();
                 }
             },
             home() {

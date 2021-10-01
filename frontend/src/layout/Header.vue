@@ -39,8 +39,8 @@
                 this.$store.dispatch("modify");
             },
             logout() {
-                this.$router.push("/");
                 this.$store.dispatch("logout");
+                this.$router.push("/");
             }
         },
     }

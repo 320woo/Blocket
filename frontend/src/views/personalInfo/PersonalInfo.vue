@@ -27,8 +27,9 @@
           <div class="p-grid user-info" style="margin-top:50px;">
             <div class="p-col-4 ">
               <div style="font-size: 30px;">조웅현</div>
-              <div><h4>{{ this.state.belong }}</h4></div>
-              <div><h5>{{ this.$store.state.user.userEmail }}</h5></div>
+              <div><h5> 이메일 : {{ this.$store.state.user.userEmail }}</h5></div>
+              <div><h4> 이름 : {{ this.$store.state.user.name }}</h4></div>
+              <div><h4> 소속 : {{ this.$store.state.user.belong }}</h4></div>
             </div>
             <div class="p-col-8">
               

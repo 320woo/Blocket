@@ -1,6 +1,7 @@
 import {createStore} from "vuex";
 import http from "@/utils/http-common";
 import axios from "@/utils/bearer";
+import * as pService from '@/utils/pService.js'
 
 export default createStore({
     state: {
@@ -52,7 +53,6 @@ export default createStore({
                 })
                 .then(({data}) => {
                     console.log(data);
-                    console.log("토큰" + data.accessToken)
                     localStorage.setItem("accessToken", data.accessToken);
 
                     if (data.statusCode == 404) {
@@ -62,6 +62,8 @@ export default createStore({
                         context.commit("setUserEmail", email)
                         // vuex에 잘 저장되었나..?
                         context.commit("login", data);
+                        console.log(data);
+                        pService.checkLogin();
                     }
                 })
                 .catch((error) => {
@@ -77,15 +79,12 @@ export default createStore({
             console.log("중복체크 : " + email);
             console.log(context);
             http
-                .get("/api/recruit/users/" + email , {
-                    email: email
-                })
-                .then(({ data }) => {
+                .get("/api/recruit/users/" + email, {email: email})
+                .then(({data}) => {
                     console.log(data)
                     if (data.statusCode == 200) {
                         alert("가입이 가능한 이메일입니다.")
-                    }
-                    else {
+                    } else {
                         alert("이미 있는 이메일입니다.")
                     }
                 })
@@ -94,10 +93,10 @@ export default createStore({
             console.log(context);
             if (localStorage.getItem("accessToken")) {
                 const url = "/api/recruit/users/me";
-                // const headers = {
-                //     Authorization: `Bearer ` + this.state.user.accessToken,
+                // const headers = {     Authorization: `Bearer ` + this.state.user.accessToken,
                 // };
-                return axios.get(url);
+                console.log("수정");
+                return axios.get("data : " + url);
             }
         }
     },
