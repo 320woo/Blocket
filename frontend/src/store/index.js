@@ -90,7 +90,7 @@ export default createStore({
                 // const headers = {
                 //     Authorization: `Bearer ` + this.state.user.accessToken,
                 // };
-                return axios.delete(url);
+                return axios.get(url);
             }
         }
     },
