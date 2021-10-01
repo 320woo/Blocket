@@ -44,7 +44,7 @@ public class VerificationController {
 	
 	
 	// 검증 상태 변경
-	@PatchMapping("/certificate")
+	@PatchMapping("")
 	@ApiOperation(value = "자격증 검증 상태 변경", notes = "자격증 검증 상태를 변경한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
 		@ApiResponse(code = 401, message = "로그인 인증 실패"),@ApiResponse(code = 403, message = "잘못된 요청")})
