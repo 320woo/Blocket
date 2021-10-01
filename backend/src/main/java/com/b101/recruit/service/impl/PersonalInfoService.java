@@ -41,6 +41,9 @@ import com.b101.recruit.service.IPersonalInfoService;
 public class PersonalInfoService implements IPersonalInfoService {
 
 	@Autowired
+	VerificationService verificationService;
+	
+	@Autowired
 	PersonalInfoRepository personalinfoRepository;
 	
 	@Autowired
@@ -269,6 +272,7 @@ public class PersonalInfoService implements IPersonalInfoService {
 		cer.setScore(certificate.getScore());
 		PersonalInfo per = personalinfoRepository.getOne(id);
 		cer.setPersonalinfo(per);
+		cer.setUserId(certificate.getUserId());
 		return certificateRepository.save(cer);
 	}
 
@@ -296,6 +300,7 @@ public class PersonalInfoService implements IPersonalInfoService {
 		act.setDescription(activity.getDescription());
 		PersonalInfo per = personalinfoRepository.getOne(id);
 		act.setPersonalinfo(per);
+		act.setUserId(activity.getUserId());
 		return activityRepository.save(act);
 	}
 
@@ -322,6 +327,7 @@ public class PersonalInfoService implements IPersonalInfoService {
 		fin.setGrades(finaleducation.getGrades());
 		PersonalInfo per = personalinfoRepository.getOne(id);
 		fin.setPersonalinfo(per);
+		fin.setUserId(finaleducation.getUserId());
 		return finaleducationRepository.save(fin);
 	}
 
