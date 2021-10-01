@@ -23,6 +23,7 @@ import com.b101.recruit.domain.repository.ActivityRepository;
 import com.b101.recruit.domain.repository.CertificateRepository;
 import com.b101.recruit.domain.repository.FinalEducationRepository;
 import com.b101.recruit.domain.repository.JpaVerificationRepository;
+import com.b101.recruit.domain.repository.PersonalInfoRepository;
 import com.b101.recruit.domain.repository.VerificationRepository;
 import com.b101.recruit.request.ActivityPostReq;
 import com.b101.recruit.request.CertificatePostReq;
@@ -48,6 +49,49 @@ public class VerificationService implements IVerificationService {
 
 	@Autowired
 	JpaVerificationRepository jpaVerificationRepository;
+	
+	@Autowired
+	PersonalInfoRepository personalInfoRepository;
+
+	@Override
+	public Verification createVerification(File file) throws NullPointerException {
+		Verification verification = new Verification();
+		verification.setPersonalinfo(file.getPersonalInfo());
+		verification.setCurrentStatus("승인대기");
+		verification.setFile(file);
+		Long userId = personalInfoRepository.findUserIdById(file.getPersonalInfo().getId());
+		verification.setUserId(userId); 
+		return verificationRepository.save(verification);
+	}
+
+	@Override
+	public Verification updateVerification(VerificationUpdatePatchReq vcpr) {
+		Optional<Verification> verification = verificationRepository.findByFileId(vcpr.getFileId());
+		if (verification.isPresent()) {
+			String status = vcpr.getVerified();
+			verification.get().setCurrentStatus(status);
+			if (status.equals("거절")) verification.get().setReasonsRejection(vcpr.getResonsRejection());
+			return verificationRepository.save(verification.get());
+		}
+		return null;
+	}
+
+	@Override
+	public Page<VerificationDto> getVerificationList(VerificationListGetReq vlgr) {
+		int size = vlgr.getSize();
+		int page = vlgr.getPage() - 1;
+		String verified = vlgr.getVerified();
+		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "registrationDate"));
+		if (verified.equals("")) {
+			Page<Verification> pageTuts = verificationRepository.findAll(pageable);
+			Page<VerificationDto> verList = pageTuts.map(Verification -> new VerificationDto());
+			return verList;
+		} else {
+			Page<Verification> pageTuts = verificationRepository.findByCurrentStatusContaining(pageable,verified);
+			Page<VerificationDto> verList = pageTuts.map(Verification -> new VerificationDto());
+			return verList;
+		}
+	}
 
 	//	@Override
 //	public Certificate verifyCertificate(VerificationCetificatePatchReq vcpr) {
@@ -118,39 +162,7 @@ public class VerificationService implements IVerificationService {
 //		verification.setUserId(cer.getUserId());
 //		verificationRepository.save(verification);
 //	}
-
-	@Override
-	public Verification createVerification(File file) throws NullPointerException {
-		Verification verification = new Verification();
-		verification.setPersonalinfo(file.getPersonalInfo());
-		verification.setCurrentStatus("승인대기");
-		verification.setFile(file);
-		return verificationRepository.save(verification);
-	}
-
-	@Override
-	public Verification updateVerification(VerificationUpdatePatchReq vcpr) {
-		Optional<Verification> verification = verificationRepository.findByFileId(vcpr.getFileId());
-		if (verification.isPresent()) {
-			verification.get().setCurrentStatus(vcpr.getVerified());
-			return verificationRepository.save(verification.get());
-		}
-		return null;
-	}
-
-	@Override
-	public Page<VerificationDto> getVerificationList(VerificationListGetReq vlgr) {
-		int size = vlgr.getSize();
-		int page = vlgr.getPage() - 1;
-		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "registration_date"));
-		if (vlgr.getVerified() == null) {
-//			Page<VerificationDto> pageTuts = jpaVerificationRepository.findAll(pageable);
-		} else if (vlgr.getVerified() != null) {
-
-		}
-		return null;
-	}
-
+	
 //	
 //	@Autowired
 //	JpaVerificationRepository jpaVerificationRepository;
