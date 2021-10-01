@@ -19,7 +19,7 @@ import com.b101.recruit.request.PersonalInfoPostReq;
 
 public interface IPersonalInfoService {
 
-	PersonalInfo createPersonalInfo(PersonalInfoPostReq personalinfoPostReq, FileDto fileDto) throws IllegalStateException, IOException;
+	PersonalInfo createPersonalInfo(PersonalInfoPostReq personalinfoPostReq, MultipartFile files) throws IllegalStateException, IOException;
 	
 	PersonalInfoPostRes getonePersonalInfo(Long id, String email);
 	

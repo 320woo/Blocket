@@ -1,5 +1,6 @@
 package com.b101.recruit.service.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,7 +17,9 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.util.IOUtils;
 
 import lombok.NoArgsConstructor;
 
@@ -81,6 +84,24 @@ public class S3Service {
                 .withCannedAcl(CannedAccessControlList.PublicRead));
 
         return fileName;
+    }
+    
+    // 코치님 코드 참고
+    public String uploadFile(MultipartFile file) throws IOException {
+        // 고유한 key 값을 갖기위해 현재 시간을 prefix 로 붙여줌
+        SimpleDateFormat date = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String fileName = date.format(new Date()) + "_" + file.getOriginalFilename();
+
+        // 파일 업로드
+        byte[] bytes = IOUtils.toByteArray(file.getInputStream());
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(bytes.length);
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+
+        s3Client.putObject(new PutObjectRequest(bucket, fileName, byteArrayInputStream, metadata)
+                .withCannedAcl(CannedAccessControlList.PublicRead));
+
+        return  "https://d6sx5vd3amky9.cloudfront.net/" + fileName;
     }
     
 }
