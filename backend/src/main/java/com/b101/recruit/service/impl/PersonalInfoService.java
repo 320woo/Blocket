@@ -90,7 +90,7 @@ public class PersonalInfoService implements IPersonalInfoService {
     }
 	
 	@Override
-	public PersonalInfo createPersonalInfo(PersonalInfoPostReq personalinfoPostReq, FileDto fileDto)
+	public PersonalInfo createPersonalInfo(PersonalInfoPostReq personalinfoPostReq, MultipartFile files)
 			throws IllegalStateException, IOException {
 		PersonalInfo personalinfo = new PersonalInfo();
 		User user = userService.findByUserEmail(personalinfoPostReq.getEmail());
@@ -104,10 +104,20 @@ public class PersonalInfoService implements IPersonalInfoService {
 		personalinfo.setVeteransAffairs(personalinfoPostReq.getVeteransAffairs());
 		personalinfo.setDisabled(personalinfoPostReq.getDisabled());
 		personalinfo.setIntExtAct(personalinfoPostReq.getIntExtAct());
-		fileRepository.save(fileDto.toEntity());
 		personalinfo = personalinfoRepository.save(personalinfo);
 		
 		// 파일 처리
+		if(files != null) {
+			List<Files> filesEntityLiist = fileRepository.findAll();
+			List<FileDto> fileDtoList = new ArrayList<>();
+			
+			for(Files fileEntity : filesEntityLiist) {
+				fileEntity.getId();
+				fileEntity.getTitle();
+				fileEntity.getFilePath();
+				fileRepository.save(fileEntity);
+			}
+		}
 //		if(files != null) {
 //			String realPath = basedir;
 //			// 오늘날짜로 폴더 설정

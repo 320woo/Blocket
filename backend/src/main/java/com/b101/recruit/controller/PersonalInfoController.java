@@ -81,11 +81,11 @@ public class PersonalInfoController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
 		@ApiResponse(code = 500, message = "서버 오류") })
 	public ResponseEntity<BaseResponseBody> createPersonalInfo(@RequestBody PersonalInfoPostReq personalinfoPostReq,
-			FileDto fileDto, MultipartFile file) {
+			@RequestPart(value = "file", required = false) MultipartFile files, FileDto fileDto) {
 		try {
-			String impPath = s3Service.upload(fileDto.getFilePath(), file);
+			String impPath = s3Service.uploadFile(files);
 			fileDto.setFilePath(impPath);
-			PersonalInfo personalinfo = service.createPersonalInfo(personalinfoPostReq, fileDto);
+			PersonalInfo personalinfo = service.createPersonalInfo(personalinfoPostReq, files);
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
 			return ResponseEntity.status(500).body(BaseResponseBody.of(500, "Fail"));
