@@ -37,6 +37,8 @@ public class QVerification extends EntityPathBase<Verification> {
 
     public final DateTimePath<java.util.Date> registrationDate = createDateTime("registrationDate", java.util.Date.class);
 
+    public final NumberPath<Long> userId = createNumber("userId", Long.class);
+
     public QVerification(String variable) {
         this(Verification.class, forVariable(variable), INITS);
     }
