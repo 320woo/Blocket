@@ -37,6 +37,8 @@ public class QActivity extends EntityPathBase<Activity> {
 
     public final QPersonalInfo personalinfo;
 
+    public final NumberPath<Long> userId = createNumber("userId", Long.class);
+
     public QActivity(String variable) {
         this(Activity.class, forVariable(variable), INITS);
     }

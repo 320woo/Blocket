@@ -32,4 +32,5 @@ public class Activity extends BaseEntity{
 	private String description;	// 설명
 //	boolean verified;			// 검증여부(PASS/FAIL)
 	
+	private Long userId;
 }

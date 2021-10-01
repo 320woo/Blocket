@@ -14,4 +14,5 @@ public class CertificatePostReq {
 	private String sortation; // 구분
 	private String acquisitionDate; // 취득기간
 	private String score; // 점수, 등급
+	private Long userId;
 }

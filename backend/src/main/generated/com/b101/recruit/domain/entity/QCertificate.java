@@ -37,6 +37,8 @@ public class QCertificate extends EntityPathBase<Certificate> {
 
     public final StringPath sortation = createString("sortation");
 
+    public final NumberPath<Long> userId = createNumber("userId", Long.class);
+
     public QCertificate(String variable) {
         this(Certificate.class, forVariable(variable), INITS);
     }

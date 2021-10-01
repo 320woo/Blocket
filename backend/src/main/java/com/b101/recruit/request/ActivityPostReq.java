@@ -15,4 +15,6 @@ public class ActivityPostReq {
 	private String period;		//기간
 	private String description;	// 설명
 	
+	private Long userId;
+	
 }

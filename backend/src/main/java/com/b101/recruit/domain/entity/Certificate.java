@@ -31,4 +31,7 @@ public class Certificate extends BaseEntity {
 	private String acquisitionDate; // 취득기간
 	private String score; // 점수, 등급
 	
+	private Long userId;
+	
+	
 }

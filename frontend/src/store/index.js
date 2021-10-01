@@ -6,6 +6,7 @@ export default createStore({
     state: {
         user: {
             userId: 0,
+            userEmail: null,
             walletAddress: null,
             accessToken: null,
             show: true
@@ -14,6 +15,9 @@ export default createStore({
     mutations: {
         setUserId(state, id) {
             state.user.userId = id
+        },
+        setUserEmail(state, userEmail) {
+            state.user.userEmail = userEmail
         },
         setWalletAddress(state, address) {
             state.user.walletAddress = address
@@ -24,7 +28,6 @@ export default createStore({
             state.user.show = true
         },
         login(state, payload) {
-            console.log("payload" + payload.accessToken)
             state.user.accessToken = payload.accessToken;
             state.user.show = false;
         }
@@ -51,9 +54,13 @@ export default createStore({
                     console.log(data);
                     console.log("토큰" + data.accessToken)
                     localStorage.setItem("accessToken", data.accessToken);
+
                     if (data.statusCode == 404) {
                         alert("아이디 또는 비밀번호가 일치하지 않습니다.");
                     } else {
+                        // vuex 변수에 user 이메일 저장
+                        context.commit("setUserEmail", email)
+                        // vuex에 잘 저장되었나..?
                         context.commit("login", data);
                     }
                 })
@@ -94,5 +101,6 @@ export default createStore({
             }
         }
     },
+    getters: {},
     modules: {}
 });

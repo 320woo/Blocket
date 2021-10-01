@@ -19,17 +19,17 @@
   </div>
 
   <h4>관리자 지갑 : 0xf255FC9eF3778E688950649547D398B027D8b999</h4>
-  <h4>개인키 : 0xb35023e44ad462879d110e4f68c8e794e0097c475d4639d4b9dbf463dcb1ef09</h4>
+  <!-- <h4>개인키 : 0xb35023e44ad462879d110e4f68c8e794e0097c475d4639d4b9dbf463dcb1ef09</h4> -->
   <div class="p-grid">
     <h1>3. 관리자가 보유한 이더를 새롭게 생성한 사용자 계정 지갑에 넣어주기</h1>
-    <Button label="Submit" @click="saveWalletInEther" />
+    <Button label="Submit" @click="sendEther" />
   </div>
   
 
 </template>
 
 <script>
-import { createWeb3 } from '@/utils/itemInventory.js'
+import { createWeb3, sendEther } from '@/utils/itemInventory.js'
 import { reactive } from '@vue/reactivity'
 import defaultImage from "~/images/test.png"
 import defaultUserImage from "~/images/user.png"
@@ -75,8 +75,8 @@ methods: {
     
 
   },
-  saveWalletInEther() {
-
+  sendEther() {
+    sendEther()
   },
 }
 
