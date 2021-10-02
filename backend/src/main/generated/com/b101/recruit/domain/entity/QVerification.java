@@ -26,6 +26,8 @@ public class QVerification extends EntityPathBase<Verification> {
 
     public final StringPath currentStatus = createString("currentStatus");
 
+    public final QFile file;
+
     //inherited
     public final NumberPath<Long> id = _super.id;
 
@@ -34,6 +36,8 @@ public class QVerification extends EntityPathBase<Verification> {
     public final StringPath reasonsRejection = createString("reasonsRejection");
 
     public final DateTimePath<java.util.Date> registrationDate = createDateTime("registrationDate", java.util.Date.class);
+
+    public final NumberPath<Long> userId = createNumber("userId", Long.class);
 
     public QVerification(String variable) {
         this(Verification.class, forVariable(variable), INITS);
@@ -53,6 +57,7 @@ public class QVerification extends EntityPathBase<Verification> {
 
     public QVerification(Class<? extends Verification> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.file = inits.isInitialized("file") ? new QFile(forProperty("file"), inits.get("file")) : null;
         this.personalinfo = inits.isInitialized("personalinfo") ? new QPersonalInfo(forProperty("personalinfo"), inits.get("personalinfo")) : null;
     }
 

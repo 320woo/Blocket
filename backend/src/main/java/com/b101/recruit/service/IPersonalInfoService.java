@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.b101.recruit.domain.dto.FileDto;
 import com.b101.recruit.domain.entity.Activity;
 import com.b101.recruit.domain.entity.Certificate;
 import com.b101.recruit.domain.entity.FinalEducation;
@@ -18,7 +19,7 @@ import com.b101.recruit.request.PersonalInfoPostReq;
 
 public interface IPersonalInfoService {
 
-	PersonalInfo createPersonalInfo(PersonalInfoPostReq personalinfoPostReq, MultipartFile[] files) throws IllegalStateException, IOException;
+	PersonalInfo createPersonalInfo(PersonalInfoPostReq personalinfoPostReq, MultipartFile files) throws IllegalStateException, IOException;
 	
 	PersonalInfoPostRes getonePersonalInfo(Long id, String email);
 	

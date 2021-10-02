@@ -5,12 +5,12 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.b101.recruit.domain.entity.Gallery;
+import com.b101.recruit.domain.entity.Files;
 
 @Repository
-public interface GalleryRepository extends JpaRepository<Gallery, Long> {
+public interface FilesRepository extends JpaRepository<Files, Long> {
 
 	@Override
-	List<Gallery> findAll();
+	List<Files> findAll();
 	
 }

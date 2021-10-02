@@ -35,6 +35,8 @@ public class QFinalEducation extends EntityPathBase<FinalEducation> {
 
     public final StringPath sortation = createString("sortation");
 
+    public final NumberPath<Long> userId = createNumber("userId", Long.class);
+
     public QFinalEducation(String variable) {
         this(FinalEducation.class, forVariable(variable), INITS);
     }
