@@ -47,8 +47,8 @@ public class VerificationService implements IVerificationService {
 	@Autowired
 	VerificationRepository verificationRepository;
 
-	@Autowired
-	JpaVerificationRepository jpaVerificationRepository;
+//	@Autowired
+//	JpaVerificationRepository jpaVerificationRepository;
 	
 	@Autowired
 	PersonalInfoRepository personalInfoRepository;

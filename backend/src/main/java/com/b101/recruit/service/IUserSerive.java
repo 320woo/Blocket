@@ -18,5 +18,5 @@ public interface IUserSerive {
 	boolean confirmUserEmail(String userEmail);
 	long findPassword(PasswordFindPatchReq passwordFindPatchReq) throws MessagingException;
 	String AuthEmail(EmailConfirmPostReq emailConfirmPostReq);
-
+	long findInfoId(long user);
 }

@@ -37,4 +37,8 @@ public class UserRes extends BaseResponseBody {
 		res.setStatusCode(statusCode);
 		return res;
 	}
+
+
+
+
 }

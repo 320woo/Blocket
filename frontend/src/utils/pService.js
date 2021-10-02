@@ -6,6 +6,7 @@ import vueConfig from '../../vue.config'
 
 const BASE_URL = vueConfig.devServer.proxy['/blocket'].target + "/api"
 const USER_URL =  BASE_URL + "/recruit/users/me"
+const INFO_URL = BASE_URL + "/personalInfo"
 
 // User 테이블에서 belong 가져오기
 export function getUserBelong() {  
@@ -28,6 +29,6 @@ export function checkToken() {
 }
 
 export function getMyInfo() {
-
+  return axios.get()
 }
 

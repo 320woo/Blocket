@@ -10,7 +10,7 @@ import com.b101.recruit.request.UserUpdatePatchReq;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 @Repository
-public class JpaUserRepository{
+public class JpaUserRepository {
 
 	@Autowired
 	private JPAQueryFactory jpaQueryFactory;

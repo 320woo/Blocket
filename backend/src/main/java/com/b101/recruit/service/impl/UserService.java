@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import javax.mail.MessagingException;
 
+import com.zaxxer.hikari.util.SuspendResumeLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -113,4 +114,9 @@ public class UserService implements IUserSerive {
 		return 1;
 	}
 
+	@Override
+	public long findInfoId(long user){
+		System.out.println("사용자의 info 아이디를 불러옵니다.");
+		return userRepository.findByUserId(user);
+	}
 }
