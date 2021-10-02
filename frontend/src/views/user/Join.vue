@@ -174,7 +174,7 @@
                             console.log("신상정보를 등록합니다..")
 
                             axios({
-                                url: 'http://localhost:8080/api/recruit/personalinfo',
+                                url: 'http://localhost:8000/api/recruit/personalinfo',
                                 method: 'POST',
                                 headers: {
                                     Authentication: 'Bearer ' + this.$store.state.accessToken, 

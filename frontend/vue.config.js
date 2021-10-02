@@ -16,7 +16,7 @@ module.exports = {
     
     proxy: {
       '/blocket': {
-        target: 'http://localhost:8080'
+        target: 'http://localhost:8000'
       }
     },
     
