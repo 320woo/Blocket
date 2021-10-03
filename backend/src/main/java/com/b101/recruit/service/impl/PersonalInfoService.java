@@ -9,10 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import javax.transaction.Transactional;
 
@@ -328,6 +325,13 @@ public class PersonalInfoService implements IPersonalInfoService {
 	public void deleteActivity(Long pId, Long aId) {
 		activityRepository.deleteById(aId);
 	}
+
+
+	@Override
+	public Optional<List<FinalEducation>> getFinalEducation(Long personalInfoId) {
+		return finaleducationRepository.findByPersonalinfo_id(personalInfoId);
+	}
+
 
 	@Override
 	public FinalEducation createFinalEducation(Long id, FinalEducationPostReq finaleducation) {

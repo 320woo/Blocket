@@ -6,10 +6,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URLConnection;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import com.amazonaws.Response;
+import com.b101.recruit.domain.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -32,10 +35,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.b101.common.model.response.BaseResponseBody;
 import com.b101.recruit.auth.CustomUserDetails;
 import com.b101.recruit.domain.dto.FileDto;
-import com.b101.recruit.domain.entity.Activity;
-import com.b101.recruit.domain.entity.Certificate;
-import com.b101.recruit.domain.entity.FinalEducation;
-import com.b101.recruit.domain.entity.PersonalInfo;
 import com.b101.recruit.domain.repository.FilesRepository;
 import com.b101.recruit.reponse.PersonalInfoPostRes;
 import com.b101.recruit.request.ActivityPostReq;
@@ -236,7 +235,19 @@ public class PersonalInfoController {
 		service.deleteActivity(pId, aId);
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
 	}
-	
+
+	@GetMapping("{personalInfoId}/myFinalEducation")
+	@ApiOperation(value = "최종학력 조회", notes = "최종학력을 조회한다.")
+	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
+			@ApiResponse(code = 500, message = "서버 오류") })
+	public ResponseEntity<Optional<List<FinalEducation>>> getFinalEducation(@PathVariable("personalInfoId") long personalInfoId) {
+
+
+		Optional<List<FinalEducation>> result = service.getFinalEducation(personalInfoId);
+		return ResponseEntity.status(200).body(result);
+	}
+
+
 	@PostMapping("/{personalinfoId}/finaleducation")
 	@ApiOperation(value = "최종학력 등록", notes = "최종학력을 등록한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),

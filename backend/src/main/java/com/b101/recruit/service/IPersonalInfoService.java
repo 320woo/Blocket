@@ -2,6 +2,7 @@ package com.b101.recruit.service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,7 +43,9 @@ public interface IPersonalInfoService {
 	Activity updateActivity(Long pId, Long aId, ActivityPostReq activity);
 	
 	void deleteActivity(Long pId, Long aId);
-	
+
+	Optional<List<FinalEducation>> getFinalEducation(Long personalInfoId);
+
 	FinalEducation createFinalEducation(Long id, FinalEducationPostReq finaleducation);
 	
 	FinalEducation updateFinalEducation(Long pId, Long fId, FinalEducationPostReq finaleducation);
