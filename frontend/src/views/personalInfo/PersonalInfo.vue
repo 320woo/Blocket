@@ -49,10 +49,10 @@
           </div>
           
           <div class="p-ml-3" >
-            <div class="p-mb-2">성별: {{ }}</div>
-            <div class="p-mb-2">영문 이름: {{ }}</div>
-            <div class="p-mb-2">생년월일: {{ }}</div>
-            <div class="p-mb-2">주소: {{ }}</div>
+            <div class="p-mb-2">성별: {{ state.personalInfo.gender }}</div>
+            <div class="p-mb-2">영문 이름: {{ state.personalInfo.englishName }}</div>
+            <div class="p-mb-2">생년월일: {{ state.personalInfo.dateBirth }}</div>
+            <div class="p-mb-2">주소: {{ state.personalInfo.address }}</div>
           </div>
         </div> 
 
@@ -68,7 +68,13 @@
             </div>
           </div>
 
-          <div class="p-col">내용내용</div>
+          <div class="p-col">{{ state.myGrade.finalEducation }}
+            <div :v-if="state.myGrade.finalEducation !== '최종 학력이 등록되지 않았습니다.'">
+              <span style="color: blue; cursor: pointer; display: inline-block;" @click="state.displayEducationModal = true">
+                <strong>입력하기</strong>
+              </span>
+            </div>
+          </div>
 
         </div>
 
@@ -163,7 +169,7 @@
   <!-- https://primefaces.org/primevue/showcase/#/dialog 참고... -->
 
   <!-- 학력 사항 Modal 창 -->
-  <Dialog header="최종 학력 입력" v-model:visible="state.displayEducationModal" :style="{width: '30vw'}" :modal="true">
+  <Dialog header="최종 학력 입력" v-model:visible="state.displayEducationModal" :style="{width: '40vw'}" :modal="true">
       
       <div class="p-grid">
         <!-- 대학교 이름 검색 -->
@@ -178,6 +184,32 @@
           <AutoComplete id="majorName" v-model="selectedMajor" 
           :suggestions="filteredMajors" @complete="searchMajor($event)" field="mClass" />
         </div>
+        <!-- 총 학점 -->
+        <div class="p-field p-col-3">
+          <label for="grade">취득 학점*</label>
+          <InputText id="grade" class="input-text" type="grade" style="width: 80px;" />
+        </div>
+
+
+        <div class="p-field p-col-3">
+          <label for="scoreType">학점 기준</label>
+          <select name="scoreType" id="scoreType" class="select">
+            <option value="1">4.3</option>
+            <option value="2">4.5</option>
+          </select>
+        </div>
+
+        <!-- 학교 분류 ex) 고등학교, 대학교, 대학원,,, -->
+        <div class="p-field p-col-12">
+          <label for="majorName">학교분류*</label>
+          <select name="type" id="schoolType" class="select">
+            <option value="1">고등학교</option>
+            <option value="2">대학교</option>
+            <option value="3">대학원(석사졸)</option>
+            <option value="4">대학원(박사졸)</option>
+          </select>
+        </div>
+
       </div>
       <!-- 졸업 증명서 첨부 -->
       <div class="p-field">
@@ -358,6 +390,8 @@ setup() {
   // 로그인 여부 가장 먼저 확인해야 함. 토큰이 없는 경우에는 로그인 페이지로 이동하게끔 한다.
   pService.checkToken()
 
+  // 로그인 여부를 확인했으면 신상정보를 불러온다.
+  pService.getMyInfo()
   
 
   // 학교 검색 관련 변수
@@ -389,11 +423,23 @@ setup() {
     displayArmyModal: false,
     
     // 개인 정보
-    dateBirth: '',    // 생년월일
-    address: '',      // 주소
-    englishName: '',    // 영문이름
-    gender: '',    // 성별
-    repProfile: '',    // 대표 프로필 경로
+    personalInfo: {
+      id: '',
+      dateBirth: '',    // 생년월일
+      address: '',      // 주소
+      englishName: '',    // 영문이름
+      gender: '',    // 성별
+      repProfile: '',    // 대표 프로필 경로
+    },
+
+    // 최종 학력 사항
+    myGrade: {
+      finalEducation: '최종 학력이 등록되지 않았습니다.',
+      grades: '',
+      name: '',
+      sortation: '',
+      userId: '',
+    },
     
     // 활동 사항
     activityName: '', 
@@ -423,8 +469,47 @@ setup() {
     // 소속 표시하기 위해, user 테이블에서 조회하기
     pService.getUserBelong().then(res => {
       state.belong = res.data.belong
-    })    
+    })
     
+    
+    // personalInfo 정보 불러오기. 이 때 personalInfo PK도 함께 저장해둔다.
+    pService.getMyInfo().then(res => {
+      state.personalInfo.id = res.data[0].id
+      state.personalInfo.dateBirth = res.data[0].dateBirth
+      state.personalInfo.address = res.data[0].address
+      state.personalInfo.englishName = res.data[0].englishName
+      state.personalInfo.gender = res.data[0].gender
+      // 최종 학력 정보 불러오기
+      pService.getFinalEducation(state.personalInfo.id)  .then(res => {
+        console.log("최종학력 로드 결과: ", res)
+        
+        // 만약 저장되어 있는 최종 학력이 존재하지 않는경우 ...
+        if (res.data.length === 0) {
+          state.myGrade.finalEducation = "최종 학력이 등록되지 않았습니다."
+        } 
+        // 최종학력이 존재하는 경우...
+        else {
+          state.myGrade.finalEducation = res.data  
+        }
+
+        if (state.myGrade.finalEducation.length === 0) {
+          console.log("아직 최종학력이 등록되지 않았습니다.")
+        }
+        else {
+          console.log("등록된 최종학력이 존재합니다.")
+        }
+      })
+
+      // 활동 사항 정보 불러오기
+    
+      // 어학, 자격증 정보 불러오기
+      
+      // 병역 사항 불러오기
+
+      // 보훈 사항 불러오기
+
+      // 장애 여부 불러오기
+    })
   })
 
   return {

@@ -8,8 +8,7 @@ import com.google.common.base.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>{
-
-	Long findByUserId(long user);
+	
 	Optional<User> findByEmail(String userEmail);
 	boolean existsByEmail(String userEmail);
 }

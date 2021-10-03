@@ -5,14 +5,12 @@ import store from '../store'
 import vueConfig from '../../vue.config'
 
 const BASE_URL = vueConfig.devServer.proxy['/blocket'].target + "/api"
-const USER_URL =  BASE_URL + "/recruit/users/me"
-const INFO_URL = BASE_URL + "/personalInfo"
+const USER_URL =  BASE_URL + "/recruit/users"
+const INFO_URL = BASE_URL + "/recruit/personalinfo"
 
 // User 테이블에서 belong 가져오기
 export function getUserBelong() {  
-
-  console.log("Belong 가져옵니다.")
-  return axios.get(USER_URL, {
+  return axios.get(USER_URL + "/me", {
     headers:{
       Authorization:"Bearer "+ store.state.user.accessToken
     }
@@ -29,6 +27,19 @@ export function checkToken() {
 }
 
 export function getMyInfo() {
-  return axios.get()
+  // 먼저 유저에 대한 personalInfo Id를 불러와야 한다. 
+  return axios.get(USER_URL + "/getMyInfo?userEmail=" + store.state.user.userEmail,{
+    headers:{
+      Authorization:"Bearer "+ store.state.user.accessToken
+    }
+  })
+}
+
+export function getFinalEducation(personalInfoId) {
+  return axios.get(INFO_URL + "/" + personalInfoId + "/myFinalEducation", {
+    headers:{
+      Authorization:"Bearer "+ store.state.user.accessToken
+    }
+  })
 }
 

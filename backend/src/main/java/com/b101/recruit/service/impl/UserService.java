@@ -1,9 +1,13 @@
 package com.b101.recruit.service.impl;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.mail.MessagingException;
 
+import com.b101.recruit.domain.entity.PersonalInfo;
+import com.b101.recruit.domain.repository.PersonalInfoRepository;
+import com.b101.recruit.reponse.PersonalInfoPostRes;
 import com.zaxxer.hikari.util.SuspendResumeLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +28,9 @@ public class UserService implements IUserSerive {
 	
 	@Autowired
 	UserRepository userRepository;
+
+	@Autowired
+	PersonalInfoRepository personalInfoRepository;
 	
 	@Autowired
 	JpaUserRepository jpaUserRepository;
@@ -115,8 +122,10 @@ public class UserService implements IUserSerive {
 	}
 
 	@Override
-	public long findInfoId(long user){
-		System.out.println("사용자의 info 아이디를 불러옵니다.");
-		return userRepository.findByUserId(user);
+	public List<PersonalInfo> getMyInfo(long userId){
+		System.out.println("사용자의 info 아이디를 불러옵니다." + userId);
+		List<PersonalInfo> result = personalInfoRepository.findByUserId(userId);
+		System.out.println("불러온 info 아이디는:" + result);
+		return result;
 	}
 }

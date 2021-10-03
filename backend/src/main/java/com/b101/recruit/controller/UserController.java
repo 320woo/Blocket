@@ -2,6 +2,7 @@ package com.b101.recruit.controller;
 
 import javax.mail.MessagingException;
 
+import com.b101.recruit.domain.entity.PersonalInfo;
 import com.b101.recruit.reponse.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,8 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import springfox.documentation.annotations.ApiIgnore;
+
+import java.util.List;
 
 @Api(value = "유저 API", tags = { "User." })
 @RestController
@@ -214,14 +217,27 @@ public class UserController {
 	}
 
 	// 사용자의 신상정보 ID를 불러온다.
-	@GetMapping("/infoFind")
-	@ApiOperation(value = "회원 신상정보 ID 찾기", notes = "회원 신상정보 ID 찾기")
+	@GetMapping("/getMyInfo")
+	@ApiOperation(value = "회원 신상정보 ID 찾기", notes = "사용자 이메일 통해 신상정보 조회하기")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
-			@ApiResponse(code = 405, message = "Method Not Allowed")})
-	public ResponseEntity<BaseResponseBody> findInfoId(@RequestParam("userId") long user) {
+			@ApiResponse(code = 405, message = "Method Not Allowed"), @ApiResponse(code = 409, message = "존재하지 않는 회원 ID")})
+	public ResponseEntity<List<PersonalInfo>> findInfoId(@RequestParam("userEmail") String userEmail, @ApiIgnore Authentication authentication) {
+		// No Convertor Error 발생,, PersonalInfo 엔티티 사용
 
-		long infoId = userService.findInfoId(user);
-		return ResponseEntity.status(200).body(UserInfoRes.of(200, infoId));
+		// 권한이 없다면
+		if (authentication == null) {
+			return ResponseEntity.status(401).body(null);
+		}
+		// 권한 유효
+		else {
+			// 먼저 사용자의 이메일을 통해 PK를 찾아야 한다.
+			User user = userService.findByUserEmail(userEmail);
+
+			// 찾은 유저의 PK를 이용하여 personalInfo 값을 찾는다.
+			List<PersonalInfo> infoId = userService.getMyInfo(user.getId());
+			return ResponseEntity.status(200).body(infoId);
+		}
+
 	}
 
 }
