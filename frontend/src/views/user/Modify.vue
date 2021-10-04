@@ -104,7 +104,8 @@
 <script>
     // import http from "@/utils/http-common";
     import * as pService from '@/utils/pService.js'
-    // import axios from "@/utils/bearer";
+    import axios from 'axios'
+    
 
     export default {
         name: "signup",
@@ -148,12 +149,28 @@
                 err && !this.password && ((msg = "비밀번호를 입력해주세요"), (err = false));
                 err && !this.name && ((msg = "이름을 입력해주세요"), (err = false));
                 err && !this.phoneNumber && ((msg = "연락처를 입력해주세요"), (err = false));
-                if (!err)alert(msg);
-                
+                if (!err) alert(msg);
                 else {
-                       pService.UserModify();
-                        // alert("수정 완료!")
-                        // this.$router.push("/");
+
+                    if (confirm("수정 하시겠습니까?")) {
+                        axios({
+                                url: 'http://localhost:8000/api/recruit/personalinfo',
+                                method: 'PATCH',
+                                headers: {
+                                    Authentication: 'Bearer ' + this.$store.state.accessToken, 
+                                    'Content-Type': 'application/json'
+                                },
+                                id: 0,
+                                belong: this.belong,
+                                brn: this.brn,
+                                email: this.email,
+                                name: this.name,
+                                password: this.password,
+                                phoneNumber: this.phoneNumber,
+                                type: 0,
+                                withdrawal: 0
+                            })
+                    }
                 }
             },
             deleteUser() {

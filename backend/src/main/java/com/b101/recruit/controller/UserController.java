@@ -104,7 +104,7 @@ public class UserController {
 			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
 		} else {
 			CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-			String userEmail = userDetails.getUsername();
+			String userEmail = userDetails.getUserEmail();
 			User user = userService.findByUserEmail(userEmail);
 			if (user != null)
 				return ResponseEntity.ok(UserRes.of(200,user));				
@@ -146,7 +146,7 @@ public class UserController {
 			return ResponseEntity.status(401).body(UserUpdatePatchRes.of(401, "로그인 인증 실패"));
 		} else {
 			CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-			String userEmail = userDetails.getUsername();
+			String userEmail = userDetails.getUserEmail();
 			long user = userService.updateUser(userEmail, UserUpdatePatchReq);
 			if (user > 0) {
 				return ResponseEntity.ok(UserUpdatePatchRes.of(200, "수정이 완료됐습니다."));

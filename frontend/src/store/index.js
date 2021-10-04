@@ -1,6 +1,6 @@
 import {createStore} from "vuex";
 import http from "@/utils/http-common";
-import axios from "@/utils/bearer";
+// import axios from "@/utils/bearer";
 import * as pService from '@/utils/pService.js'
 
 export default createStore({
@@ -91,13 +91,7 @@ export default createStore({
         },
         modify(context) {
             console.log(context);
-            if (localStorage.getItem("accessToken")) {
-                const url = "/api/recruit/users/me";
-                // const headers = {     Authorization: `Bearer ` + this.state.user.accessToken,
-                // };
-                console.log("수정");
-                return axios.get("data : " + url);
-            }
+            pService.UserCheck();
         }
     },
     getters: {},
