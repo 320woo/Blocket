@@ -66,6 +66,10 @@ public class PersonalInfoService implements IPersonalInfoService {
 	
 	private FilesRepository fileRepository;
 	
+	public void savePost(FileDto fileDto) {
+		fileRepository.save(fileDto.toEntity());
+	}
+	
 	public List<FileDto> getList() {
         List<Files> fileEntityList = fileRepository.findAll();
         List<FileDto> fileDtoList = new ArrayList<>();
@@ -77,7 +81,7 @@ public class PersonalInfoService implements IPersonalInfoService {
         return fileDtoList;
     }
 
-	private FileDto convertEntityToDto(Files file) {
+	public FileDto convertEntityToDto(Files file) {
         return FileDto.builder()
                 .id(file.getId())
                 .title(file.getTitle())
@@ -104,17 +108,17 @@ public class PersonalInfoService implements IPersonalInfoService {
 		personalinfo = personalinfoRepository.save(personalinfo);
 		
 		// 파일 처리
-		if(files != null) {
-			List<Files> filesEntityLiist = fileRepository.findAll();
-			List<FileDto> fileDtoList = new ArrayList<>();
-			
-			for(Files fileEntity : filesEntityLiist) {
-				fileEntity.getId();
-				fileEntity.getTitle();
-				fileEntity.getFilePath();
-				fileRepository.save(fileEntity);
-			}
-		}
+//		if(files != null) {
+//			List<Files> filesEntityLiist = fileRepository.findAll();
+//			List<FileDto> fileDtoList = new ArrayList<>();
+//			
+//			for(Files fileEntity : filesEntityLiist) {
+//				fileEntity.getId();
+//				fileEntity.getTitle();
+//				fileEntity.getFilePath();
+//				fileRepository.save(fileEntity);
+//			}
+//		}
 //		if(files != null) {
 //			String realPath = basedir;
 //			// 오늘날짜로 폴더 설정

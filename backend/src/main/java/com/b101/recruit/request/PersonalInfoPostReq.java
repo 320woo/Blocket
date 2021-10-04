@@ -45,7 +45,7 @@ public class PersonalInfoPostReq {
 //	private String selfIntro; 		
 //	private String jobExperience; 
 	
-	@ApiModelProperty(name="파일")
-	private List<FileDto> files;
+//	@ApiModelProperty(name="파일")
+//	private List<FileDto> files;
 	
 }
