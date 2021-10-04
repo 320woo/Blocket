@@ -23,21 +23,21 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Files {
 
-    @ManyToOne
-    @JoinColumn(name = "personal_info_id", nullable = false)
-    private PersonalInfo personalInfo;
-
-    @ManyToOne
-    @JoinColumn(name = "certificate_id")
-    private Certificate certificate;
-
-    @ManyToOne
-    @JoinColumn(name = "activity_id")
-    private Activity activity;
-    
-    @ManyToOne
-    @JoinColumn(name = "final_education_id")
-    private FinalEducation finaleducation;
+//    @ManyToOne
+//    @JoinColumn(name = "personal_info_id", nullable = false)
+//    private PersonalInfo personalInfo;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "certificate_id")
+//    private Certificate certificate;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "activity_id")
+//    private Activity activity;
+//    
+//    @ManyToOne
+//    @JoinColumn(name = "final_education_id")
+//    private FinalEducation finaleducation;
 
 //    private String filepath;
 //    private String originName;
@@ -60,9 +60,5 @@ public class Files {
         this.title = title;
         this.filePath = filePath;
     }
-
-	public Long getId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    
 }
