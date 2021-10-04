@@ -100,7 +100,7 @@ public class UserController {
 			String userEmail = userDetails.getUsername();
 			User user = userService.findByUserEmail(userEmail);
 			if (user != null)
-				return ResponseEntity.ok(UserRes.of(200,user));				
+				return ResponseEntity.ok(UserRes.of(200, user));
 		}
 		return ResponseEntity.status(404).body(BaseResponseBody.of(404, "존재하지 않는 회원입니다."));
 	}

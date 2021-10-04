@@ -102,6 +102,7 @@
 <script>
     import http from "@/utils/http-common";
     import axios from 'axios'
+    import { createWallet } from "@/utils/itemInventory.js"
 
     export default {
         name: "signup",
@@ -171,7 +172,6 @@
                         if (data.statusCode == 200) {
                             msg = "회원가입 완료";
                             // 회원가입이 완료되면, 신상정보를 등록한다.
-                            console.log("신상정보를 등록합니다..")
 
                             axios({
                                 url: 'http://localhost:8000/api/recruit/personalinfo',
@@ -183,7 +183,14 @@
                                 data: {
                                     'email': this.$store.state.user.userEmail
                                 }
-                            })
+                            }).then(
+                                // 신상정보를 등록하였으면, 지갑을 생성한다.
+                                createWallet().then(res => {
+                                    console.log(res)
+                                })
+
+
+                            )
 
 
                             this.$router.push("/login");

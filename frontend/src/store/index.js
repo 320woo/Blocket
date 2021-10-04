@@ -62,6 +62,7 @@ export default createStore({
                         context.commit("setUserEmail", email)
                         // vuex에 잘 저장되었나..?
                         context.commit("login", data);
+
                     }
                 })
                 .catch((error) => {
