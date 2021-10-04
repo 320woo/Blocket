@@ -9,7 +9,8 @@ export default createStore({
             userEmail: null,
             walletAddress: null,
             accessToken: null,
-            show: true
+            show: true,
+            personalInfoId: 0,
         }
     },
     mutations: {
@@ -30,6 +31,9 @@ export default createStore({
         login(state, payload) {
             state.user.accessToken = payload.accessToken;
             state.user.show = false;
+        },
+        setPersonalInfoId(state, payload) {
+            state.user.personalInfoId = payload
         }
     },
     actions: {

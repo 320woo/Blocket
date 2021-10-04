@@ -6,7 +6,6 @@ import vueConfig from '../../vue.config'
 
 const BASE_URL = vueConfig.devServer.proxy['/blocket'].target + "/api"
 const USER_URL =  BASE_URL + "/recruit/users"
-const INFO_URL = BASE_URL + "/recruit/personalinfo"
 
 
 // User 테이블에서 belong 가져오기
@@ -35,54 +34,5 @@ export function getMyInfo() {
     headers:{
       Authorization:"Bearer "+ store.state.user.accessToken
     }
-  })
-}
-
-
-export function getFinalEducation(personalInfoId) {
-  return axios.get(INFO_URL + "/" + personalInfoId + "/myFinalEducation", {
-    headers:{
-      Authorization:"Bearer "+ store.state.user.accessToken
-    }
-  })
-}
-
-
-export function createFinalEducation(myGrade) {
-  const obj = {
-    "grades": myGrade.grades + "/" + myGrade.totalScore,
-    "id": myGrade.id,
-    "name": myGrade.name,
-    "sortation": myGrade.sortation,
-    "userId": myGrade.userId
-  }
-  return axios({
-    url: INFO_URL + "/" + myGrade.id + "/finaleducation",
-    method: "POST", 
-    headers: {
-      Authorization: "Bearer "+ store.state.user.accessToken,
-      'Content-Type': 'application/json'
-    },
-    data: obj,
-  })
-}
-
-
-export function updateFinalEducation(myGrade) {
-  const obj = {
-    "grades": myGrade.grades + "/" + myGrade.totalScore,
-    "id": myGrade.pid,
-    "name": myGrade.name,
-    "sortation": myGrade.sortation,
-    "userId": myGrade.userId
-  }
-  return axios({
-    url: INFO_URL + "/" + myGrade.pid + "/" + myGrade.id + "/update",
-    method: "PUT", 
-    headers: {
-      Authorization: "Bearer "+ store.state.user.accessToken,
-      'Content-Type': 'application/json'
-    },
-    data: obj,
   })
 }
