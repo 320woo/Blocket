@@ -1,6 +1,7 @@
 package com.b101.recruit.controller;
 
 import com.b101.common.model.response.BaseResponseBody;
+import com.b101.recruit.domain.entity.UserWallet;
 import com.b101.recruit.reponse.UserWalletRes;
 import com.b101.recruit.reponse.UserWalletUpdatePatchRes;
 import com.b101.recruit.request.UserWalletRegisterPostReq;
@@ -11,8 +12,11 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @Api(value = "유저 지갑 API", tags = { "UserWallet." })
 @RestController
@@ -36,16 +40,19 @@ public class WalletController {
     }
 
     // 지갑 조회
-    @GetMapping("/me")
+    @GetMapping("/{userId}/me")
     @ApiOperation(value = "지갑 정보 조회", notes = "지갑 정보를 조회한다")
-    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "실패"),
+    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 404, message = "실패"),
             @ApiResponse(code = 500, message = "서버 오류") })
-    public ResponseEntity<? extends BaseResponseBody> getWalletInfo() {
-        // 지갑이 존재하지 않는다면
-        return ResponseEntity.status(401).body(BaseResponseBody.of(401, "지갑이 존재하지 않습니다."));
+    public ResponseEntity<Optional<UserWallet>> getWalletInfo(@PathVariable(name = "userId") Long userId) {
+        Optional<UserWallet> userWallet = userWalletService.findUserWallet(userId);
 
-        // 존재한다면
-//        return ResponseEntity.ok(UserWalletRes.of(200, userWallet));
+        if(userWallet.isEmpty()) { // 지갑이 존재하지 않는다면
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        else { // 존재한다면
+            return new ResponseEntity<>(userWallet, HttpStatus.OK);
+        }
     }
 
     // 지갑 수정

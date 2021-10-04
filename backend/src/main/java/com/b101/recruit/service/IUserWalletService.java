@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface IUserWalletService {
     void createUserWallet(UserWalletRegisterPostReq userWalletRegisterPostReq);
-    //Optional<UserWallet> findUserWallet();
+    Optional<UserWallet> findUserWallet(Long userId);
 }
