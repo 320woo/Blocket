@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.amazonaws.Response;
 import com.b101.recruit.domain.entity.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +37,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.b101.common.model.response.BaseResponseBody;
 import com.b101.recruit.auth.CustomUserDetails;
 import com.b101.recruit.domain.dto.FileDto;
-import com.b101.recruit.domain.repository.FilesRepository;
 import com.b101.recruit.reponse.PersonalInfoPostRes;
 import com.b101.recruit.request.ActivityPostReq;
 import com.b101.recruit.request.CertificatePostReq;
@@ -54,7 +55,9 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 @RequestMapping("/api/recruit/personalinfo")
 public class PersonalInfoController {
-	
+
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	@Autowired
 	private S3Service s3Service;
 	
@@ -252,13 +255,19 @@ public class PersonalInfoController {
 	@ApiOperation(value = "최종학력 등록", notes = "최종학력을 등록한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
 		@ApiResponse(code = 500, message = "서버 오류") })
-	public ResponseEntity<BaseResponseBody> createFinalEducation(@PathVariable(name = "personalinfoId") Long id,
-			@RequestBody FinalEducationPostReq finaleducation) {
-		FinalEducation finaleducation2 = service.createFinalEducation(id, finaleducation);
+	public ResponseEntity<BaseResponseBody> createFinalEducation(@RequestBody FinalEducationPostReq FinalEducationPostReq, @PathVariable(name = "personalinfoId") Long id
+			) {
+
+		logger.info("최종 학력 등록 메서드");
+		logger.info("PersonalInfoId: {}", id);
+
+		// 이미 기존에 작성한 글이 있는지 조회한다.
+
+		FinalEducation finaleducation2 = service.createFinalEducation(id, FinalEducationPostReq);
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
 	}
-	
-	@PutMapping("/{personalinfoId}/{finaleducationId}")
+
+	@PutMapping("/{personalinfoId}/{finaleducationId}/update")
 	@ApiOperation(value = "최종학력 수정", notes = "최종학력을 수정한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
 		@ApiResponse(code = 500, message = "서버 오류") })
@@ -268,7 +277,7 @@ public class PersonalInfoController {
 		return ResponseEntity.status(200).body(finaleducation2);
 	}
 	
-	@DeleteMapping("/{personalinfoId}/{finaleducationId}")
+	@DeleteMapping("/{personalinfoId}/{finaleducationId}/delete")
 	@ApiOperation(value = "최종학력 삭제", notes = "최종학력을 삭제한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
 		@ApiResponse(code = 500, message = "서버 오류") })

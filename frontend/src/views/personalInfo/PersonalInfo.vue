@@ -68,10 +68,23 @@
             </div>
           </div>
 
-          <div class="p-col">{{ state.myGrade.finalEducation }}
-            <div :v-if="state.myGrade.finalEducation !== '최종 학력이 등록되지 않았습니다.'">
+          <div class="p-col">
+            <!-- 입력한 최종학력이 존재하는 경우 -->
+            <div class="p-grid">
+              <div class="p-col-12">
+                최종 학력 : {{ state.myGrade.sortation }}
+              </div>
+              <div class="p-col-12">
+                학교명 : {{ state.myGrade.schoolInfo }} {{ state.myGrade.majorInfo }}
+              </div>
+              <div class="p-col-12">
+                학점 : {{ state.myGrade.grades }} / {{ state.myGrade.totalScore }}
+              </div>
+            </div>
+
+            <div v-if="!state.myGrade.isItWritten">
               <span style="color: blue; cursor: pointer; display: inline-block;" @click="state.displayEducationModal = true">
-                <strong>입력하기</strong>
+                <strong>새로 입력하기</strong>
               </span>
             </div>
           </div>
@@ -175,38 +188,38 @@
         <!-- 대학교 이름 검색 -->
         <div class="p-field p-col-6">
           <label for="collegeName">학교명*</label>  
-          <AutoComplete id="collegeName" v-model="selectedCollege" 
-          :suggestions="filteredColleges" @complete="searchCollege($event)" field="schoolName" />
+          <AutoComplete id="collegeName" v-model="this.state.myGrade.schoolInfoObj" 
+          :suggestions="filteredColleges" @complete="searchCollege($event)" field="schoolName" placeholder="ex) OO대학교, OO대학" />
         </div>
         <!-- 학과 이름 검색 -->
         <div class="p-field p-col-6">
           <label for="majorName">학과명*</label>
-          <AutoComplete id="majorName" v-model="selectedMajor" 
-          :suggestions="filteredMajors" @complete="searchMajor($event)" field="mClass" />
+          <AutoComplete id="majorName" v-model="this.state.myGrade.majorInfoObj" 
+          :suggestions="filteredMajors" @complete="searchMajor($event)" field="mClass" placeholder="ex) OO학과, OO학" />
         </div>
         <!-- 총 학점 -->
         <div class="p-field p-col-3">
           <label for="grade">취득 학점*</label>
-          <InputText id="grade" class="input-text" type="grade" style="width: 80px;" />
+          <InputText id="grade" class="input-text" type="grade" style="width: 80px;" v-model="state.myGrade.grades" />
         </div>
 
 
         <div class="p-field p-col-3">
           <label for="scoreType">학점 기준</label>
-          <select name="scoreType" id="scoreType" class="select">
-            <option value="1">4.3</option>
-            <option value="2">4.5</option>
+          <select name="scoreType" id="scoreType" class="select" v-model="state.myGrade.totalScore">
+            <option value="4.3">4.3</option>
+            <option value="4.5">4.5</option>
           </select>
         </div>
 
         <!-- 학교 분류 ex) 고등학교, 대학교, 대학원,,, -->
         <div class="p-field p-col-12">
-          <label for="majorName">학교분류*</label>
-          <select name="type" id="schoolType" class="select">
-            <option value="1">고등학교</option>
-            <option value="2">대학교</option>
-            <option value="3">대학원(석사졸)</option>
-            <option value="4">대학원(박사졸)</option>
+          <label for="sortation">학교분류*</label>
+          <select name="sortation" id="sortation" class="select" v-model="state.myGrade.sortation">
+            <option value="고등학교">고등학교</option>
+            <option value="대학교">대학교</option>
+            <option value="대학원(석사졸)">대학원(석사졸)</option>
+            <option value="대학원(박사졸)">대학원(박사졸)</option>
           </select>
         </div>
 
@@ -397,12 +410,11 @@ setup() {
   // 학교 검색 관련 변수
   const colleges = ref()         // 모든 학교
   const filteredColleges = ref() // 검색 결과로 나온 학교들
-  const selectedCollege = ref()  // 내가 선택한 학교
+  
   
   // 학과 검색 관련 변수
   const majors = ref()          // 모든 전고
   const filteredMajors = ref()  // 검색 결과로 나온 전공들
-  const selectedMajor = ref() // 내가 선택한 전공
 
   // 파일 첨부 관련 변수 - 토스트
   // const toast = useToast()
@@ -434,13 +446,21 @@ setup() {
 
     // 최종 학력 사항
     myGrade: {
-      finalEducation: '최종 학력이 등록되지 않았습니다.',
-      grades: '',
+      id: '', // 학력 사항 Pk. 있는 경우에만 값이 들어간다.
+      pid: '',     // 신상정보 PK
+      userId: '', // 작성자 Id,
+      isItWritten: false,   // DB에서 데이터를 받아오는 경우 true가 된다.
+      grades: '',   // 내가 취득한 평균 학점
+      totalScore: '', // 학점 점수 기준
+      schoolInfoObj: '', // 객체로 저장된다.
+      majorInfoObj: '', // 객체로 저장된다.
+      schoolInfo: '', 
+      majorInfo: '',  
       name: '',
-      sortation: '',
-      userId: '',
+      sortation: '',  // 분류. 대학교, 고등학교, 중학교,
+      
     },
-    
+
     // 활동 사항
     activityName: '', 
     startDate: '',
@@ -453,7 +473,9 @@ setup() {
     certScore: '',
   })
 
-  // 페이지가 로드되면
+
+  // =================== 페이지 로드 ================== //
+  // ================================================= //
   onMounted(() => {
 
     // 모든 대학교 목록 불러오기
@@ -469,8 +491,8 @@ setup() {
     // 소속 표시하기 위해, user 테이블에서 조회하기
     pService.getUserBelong().then(res => {
       state.belong = res.data.belong
+      state.store.commit("setUserId", res.data.id)
     })
-    
     
     // personalInfo 정보 불러오기. 이 때 personalInfo PK도 함께 저장해둔다.
     pService.getMyInfo().then(res => {
@@ -479,29 +501,33 @@ setup() {
       state.personalInfo.address = res.data[0].address
       state.personalInfo.englishName = res.data[0].englishName
       state.personalInfo.gender = res.data[0].gender
-      // 최종 학력 정보 불러오기
-      pService.getFinalEducation(state.personalInfo.id)  .then(res => {
-        console.log("최종학력 로드 결과: ", res)
-        
+    
+      // 최종학력 불러오기
+      pService.getFinalEducation(state.personalInfo.id).then(res => {
         // 만약 저장되어 있는 최종 학력이 존재하지 않는경우 ...
         if (res.data.length === 0) {
-          state.myGrade.finalEducation = "최종 학력이 등록되지 않았습니다."
+          state.myGrade.isItWritten = false
         } 
-        // 최종학력이 존재하는 경우...
         else {
-          state.myGrade.finalEducation = res.data  
-        }
+          state.myGrade.isItWritten = true
 
-        if (state.myGrade.finalEducation.length === 0) {
-          console.log("아직 최종학력이 등록되지 않았습니다.")
-        }
-        else {
-          console.log("등록된 최종학력이 존재합니다.")
+          // 객체의 데이터를 하나하나 넣어준다.
+          const name = res.data[0].name.split(" ")
+          const gradeInfo = res.data[0].grades.split("/")
+
+          state.myGrade.id = res.data[0].id
+          state.myGrade.schoolInfo = name[0]
+          state.myGrade.schoolInfoObj = name[0]
+          state.myGrade.majorInfo = name[1]
+          state.myGrade.majorInfoObj = name[1]
+          state.myGrade.grades = gradeInfo[0]
+          state.myGrade.totalScore = gradeInfo[1]
+          state.myGrade.sortation = res.data[0].sortation
         }
       })
 
       // 활동 사항 정보 불러오기
-    
+      
       // 어학, 자격증 정보 불러오기
       
       // 병역 사항 불러오기
@@ -510,16 +536,16 @@ setup() {
 
       // 장애 여부 불러오기
     })
+
+    
   })
 
   return {
     state,
     colleges,
     filteredColleges,
-    selectedCollege,
     majors, 
     filteredMajors,
-    selectedMajor,
     // toast,
   }
   
@@ -536,9 +562,36 @@ methods: {
   openEducationModal() {
     this.state.displayEducationModal = true
   },
+
+  // 최종학력 저장
   saveEducationModal() {
+    // 기본적으로, 파일이 반드시 선택되어 있어야 한다.
+
+
+    // 최종 학력 등록하기
+    this.state.myGrade.pid = this.state.personalInfo.id
+    this.state.myGrade.userId = this.state.store.state.user.userId
+    this.state.myGrade.name = this.state.myGrade.schoolInfoObj.schoolName  + " " + this.state.myGrade.majorInfoObj.mClass
+    
+    // 만약 처음으로 작성하는 거라면...
+    if (!this.state.myGrade.isItWritten) {
+      console.log("최종학력 작성")
+      pService.createFinalEducation(this.state.myGrade)
+    }
+    // 이미 작성되었다면
+    else {
+      console.log("최종학력 수정")
+      pService.updateFinalEducation(this.state.myGrade)
+      .then(
+        // 데이터 갱신이 필요하다.
+
+      )
+    }
     this.state.displayEducationModal = false
   },
+  
+
+
   // 대학교 검색
   searchCollege(event) {
     setTimeout(() => {
