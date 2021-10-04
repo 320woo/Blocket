@@ -56,12 +56,20 @@ public class WalletController {
     }
 
     // 지갑 수정
-    @PatchMapping("/me")
+    @PatchMapping("/{userId}/me")
     @ApiOperation(value = "지갑 정보 수정", notes = "지갑 정보를 수정한다")
-    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "실패"),
+    @ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 404, message = "실패"),
             @ApiResponse(code = 500, message = "서버 오류") })
-    public ResponseEntity<UserWalletUpdatePatchRes> patchUserWallet(@RequestBody UserWalletUpdatePatchReq userWalletUpdatePatchReq) {
-        return null;
+    public ResponseEntity<UserWalletUpdatePatchRes> patchUserWallet(@RequestBody UserWalletUpdatePatchReq userWalletUpdatePatchReq,
+                                                                    @PathVariable(name = "userId") Long userId) {
+        Optional<UserWallet> userWallet = userWalletService.findUserWallet(userId);
+
+        if(userWallet.isEmpty()) { // 지갑이 존재하지 않는다면
+            return ResponseEntity.status(404).body(UserWalletUpdatePatchRes.of(404, "지갑이 존재하지 않습니다."));
+        }
+        else { // 존재한다면
+            return ResponseEntity.status(200).body(UserWalletUpdatePatchRes.of(200, "지갑 정보 수정에 성공하였습니다."));
+        }
     }
 
     // 지갑 삭제
