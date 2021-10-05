@@ -18,6 +18,7 @@ export default createStore({
             state.user.userId = id
         },
         setUserEmail(state, userEmail) {
+            console.log("vuex 데이터 주입: 이메일")
             state.user.userEmail = userEmail
         },
         setWalletAddress(state, address) {
@@ -38,6 +39,11 @@ export default createStore({
         }
     },
     actions: {
+        setUserEmail({ commit }, payload){
+            console.log("actions.js에서 setUserEmail 호출")
+            commit("setUserEmail", payload)
+        },
+
         saveWalletInDB({
             state
         }, payload) {
