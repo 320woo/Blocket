@@ -12,5 +12,7 @@ export default {
   components: {
     Main,
   },
+  methods: {
+  },
 };
 </script>

@@ -23,9 +23,9 @@
           <!-- 인적 사항 부분 -->
           <div class="p-grid user-info" style="margin-top:50px;">
             <div class="p-col-4 ">
-              <div style="font-size: 30px;">{{ this.state.name }}</div>
-              <div><h4>{{ this.state.belong }}</h4></div>
-              <div><h5>{{ this.$store.state.user.userEmail }}</h5></div>
+              <div style="font-size: 30px;">{{ this.$store.state.user.username }}</div>
+              <div><h5> 이메일 : {{ this.$store.state.user.userEmail }}</h5></div>
+              <div><h5> 소속 : {{ this.$store.state.user.userbelong }}</h5></div>
             </div>
             <div class="p-col-8">
             </div>
