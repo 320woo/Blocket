@@ -79,6 +79,7 @@ public class S3Service {
             }
         }
 
+
         // 파일 업로드
         s3Client.putObject(new PutObjectRequest(bucket, fileName, file.getInputStream(), null)
                 .withCannedAcl(CannedAccessControlList.PublicRead));

@@ -2,6 +2,7 @@ package com.b101.recruit.service.impl;
 
 import java.util.Optional;
 
+import com.b101.recruit.domain.dto.GalleryDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,20 +15,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.b101.recruit.domain.dto.VerificationDto;
-import com.b101.recruit.domain.entity.Activity;
-import com.b101.recruit.domain.entity.Certificate;
-import com.b101.recruit.domain.entity.File;
-import com.b101.recruit.domain.entity.FinalEducation;
+import com.b101.recruit.domain.entity.Gallery;
+import com.b101.recruit.domain.entity.PersonalInfo;
 import com.b101.recruit.domain.entity.Verification;
 import com.b101.recruit.domain.repository.ActivityRepository;
 import com.b101.recruit.domain.repository.CertificateRepository;
 import com.b101.recruit.domain.repository.FinalEducationRepository;
-import com.b101.recruit.domain.repository.JpaVerificationRepository;
 import com.b101.recruit.domain.repository.PersonalInfoRepository;
 import com.b101.recruit.domain.repository.VerificationRepository;
-import com.b101.recruit.request.ActivityPostReq;
-import com.b101.recruit.request.CertificatePostReq;
-import com.b101.recruit.request.FinalEducationPostReq;
 import com.b101.recruit.request.VerificationListGetReq;
 import com.b101.recruit.request.VerificationUpdatePatchReq;
 import com.b101.recruit.service.IVerificationService;
@@ -54,23 +49,26 @@ public class VerificationService implements IVerificationService {
 	PersonalInfoRepository personalInfoRepository;
 
 	@Override
-	public Verification createVerification(File file) throws NullPointerException {
+	public Verification createVerification(GalleryDto galleryDto) throws NullPointerException {
+		
 		Verification verification = new Verification();
-		verification.setPersonalinfo(file.getPersonalInfo());
+		Gallery gallery = new Gallery(galleryDto.getId(), galleryDto.getTitle(), galleryDto.getFilePath(), galleryDto.getPid(), galleryDto.getSid(), galleryDto.getSortation());
+		PersonalInfo personalInfo = personalInfoRepository.findById(gallery.getPid()).get();
+		verification.setPersonalinfo(personalInfo);
 		verification.setCurrentStatus("승인대기");
-		verification.setFile(file);
-		Long userId = personalInfoRepository.findUserIdById(file.getPersonalInfo().getId());
+		verification.setGallery(gallery);
+		Long userId = personalInfoRepository.findUserIdById(gallery.getPid());
 		verification.setUserId(userId); 
 		return verificationRepository.save(verification);
 	}
 
 	@Override
 	public Verification updateVerification(VerificationUpdatePatchReq vcpr) {
-		Optional<Verification> verification = verificationRepository.findByFileId(vcpr.getFileId());
+		Optional<Verification> verification = verificationRepository.findByGalleryId(vcpr.getFileId());
 		if (verification.isPresent()) {
 			String status = vcpr.getVerified();
 			verification.get().setCurrentStatus(status);
-			if (status.equals("거절")) verification.get().setReasonsRejection(vcpr.getResonsRejection());
+			verification.get().setReasonsRejection(vcpr.getResonsRejection());
 			return verificationRepository.save(verification.get());
 		}
 		return null;

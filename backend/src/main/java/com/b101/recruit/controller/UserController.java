@@ -136,6 +136,7 @@ public class UserController {
 	public ResponseEntity<UserUpdatePatchRes> patchUser(@ApiIgnore Authentication authentication,
 			@RequestBody @ApiParam(value = "수정 정보") UserUpdatePatchReq UserUpdatePatchReq) {
 		System.out.println("회원수정");
+		System.out.println(authentication);
 		if (authentication == null) {
 			return ResponseEntity.status(401).body(UserUpdatePatchRes.of(401, "로그인 인증 실패"));
 		} else {

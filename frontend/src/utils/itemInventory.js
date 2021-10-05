@@ -97,12 +97,12 @@ export function saveState() {
       to: receive_account,
       data: '0xEAB280ECA69DEC9984EBA38C' // 검증완료라는 string 문구를 Hexadecimal 현태로 변환하여 저장한 것.
     }
-
+    
     const ethereumTx = require('ethereumjs-tx').Transaction
     
     const tx = new ethereumTx(txObject, {'chain': 'ropsten'})
     tx.sign(privateKey) // 객체를 담은 후 개인키를 이용한 sign이 들어간다. 이더리움 테스트넷과 메인넷에서는 필수로 sign객체가 필요하다. 
-
+    
     const serializedTx = tx.serialize()
     const raw = '0x' + serializedTx.toString('hex')
     

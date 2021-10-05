@@ -19,8 +19,8 @@ export default createStore({
             userphone : null,
             walletAddress: null,
             accessToken: null,
-            show: true
-            
+            show: true,
+            personalInfoId: 0,
         }
     },
     mutations: {
@@ -28,6 +28,7 @@ export default createStore({
             state.user.userId = id
         },
         setUserEmail(state, userEmail) {
+            console.log("vuex 데이터 주입: 이메일")
             state.user.userEmail = userEmail
         },
         setWalletAddress(state, address) {
@@ -35,6 +36,7 @@ export default createStore({
         },
         logout(state) {
             state.user.userId = 0
+            state.user.personalInfoId = 0
             state.user.walletAddress = null
             state.user.show = true
         },
@@ -48,16 +50,24 @@ export default createStore({
             state.user.userbelong = payload.belong;
             state.user.userbrn = payload.brn;
             state.user.userphone = payload.phoneNumber;
+        },
+        setPersonalInfoId(state, payload) {
+            state.user.personalInfoId = payload
         }
     },
     actions: {
+        setUserEmail({ commit }, payload){
+            console.log("actions.js에서 setUserEmail 호출")
+            commit("setUserEmail", payload)
+        },
+
         saveWalletInDB({
             state
         }, payload) {
             console.log(state)
             console.log(payload)
         },
-        login(context, {email, password}) {
+        login(context, { email, password }) {
             console.log("로그인");
             http
                 .post("/api/recruit/users/login", {
@@ -93,10 +103,10 @@ export default createStore({
             http
                 .get("/api/recruit/users/" + email, {email: email})
                 .then(({data}) => {
-                    console.log(data)
+                    console.log("메세지" + data.message)
                     if (data.statusCode == 200) {
                         alert("가입이 가능한 이메일입니다.")
-                    } else {
+                    } else if(data.statusCode == 409) {
                         alert("이미 있는 이메일입니다.")
                     }
                 })
@@ -108,9 +118,35 @@ export default createStore({
                 }
             }).then(({data}) => {
                 context.commit("userinfo", data);
-                pService.UserCheck();
+                
+
             })
         },
+        modify(context, data) {
+            console.log("수정 들어옴" + context);
+            console.log("토큰 :  " + this.state.user.accessToken);
+            axios.patch(USER_URL + "/me", {
+                headers: {
+                    Authorization: "Bearer " + this.state.user.accessToken
+                }
+            },data)
+                // const url = USER_URL + "/me";
+                // const headers = {
+                //     Authorization: "Bearer " + localStorage.getItem("accessToken"),
+                // }
+                // return axios.patch(url, { headers }, data,)
+                //     .then((res) => {
+                //     if(res.data.statusCode==200){
+                //         console.log(res.data);
+                //         // alert(res.data.message);
+                //     }   
+                // }).catch((err)=>{
+                //     //  alert(err.data.message);
+                //     // alert(err);
+                //     console.log(err);
+                // });
+            
+        }
     },
     getters: {},
     modules: {}

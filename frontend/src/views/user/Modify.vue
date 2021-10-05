@@ -105,8 +105,7 @@
 <script>
     // import http from "@/utils/http-common";
     import * as pService from '@/utils/pService.js'
-    import axios from 'axios'
-    
+    // import axios from 'axios'
 
     export default {
         name: "signup",
@@ -144,15 +143,6 @@
                 this.show_brn = true;
             },
             modifyUser() {
-                this.$store.dispatch("modify", 
-                        {
-                            belong: this.belong,
-                            brn: this.brn,
-                            name: this.name,
-                            phoneNumber: this.phoneNumber,
-                            type: 0
-                           });
-
                 let err = true;
                 let msg = "";
                 err && !this.email && ((msg = "이메일을 입력해주세요"), (err = false));
@@ -162,19 +152,14 @@
                 if (!err) alert(msg);
                 else {
                     if (confirm("수정 하시겠습니까?")) {
-                        axios.patch('http://localhost:8000/api/recruit/users/me', {
-                            headers: {
-                                    Authentication: 'Bearer ' + this.$store.state.accessToken, 
-                                    'Content-Type': 'application/json'
-                            },
-                            belong: this.belong,
-                            brn: this.brn,
-                            name: this.name,
-                            phoneNumber: this.phoneNumber,
-                            type: 0
-                        }).then(({data}) => {
-                            console.log(data);
-                        })
+                        this.$store.dispatch("modify",
+                            {   
+                                belong: this.belong,
+                                brn: 0,
+                                name: this.name,
+                                phoneNumber: this.phoneNumber,
+                                type: 0
+                            });
                     }
                 }
             },

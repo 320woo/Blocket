@@ -11,7 +11,6 @@ import java.util.Optional;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-import com.amazonaws.Response;
 import com.b101.recruit.domain.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,13 +28,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.b101.common.model.response.BaseResponseBody;
 import com.b101.recruit.auth.CustomUserDetails;
-import com.b101.recruit.domain.dto.FileDto;
 import com.b101.recruit.reponse.PersonalInfoPostRes;
 import com.b101.recruit.request.ActivityPostReq;
 import com.b101.recruit.request.CertificatePostReq;
@@ -54,8 +49,6 @@ import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
 import springfox.documentation.annotations.ApiIgnore;
 
-//@Controller
-//@AllArgsConstructor
 @Api(value = "신상정보 API", tags = { "PersonalInfo." })
 @RestController
 @RequestMapping("/api/recruit/personalinfo")
@@ -73,36 +66,13 @@ public class PersonalInfoController {
 	@Value("${server.tomcat.basedir}")
 	private String basedir;
 	
-//	@GetMapping("/file")
-//	@ApiOperation(value = "파일 리스트", notes = "파일 리스트를 불러온다.")
-//	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
-//		@ApiResponse(code = 500, message = "서버 오류") })
-//	public String dispWrite(Model model) {
-//		List<FileDto> fileDtoList = service.getList();
-//		model.addAttribute("fileList", fileDtoList);
-//		return "/file";
-//	}
-//	
-//	@PostMapping("/file")
-//	@ApiOperation(value = "파일 업로드", notes = "파일을 등록한다.")
-//	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
-//		@ApiResponse(code = 500, message = "서버 오류") })
-//	public String execWrite(FileDto fileDto, MultipartFile file) throws IOException {
-//		String imgPath = s3Service.upload(fileDto.getFilePath(), file);
-//		fileDto.setFilePath(imgPath);
-//		service.savePost(fileDto);
-//		return "redirest:/file";
-//	}
-	
 	@PostMapping()
 	@ApiOperation(value = "신상정보 등록", notes = "기본 신상정보를 등록한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
 		@ApiResponse(code = 500, message = "서버 오류") })
 	public ResponseEntity<BaseResponseBody> createPersonalInfo(@RequestBody PersonalInfoPostReq personalinfoPostReq) {
 		try {
-//			String impPath = s3Service.uploadFile(files);
-//			fileDto.setFilePath(impPath);
-//			PersonalInfo personalinfo = service.createPersonalInfo(personalinfoPostReq, files);
+			logger.debug("이메일 확인!! {}", personalinfoPostReq.getEmail());
 			PersonalInfo personalinfo = service.createPersonalInfo(personalinfoPostReq);
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
@@ -224,7 +194,24 @@ public class PersonalInfoController {
 		service.deleteCertificate(pId, cId);
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
 	}
-	
+
+	@GetMapping("/{personalinfoId}/myActivity")
+	@ApiOperation(value = "활동사항 조회", notes = "활동사항을 조회한다.")
+	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
+			@ApiResponse(code = 500, message = "서버 오류") })
+	public ResponseEntity<Optional<List<Activity>>> getActivities(@PathVariable("personalinfoId") Long id,
+			@ApiIgnore Authentication authentication) {
+		if (authentication == null) {
+			return ResponseEntity.status(401).body(null);
+		}
+		else {
+			Optional<List<Activity>> result = service.getActivities(id);
+			return ResponseEntity.status(200).body(result);
+		}
+
+	}
+
+
 	@PostMapping("/{personalinfoId}/activity")
 	@ApiOperation(value = "활동사항 등록", notes = "활동사항을 등록한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),

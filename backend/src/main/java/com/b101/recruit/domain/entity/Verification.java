@@ -9,6 +9,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 
+import com.b101.recruit.domain.dto.GalleryDto;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,9 +36,10 @@ public class Verification extends BaseEntity {
 	private Date registrationDate; // 등록일
 	private String currentStatus; // 현재상태(승인대기, 승인완료, 거절)
 	private Long userId;
+	
     @OneToOne
-    @JoinColumn(name = "file_id", nullable = false)
-    private File file;
+    @JoinColumn(name = "gallery_id", nullable = false)
+    private Gallery gallery;
 	
 	@Column(columnDefinition = "LONGTEXT")
 	private String reasonsRejection; // 반려사유

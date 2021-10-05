@@ -84,7 +84,7 @@ public class VerificationController {
 			CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
 			String userEmail = userDetails.getUsername();
 
-			User user = userService.findByUserEmail("admin@ssafy.com");
+			User user = userService.findByUserEmail(userEmail);
 
 			if (user != null &&user.getType()==2) {
 				Page<VerificationDto> verList = verificationService.getVerificationList(verificationListGetReq);
