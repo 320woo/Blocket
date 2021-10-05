@@ -18,7 +18,7 @@ public class VerificationUpdatePatchReq {
 	private String verified;
 	//반려사유
 	@ApiModelProperty(name = "반려 사유")
-	private String resonsRejection;
+	private String reasonsRejection;
 	
 	
 }

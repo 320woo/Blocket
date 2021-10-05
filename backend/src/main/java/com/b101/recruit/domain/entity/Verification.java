@@ -29,9 +29,9 @@ import lombok.Setter;
 public class Verification extends BaseEntity {
 	
 	//얘 사용하려면 personalinfo에서 어학,활동상태,최종학력 등록 시에 verification 테이블에 등록해줘야 함
-//	@ManyToOne
-//	@JoinColumn(name = "personal_info_id")
-//	private PersonalInfo personalinfo; // 신상정보 id
+	@ManyToOne
+	@JoinColumn(name = "personal_info_id")
+	private PersonalInfo personalinfo; // 신상정보 id
 	
 	private Date registrationDate; // 등록일
 	private String currentStatus; // 현재상태(승인대기, 승인완료, 거절)

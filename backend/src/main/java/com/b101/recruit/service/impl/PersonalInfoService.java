@@ -320,4 +320,15 @@ public class PersonalInfoService implements IPersonalInfoService {
 		finaleducationRepository.deleteById(fId);		
 	}
 
+	public Object getSortationDetail(String sortation, Long sId) {
+		if(sortation.equals("act")) {
+			return activityRepository.findById(sId).get();
+		}else if(sortation.equals("cert")) {
+			return certificateRepository.findById(sId).get();
+		}else if(sortation.equals("edu")) {
+			return finaleducationRepository.findById(sId).get();
+		}
+		return null;
+	}
+
 }

@@ -31,6 +31,8 @@ public class QVerification extends EntityPathBase<Verification> {
     //inherited
     public final NumberPath<Long> id = _super.id;
 
+    public final QPersonalInfo personalinfo;
+
     public final StringPath reasonsRejection = createString("reasonsRejection");
 
     public final DateTimePath<java.util.Date> registrationDate = createDateTime("registrationDate", java.util.Date.class);
