@@ -20,9 +20,9 @@ import lombok.AllArgsConstructor;
 
 @Controller
 @AllArgsConstructor
-//@Api(value = "aws 연동 파일 처리 API", tags = { "Gallery." })
-//@RestController
-//@RequestMapping("/api/recruit/Gallery")
+@Api(value = "aws 연동 파일 처리 API", tags = { "Gallery." })
+@RestController
+@RequestMapping("/api/recruit/Gallery")
 public class GalleryController {
 	
 	private S3Service s3Service;

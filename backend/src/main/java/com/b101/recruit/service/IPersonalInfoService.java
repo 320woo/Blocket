@@ -8,8 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.b101.recruit.domain.dto.FileDto;
+import com.b101.recruit.domain.dto.GalleryDto;
 import com.b101.recruit.domain.entity.Activity;
 import com.b101.recruit.domain.entity.Certificate;
+import com.b101.recruit.domain.entity.Files;
 import com.b101.recruit.domain.entity.FinalEducation;
 import com.b101.recruit.domain.entity.PersonalInfo;
 import com.b101.recruit.reponse.PersonalInfoPostRes;
@@ -20,7 +22,7 @@ import com.b101.recruit.request.PersonalInfoPostReq;
 
 public interface IPersonalInfoService {
 
-	PersonalInfo createPersonalInfo(PersonalInfoPostReq personalinfoPostReq, MultipartFile files) throws IllegalStateException, IOException;
+	PersonalInfo createPersonalInfo(PersonalInfoPostReq personalinfoPostReq) throws IllegalStateException, IOException;
 	
 	PersonalInfoPostRes getonePersonalInfo(Long id, String email);
 	
@@ -51,5 +53,10 @@ public interface IPersonalInfoService {
 	FinalEducation updateFinalEducation(Long pId, Long fId, FinalEducationPostReq finaleducation);
 	
 	void deleteFinalEducation(Long pId, Long fId);
+	
+	// 파일
+//	List<FileDto> getList();
+//	FileDto convertEntityToDto(Files file);
+//	void savePost(FileDto fileDto);
 	
 }

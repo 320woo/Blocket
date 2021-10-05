@@ -25,6 +25,7 @@ import com.b101.recruit.domain.repository.ActivityRepository;
 import com.b101.recruit.domain.repository.CertificateRepository;
 import com.b101.recruit.domain.repository.FilesRepository;
 import com.b101.recruit.domain.repository.FinalEducationRepository;
+import com.b101.recruit.domain.repository.GalleryRepository;
 import com.b101.recruit.domain.repository.PersonalInfoRepository;
 import com.b101.recruit.domain.repository.UserRepository;
 import com.b101.recruit.reponse.PersonalInfoPostRes;
@@ -34,7 +35,10 @@ import com.b101.recruit.request.FinalEducationPostReq;
 import com.b101.recruit.request.PersonalInfoPostReq;
 import com.b101.recruit.service.IPersonalInfoService;
 
+import lombok.AllArgsConstructor;
+
 @Service("PersonalInfoService")
+//@AllArgsConstructor
 public class PersonalInfoService implements IPersonalInfoService {
 
 	@Autowired
@@ -66,28 +70,32 @@ public class PersonalInfoService implements IPersonalInfoService {
 	
 	private FilesRepository fileRepository;
 	
-	public List<FileDto> getList() {
-        List<Files> fileEntityList = fileRepository.findAll();
-        List<FileDto> fileDtoList = new ArrayList<>();
-
-        for (Files fileEntity : fileEntityList) {
-            fileDtoList.add(convertEntityToDto(fileEntity));
-        }
-
-        return fileDtoList;
-    }
-
-	private FileDto convertEntityToDto(Files file) {
-        return FileDto.builder()
-                .id(file.getId())
-                .title(file.getTitle())
-                .filePath(file.getFilePath())
-                .imgFullPath("https://" + s3Service.CLOUD_FRONT_DOMAIN_NAME + "/" + file.getFilePath())
-                .build();
-    }
+//	public void savePost(FileDto fileDto) {
+//		fileRepository.save(fileDto.toEntity());
+//	}
+//	
+//	public List<FileDto> getList() {
+//        List<Files> fileEntityList = fileRepository.findAll();
+//        List<FileDto> fileDtoList = new ArrayList<>();
+//
+//        for (Files fileEntity : fileEntityList) {
+//            fileDtoList.add(convertEntityToDto(fileEntity));
+//        }
+//
+//        return fileDtoList;
+//    }
+//
+//	public FileDto convertEntityToDto(Files file) {
+//        return FileDto.builder()
+//                .id(file.getId())
+//                .title(file.getTitle())
+//                .filePath(file.getFilePath())
+//                .imgFullPath("https://" + s3Service.CLOUD_FRONT_DOMAIN_NAME + "/" + file.getFilePath())
+//                .build();
+//    }
 	
 	@Override
-	public PersonalInfo createPersonalInfo(PersonalInfoPostReq personalinfoPostReq, MultipartFile files)
+	public PersonalInfo createPersonalInfo(PersonalInfoPostReq personalinfoPostReq)
 			throws IllegalStateException, IOException {
 		PersonalInfo personalinfo = new PersonalInfo();
 		User user = userService.findByUserEmail(personalinfoPostReq.getEmail());
@@ -104,17 +112,17 @@ public class PersonalInfoService implements IPersonalInfoService {
 		personalinfo = personalinfoRepository.save(personalinfo);
 		
 		// 파일 처리
-		if(files != null) {
-			List<Files> filesEntityLiist = fileRepository.findAll();
-			List<FileDto> fileDtoList = new ArrayList<>();
-			
-			for(Files fileEntity : filesEntityLiist) {
-				fileEntity.getId();
-				fileEntity.getTitle();
-				fileEntity.getFilePath();
-				fileRepository.save(fileEntity);
-			}
-		}
+//		if(files != null) {
+//			List<Files> filesEntityLiist = fileRepository.findAll();
+//			List<FileDto> fileDtoList = new ArrayList<>();
+//			
+//			for(Files fileEntity : filesEntityLiist) {
+//				fileEntity.getId();
+//				fileEntity.getTitle();
+//				fileEntity.getFilePath();
+//				fileRepository.save(fileEntity);
+//			}
+//		}
 //		if(files != null) {
 //			String realPath = basedir;
 //			// 오늘날짜로 폴더 설정

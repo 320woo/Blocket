@@ -6,9 +6,12 @@ import com.b101.recruit.domain.repository.JpaUserWalletRepository;
 import com.b101.recruit.domain.repository.UserRepository;
 import com.b101.recruit.domain.repository.UserWalletRepository;
 import com.b101.recruit.request.UserWalletRegisterPostReq;
+import com.b101.recruit.request.UserWalletUpdatePatchReq;
 import com.b101.recruit.service.IUserWalletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service("userWalletService")
 public class UserWalletService implements IUserWalletService {
@@ -34,5 +37,15 @@ public class UserWalletService implements IUserWalletService {
         userWallet.setBalance(userWalletRegisterPostReq.getBalance());
         userWallet.setReceiving_count(userWalletRegisterPostReq.getReceiving_count());
         userWalletRepository.save(userWallet);
+    }
+
+    @Override
+    public Optional<UserWallet> findUserWallet(Long userId) {
+        return jpaUserWalletRepository.findByUserId(userId);
+    }
+
+    @Override
+    public long updateUserWallet(Long userId, UserWalletUpdatePatchReq userWalletUpdatePatchReq) {
+        return jpaUserWalletRepository.updateUserWallet(userId, userWalletUpdatePatchReq);
     }
 }
