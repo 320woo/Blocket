@@ -31,24 +31,16 @@ public class PersonalInfoPostRes {
 	@ApiModelProperty(name = "영문이름")
 	private String englishName; 
 	@ApiModelProperty(name = "성별")
-	private String gender; 		
-	@ApiModelProperty(name = "대표프로필")
-	private String repProfile; 		
+	private String gender;
 	@ApiModelProperty(name = "병역사항")
 	private String militaryService;
 	@ApiModelProperty(name = "보훈사항")
 	private String veteransAffairs;
 	@ApiModelProperty(name = "장애여부")
-	private String disabled; 		
+	private String disabled;
+
 	
-	/**/ 
-	@ApiModelProperty(name = "대내외 활동")
-	private String intExtAct; 
-//	private String prosCons; 		
-//	private String selfIntro; 		
-//	private String jobExperience; 
-	
-	@ApiModelProperty(name="어학, 자격증")
+	@ApiModelProperty(name="어학,자격증")
 	private List<CertificatePostReq> certificates;
 	
 	@ApiModelProperty(name="활동사항")

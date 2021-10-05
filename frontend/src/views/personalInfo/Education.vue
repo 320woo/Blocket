@@ -97,7 +97,6 @@ import * as eService from '@/utils/educationService.js'
 
 export default {
   name: 'Education',
-  props: [],
   setup() {
     const colleges = ref()         // 모든 학교
     const filteredColleges = ref() // 검색 결과로 나온 학교들

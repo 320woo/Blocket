@@ -73,9 +73,6 @@ import * as aService from '@/utils/activityService.js'
 
 export default {
   name: 'Activity', 
-  props: [
-
-  ],
   setup() {
     // 활동사항 불러오기
     aService.getActivities().then(resp => {

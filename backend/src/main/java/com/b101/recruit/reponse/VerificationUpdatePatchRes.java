@@ -16,7 +16,7 @@ import lombok.Setter;
 public class VerificationUpdatePatchRes extends BaseResponseBody {
 	
 	private Long verificationId;
-	private Long personalInfoId;
+	private Long userId;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	private Date registrationDate;
 	private String currentStatus;
@@ -27,7 +27,7 @@ public class VerificationUpdatePatchRes extends BaseResponseBody {
 		res.setStatusCode(statusCode);
 		res.setMessage(message);
 		res.setVerificationId(verification.getId());
-		res.setPersonalInfoId(verification.getPersonalinfo().getId());
+		res.setUserId(verification.getUserId());
 		res.setRegistrationDate(verification.getRegistrationDate());
 		res.setCurrentStatus(verification.getCurrentStatus());
 		res.setResonsRejection(verification.getReasonsRejection());

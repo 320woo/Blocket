@@ -31,6 +31,8 @@ public class QVerification extends EntityPathBase<Verification> {
     //inherited
     public final NumberPath<Long> id = _super.id;
 
+    public final QPersonalInfo personalinfo;
+
     public final StringPath reasonsRejection = createString("reasonsRejection");
 
     public final DateTimePath<java.util.Date> registrationDate = createDateTime("registrationDate", java.util.Date.class);
@@ -56,6 +58,7 @@ public class QVerification extends EntityPathBase<Verification> {
     public QVerification(Class<? extends Verification> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.gallery = inits.isInitialized("gallery") ? new QGallery(forProperty("gallery")) : null;
+        this.personalinfo = inits.isInitialized("personalinfo") ? new QPersonalInfo(forProperty("personalinfo"), inits.get("personalinfo")) : null;
     }
 
 }
