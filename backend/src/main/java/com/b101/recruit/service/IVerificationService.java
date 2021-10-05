@@ -32,4 +32,6 @@ public interface IVerificationService {
 
 	Verification createVerification(GalleryDto galleryDto) throws NullPointerException;
 
+	String getCurrentStatus(Long gId);
+
 }

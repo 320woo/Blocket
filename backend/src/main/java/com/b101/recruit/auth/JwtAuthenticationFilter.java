@@ -54,11 +54,9 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter{
 	public Authentication getAuthentication(HttpServletRequest request) throws Exception {
 		String jwtToken = request.getHeader(JwtTokenUtil.HEADER_STRING);
 		// 토큰 검증 및 인증 처리 로직
-		System.out.println("누구냐 넌?! "+ jwtToken);
 		if (jwtToken != null &&jwtToken.startsWith(JwtTokenUtil.TOKEN_PREFIX)) {
 			String token = jwtToken.substring(7);
 			JwtTokenUtil.handleError(token);
-			System.out.println("누구냐 넌?!2222 "+ token);
 				
 				String userEmail = JwtTokenUtil.getUserId(token);
 				if (userEmail != null) {
