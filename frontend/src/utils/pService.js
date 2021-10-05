@@ -11,79 +11,40 @@ const BASE_URL = vueConfig
 const USER_URL = BASE_URL + "/recruit/users"
 const INFO_URL = BASE_URL + "/recruit/personalinfo"
 
-// User 테이블에서 belong 가져오기
-// export function getUserBelong() {
-
-//     console.log("Belong 가져옵니다.")
-//     return axios.get(USER_URL, {
-//         headers: {
-//             Authorization: "Bearer " + store.state.user.accessToken
-//         }
-//     })
-// }
-
 export function UserDelete() {
-    console.log("탈퇴 pService : " + store.state.user.accessToken);
-    return axios.delete(USER_URL + "/me", {
-        headers: {
-            Authorization: "Bearer " + store.state.user.accessToken
-        }
-    })
+  console.log("탈퇴 pService : " + store.state.user.accessToken);
+  return axios.delete(USER_URL + "/me", {
+      headers: {
+          Authorization: "Bearer " + store.state.user.accessToken
+      }
+  })
 }
 
 export function UserCheck() {
-    console.log("유저정보 check")
-    return axios.get(USER_URL + "/me", {
-        headers: {
-            Authorization: "Bearer " + store.state.user.accessToken
-        }
-    })
+  console.log("유저정보 check")
+  return axios.get(USER_URL + "/me", {
+      headers: {
+          Authorization: "Bearer " + store.state.user.accessToken
+      }
+  })
 }
 
 // 토큰 확인 함수
 export function checkToken() {
-    if (store.state.user.accessToken === null) {
-        alert("로그인 해주세요.")
-        router.push("/login")
-    }
+  if (store.state.user.accessToken === null) {
+      alert("로그인 해주세요.")
+      router.push("/login")
+  }
 }
 
-// User 테이블에서 belong 가져오기
-export async function getUserBelong() {
-    let result = ''
-    await axios
-        .get(USER_URL + "/me", {
-            headers: {
-                Authorization: "Bearer " + store.state.user.accessToken
-            }
-        })
-        .then(res => {
-            // id는 vuex에 저장
-            store.commit("setUserId", res.data.id)
-            result = {
-                belong: res.data.belong,
-                name: res.data.name
-            }
-        })
-    return result;
-}
 
-export function getFinalEducation(personalInfoId) {
-    return axios.get(
-        INFO_URL + "/" + personalInfoId + "/myFinalEducation",
-        {
-            headers: {
-                Authorization: "Bearer " + store.state.user.accessToken
-            }
-        }
-    )
-}
 export function checkLogin() {
 
     if (store.state.user.accessToken !== null) {
         router.push("/")
     }
 }
+
 // 신상정보 불러오기
 export async function getMyInfo() {
   let result = ''
@@ -94,18 +55,22 @@ export async function getMyInfo() {
         Authorization:"Bearer "+ store.state.user.accessToken
     }
   }).then(res => {
-    console.log("신상정보 조회 결과:", res)
-
-    result = {
-      id: res.data[0].id,
-      dateBirth: res.data[0].dateBirth,
-      address: res.data[0].address,
-      englishName: res.data[0].englishName,
-      gender: res.data[0].gender,
-      disabled: res.data[0].disabled,
-      militaryService: res.data[0].militaryService,
-      veteransAffairs: res.data[0].veteransAffairs,
-    }
+    // 최초 등록 시, 주소-영문이름-성별-생년월일은 반드시 한번에 등록되어야 한다.
+    result = res.data[0]
   })
+  console.log(result)
   return result
+}
+
+export async function saveInfoModal(pid, input) {
+  await axios({
+    url: INFO_URL + "/" + pid + "/updatePersonalInfo",
+    method: "PUT",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    data: JSON.stringify(input)
+  })
+  input.dateBirth = JSON.stringify(input.dateBirth).slice(1, 11)
+  return input
 }

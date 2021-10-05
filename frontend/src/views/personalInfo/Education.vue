@@ -103,13 +103,30 @@ export default {
     const majors = ref()           // 모든 전공
     const filteredMajors = ref()   // 검색 결과로 나온 전공들
 
+
+    // 최종학력 불러오기
+    eService.getFinalEducation().then(res => {
+      state.isWritten = res.isWritten
+
+      if (!res.isWritten) {
+        // 최종학력 작성에 필요한 기본사항(pid, userId만 등록해둔다.)
+        state.myGrade.pid = res.pid
+        state.myGrade.userId = res.userId
+      }
+      else {
+        state.myGrade = res
+      }
+    })
+
+
     const state = reactive({
+      id: '',   // 학력사항 PK
+      pid: '',  // 신상정보 PK
       displayEducationModal: false,
       // 최종 학력 사항
       isWritten: false,
+      // 이미 작성한 내용이 있는 경우, 불러올 때 사용한다.
       myGrade: {
-        id: '',                     // 학력 사항 Pk. 있는 경우에만 값이 들어간다.
-        pid: '',                    // 신상정보 PK
         userId: '',                 // 작성자 Id,
         grades: '',                 // 내가 취득한 평균 학점
         totalScore: '',             // 학점 점수 기준
@@ -119,6 +136,15 @@ export default {
         majorName: '',  
         sortation: '',              // 분류. 대학교, 고등학교, 중학교,
       },
+      // 신규 작성할 내용
+      input: {
+        userId: '',
+        schoolName: '',
+        majorName: '',
+        grades: '',
+        totalScore: '',
+        sortation: '',
+      }
     })
 
     onMounted(() => {
@@ -130,20 +156,6 @@ export default {
       // 학과 목록 불러오기
       getAllMajors().then(res => {
         majors.value = res.data.dataSearch.content
-      })
-
-      // 최종학력 불러오기
-      eService.getFinalEducation().then(res => {
-        state.isWritten = res.isWritten
-
-        if (!res.isWritten) {
-          // 최종학력 작성에 필요한 기본사항(pid, userId만 등록해둔다.)
-          state.myGrade.pid = res.pid
-          state.myGrade.userId = res.userId
-        } 
-        else {
-          state.myGrade = res
-        }
       })
     })
 
