@@ -30,17 +30,18 @@
 <script>
 // import http from "@/utils/http-common";
 // import axios from "@/utils/bearer";
-    export default {
-        data() {
-            return {}
+
+export default {
+    data() {
+        return {}
         },
-        methods: {
-            me() {
-                this.$store.dispatch("modify");
-            },
+    methods: {
+        me() {
+                this.$store.dispatch("userCheck"); 
+        },
             logout() {
-                this.$router.push("/");
                 this.$store.dispatch("logout");
+                this.$router.push("/");
             }
         },
     }

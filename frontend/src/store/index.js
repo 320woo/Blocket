@@ -1,15 +1,26 @@
 import {createStore} from "vuex";
 import http from "@/utils/http-common";
-import axios from "@/utils/bearer";
+// import axios from "@/utils/bearer";
+import * as pService from '@/utils/pService.js'
+import vueConfig from '../../vue.config'
+import axios from 'axios'
+var BASE_URL = vueConfig.devServer.proxy['/blocket'].target + "/api"
+var USER_URL = BASE_URL + "/recruit/users"
+
 
 export default createStore({
     state: {
         user: {
             userId: 0,
             userEmail: null,
+            username: null,
+            userbelong: null,
+            userbrn: null,
+            userphone : null,
             walletAddress: null,
             accessToken: null,
             show: true
+            
         }
     },
     mutations: {
@@ -30,6 +41,13 @@ export default createStore({
         login(state, payload) {
             state.user.accessToken = payload.accessToken;
             state.user.show = false;
+        },
+        userinfo(state, payload) {
+            console.log(payload.name);
+            state.user.username = payload.name;
+            state.user.userbelong = payload.belong;
+            state.user.userbrn = payload.brn;
+            state.user.userphone = payload.phoneNumber;
         }
     },
     actions: {
@@ -41,10 +59,6 @@ export default createStore({
         },
         login(context, {email, password}) {
             console.log("로그인");
-            console.log(email + " " + password);
-
-            //들고간 값을 통해서 post요청을 해줍니다. post요청을 하고 나서 받은 객체를 mutations로 보내줍니다. (payload)
-
             http
                 .post("/api/recruit/users/login", {
                     email: email,
@@ -52,7 +66,6 @@ export default createStore({
                 })
                 .then(({data}) => {
                     console.log(data);
-                    console.log("토큰" + data.accessToken)
                     localStorage.setItem("accessToken", data.accessToken);
 
                     if (data.statusCode == 404) {
@@ -62,6 +75,7 @@ export default createStore({
                         context.commit("setUserEmail", email)
                         // vuex에 잘 저장되었나..?
                         context.commit("login", data);
+                        pService.checkLogin();
                     }
                 })
                 .catch((error) => {
@@ -77,29 +91,26 @@ export default createStore({
             console.log("중복체크 : " + email);
             console.log(context);
             http
-                .get("/api/recruit/users/" + email , {
-                    email: email
-                })
-                .then(({ data }) => {
+                .get("/api/recruit/users/" + email, {email: email})
+                .then(({data}) => {
                     console.log(data)
                     if (data.statusCode == 200) {
                         alert("가입이 가능한 이메일입니다.")
-                    }
-                    else {
+                    } else {
                         alert("이미 있는 이메일입니다.")
                     }
                 })
         },
-        modify(context) {
-            console.log(context);
-            if (localStorage.getItem("accessToken")) {
-                const url = "/api/recruit/users/me";
-                // const headers = {
-                //     Authorization: `Bearer ` + this.state.user.accessToken,
-                // };
-                return axios.delete(url);
-            }
-        }
+        userCheck(context) {
+            axios.get(USER_URL + "/me", {
+                headers: {
+                    Authorization: "Bearer " + this.state.user.accessToken
+                }
+            }).then(({data}) => {
+                context.commit("userinfo", data);
+                pService.UserCheck();
+            })
+        },
     },
     getters: {},
     modules: {}

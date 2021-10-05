@@ -75,12 +75,7 @@
                             //form에서 받은 값을 action에 있는 login 함수로 들고
                             email: this.email_id,
                             password: this.password
-                            
                         });
-
-                    if (this.$store.state.user.accessToken != null) {
-                        this.$router.push("/");
-                    }
                 }
             }
         }
