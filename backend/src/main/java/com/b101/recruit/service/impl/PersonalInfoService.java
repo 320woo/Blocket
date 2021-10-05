@@ -73,11 +73,9 @@ public class PersonalInfoService implements IPersonalInfoService {
 		personalinfo.setAddress(personalinfoPostReq.getAddress());
 		personalinfo.setEnglishName(personalinfoPostReq.getEnglishName());
 		personalinfo.setGender(personalinfoPostReq.getGender());
-		personalinfo.setRepProfile(personalinfoPostReq.getRepProfile());
 		personalinfo.setMilitaryService(personalinfoPostReq.getMilitaryService());
 		personalinfo.setVeteransAffairs(personalinfoPostReq.getVeteransAffairs());
 		personalinfo.setDisabled(personalinfoPostReq.getDisabled());
-		personalinfo.setIntExtAct(personalinfoPostReq.getIntExtAct());
 		personalinfo = personalinfoRepository.save(personalinfo);
 		
 		// 파일 처리
@@ -122,11 +120,9 @@ public class PersonalInfoService implements IPersonalInfoService {
 		p.setAddress(personalinfo.getAddress());
 		p.setEnglishName(personalinfo.getEnglishName());
 		p.setGender(personalinfo.getGender());
-		p.setRepProfile(personalinfo.getRepProfile());
 		p.setMilitaryService(personalinfo.getMilitaryService());
 		p.setVeteransAffairs(personalinfo.getVeteransAffairs());
 		p.setDisabled(personalinfo.getDisabled());
-		p.setIntExtAct(personalinfo.getIntExtAct());
 		
 		// 파일 처리
 //		List<PersonalInfo_File> list = fileRepository.findByPersonalInfo_id(id).get();
@@ -198,11 +194,9 @@ public class PersonalInfoService implements IPersonalInfoService {
 		personalinfo.setAddress(personalinfoPostReq.getAddress());
 		personalinfo.setEnglishName(personalinfoPostReq.getEnglishName());
 		personalinfo.setGender(personalinfoPostReq.getGender());
-		personalinfo.setRepProfile(personalinfoPostReq.getRepProfile());
 		personalinfo.setMilitaryService(personalinfoPostReq.getMilitaryService());
 		personalinfo.setVeteransAffairs(personalinfoPostReq.getVeteransAffairs());
 		personalinfo.setDisabled(personalinfoPostReq.getDisabled());
-		personalinfo.setIntExtAct(personalinfoPostReq.getIntExtAct());
 		return personalinfoRepository.save(personalinfo);
 	}
 	

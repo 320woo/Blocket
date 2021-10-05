@@ -37,11 +37,7 @@ public class QPersonalInfo extends EntityPathBase<PersonalInfo> {
     //inherited
     public final NumberPath<Long> id = _super.id;
 
-    public final StringPath intExtAct = createString("intExtAct");
-
     public final StringPath militaryService = createString("militaryService");
-
-    public final StringPath repProfile = createString("repProfile");
 
     public final QUser user;
 

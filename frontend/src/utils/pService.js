@@ -26,7 +26,10 @@ export async function getUserBelong() {
   .then(res => {
     // id는 vuex에 저장
     store.commit("setUserId", res.data.id)
-    result = res.data.belong
+    result = {
+      belong: res.data.belong,
+      name: res.data.name,
+    }
   })
   return result
 }
@@ -40,6 +43,8 @@ export async function getMyInfo() {
       Authorization:"Bearer "+ store.state.user.accessToken
     }
   }).then(res => {
+    console.log("신상정보 조회 결과:", res)
+
     result = {
       id: res.data[0].id,
       dateBirth: res.data[0].dateBirth,
