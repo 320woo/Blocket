@@ -154,7 +154,7 @@
 
       <div class="p-field p-col-12">
         <label for="englishName">영문이름</label>
-        <InputText id="englishName" class="input-text" type="englishName" style="width: 100%;" v-model="state.input.englishName" placeholder="ex) SSAFY, Kim" />
+        <InputText id="englishName" class="input-text" type="englishName" style="width: 100%;" v-model="state.input.englishName" required placeholder="ex) SSAFY, Kim" />
       </div>
 
       <div class="p-field p-col-12">

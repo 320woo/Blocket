@@ -48,6 +48,7 @@ const routes = [
     path: "/walletInfo",
     name: "WalletInfo",
     component: WalletInfo,
+    meta: { urlCheck: false }
   },
   {
     path: "/test",
@@ -70,5 +71,17 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
+
+// router 네비게이션 가드
+// to : 이동할 URL 정보가 담긴 Router 객체
+// from : 현재 URL 정보가 담긴 Router 객체
+// next : to에서 지정한 URL로 이동하기 위해 반드시 호출해야 하는 함수
+
+// router.beforeEach((to, from, next) => {
+//   if (to.meta.urlCheck ) { 
+//     alert("잘못된 접근입니다.")
+//     next("/")
+//   }
+// })
 
 export default router;

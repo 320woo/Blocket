@@ -1,14 +1,13 @@
 import Web3 from 'web3'
 import axios from 'axios'
 import vueConfig from '../../vue.config'
-
-const BASE_URL = vueConfig.devServer.proxy['/blocket'].target + "/api"
-const WALLET_URL = BASE_URL + "/wallet"
-
 import {
   BLOCKCHAIN_URL,
   // BLOCKCHAIN_WEBSOCKET_URL,
 } from '../config'
+
+const BASE_URL = vueConfig.devServer.proxy['/blocket'].target + "/api"
+const WALLET_URL = BASE_URL + "/wallet"
 
 // Web3 Object 생성
 export function createWeb3() {
@@ -17,13 +16,14 @@ export function createWeb3() {
 }
 
 // 관리자 계정에서 사용자 계정으로 0.1 이더씩 보내기
-export function sendEther() {
+export function sendEther(address) {
   console.log("0.1 이더를 사용자 계정에 전송합니다. ")
   const web3 = createWeb3()
 
   const send_account = "0xf255FC9eF3778E688950649547D398B027D8b999"
-  const receive_account = "0x41278A913Ae5D0F68CF2D06A4007d76AF696B255"
-  const privateKey = Buffer.from("b35023e44ad462879d110e4f68c8e794e0097c475d4639d4b9dbf463dcb1ef09", 'hex') // 개인키 맨 앞의 0x를 빼야한다. 
+  const receive_account = address
+  // 관리자 계정의 개인키. 개인키 맨 앞의 0x를 빼야한다. 
+  const privateKey = Buffer.from("b35023e44ad462879d110e4f68c8e794e0097c475d4639d4b9dbf463dcb1ef09", 'hex') 
 
   // nonce : EOA가 생성하여 블록체인에 기록된 트랜잭션의 개수. nonce는 트랜잭션의 중복 전송을 방지하는데 사용된다. 
   web3.eth.getTransactionCount(send_account, (err, txCount) => {
@@ -34,7 +34,7 @@ export function sendEther() {
       gasPrice: web3.utils.toHex(web3.utils.toWei('10', 'gwei')),
       from: send_account,
       to: receive_account,
-      value: '0x2386f26fc10000' // 0.01 이더
+      value: '0x2386f26fc10000'
     }
 
     const ethereumTx = require('ethereumjs-tx').Transaction
@@ -65,6 +65,8 @@ export function createWallet(email) {
     email: email,
   }
 
+  // 이미 저장된 지갑이 존재하는 경우, 다시 저장하지 않는다. -> 백엔드 로직에 추가해둠
+  
   axios({
     url: WALLET_URL + "/register",
     method: "POST",
@@ -124,6 +126,11 @@ export function getAllTransactions() {
 
 // 파일로 privateKey 저장하기
 export function saveToFile_Chrome(fileName, content) {
+  if (content === '') {
+    alert("잘못된 경로입니다. 다시 시도해 주세요.")
+    return
+  }
+
   const blob = new Blob([content], { type: 'text/plain' });
   const objURL = window.URL.createObjectURL(blob);
           
