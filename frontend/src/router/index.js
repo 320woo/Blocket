@@ -3,8 +3,10 @@ import Home from "../views/Home.vue";
 import Login from "../views/user/Login.vue";
 import Join from "../views/user/Join.vue";
 import Modify from "../views/user/Modify.vue";
-import PersonalInfo from "../views/personalInfo/PersonalInfo.vue"
-import Test from "../views/test.vue"
+import PersonalInfo from "../views/personalInfo/PersonalInfo.vue";
+import Test from "../views/test.vue";
+import Verification from "../views/verification/Verification.vue";
+import VerificationList from "../views/verification/VerificationList.vue";
 
 
 const routes = [
@@ -46,7 +48,17 @@ const routes = [
     path: "/test",
     name: "test",
     component: Test,
-  }
+  },
+    {
+    path: "/verificationList",
+    name: "VerificationList",
+    component: VerificationList,
+  },
+  {
+    path: "/verification",
+    name: "Verification",
+    component: Verification,
+  },
 ];
 
 const router = createRouter({
