@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import com.b101.recruit.domain.dto.VerificationDto;
 import com.b101.recruit.domain.entity.Activity;
 import com.b101.recruit.domain.entity.Certificate;
-import com.b101.recruit.domain.entity.File;
 import com.b101.recruit.domain.entity.FinalEducation;
 import com.b101.recruit.domain.entity.Verification;
 import com.b101.recruit.domain.repository.ActivityRepository;
@@ -54,17 +53,17 @@ public class VerificationService implements IVerificationService {
 	@Autowired
 	PersonalInfoRepository personalInfoRepository;
 
-	@Override
-	public Verification createVerification(GalleryDto galleryDto) throws NullPointerException {
-		
-		Verification verification = new Verification();
-		verification.setPersonalinfo(file.getPersonalInfo());
-		verification.setCurrentStatus("승인대기");
-		verification.setFile(file);
-		Long userId = personalInfoRepository.findUserIdById(file.getPersonalInfo().getId());
-		verification.setUserId(userId); 
-		return verificationRepository.save(verification);
-	}
+//	@Override
+//	public Verification createVerification(GalleryDto galleryDto) throws NullPointerException {
+//		
+//		Verification verification = new Verification();
+//		verification.setPersonalinfo(file.getPersonalInfo());
+//		verification.setCurrentStatus("승인대기");
+//		verification.setFile(file);
+//		Long userId = personalInfoRepository.findUserIdById(file.getPersonalInfo().getId());
+//		verification.setUserId(userId); 
+//		return verificationRepository.save(verification);
+//	}
 
 	@Override
 	public Verification updateVerification(VerificationUpdatePatchReq vcpr) {

@@ -38,7 +38,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.b101.common.model.response.BaseResponseBody;
 import com.b101.recruit.auth.CustomUserDetails;
-import com.b101.recruit.domain.dto.FileDto;
 import com.b101.recruit.reponse.PersonalInfoPostRes;
 import com.b101.recruit.request.ActivityPostReq;
 import com.b101.recruit.request.CertificatePostReq;
@@ -55,8 +54,6 @@ import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
 import springfox.documentation.annotations.ApiIgnore;
 
-//@Controller
-//@AllArgsConstructor
 @Api(value = "신상정보 API", tags = { "PersonalInfo." })
 @RestController
 @RequestMapping("/api/recruit/personalinfo")
@@ -74,36 +71,12 @@ public class PersonalInfoController {
 	@Value("${server.tomcat.basedir}")
 	private String basedir;
 	
-//	@GetMapping("/file")
-//	@ApiOperation(value = "파일 리스트", notes = "파일 리스트를 불러온다.")
-//	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
-//		@ApiResponse(code = 500, message = "서버 오류") })
-//	public String dispWrite(Model model) {
-//		List<FileDto> fileDtoList = service.getList();
-//		model.addAttribute("fileList", fileDtoList);
-//		return "/file";
-//	}
-//	
-//	@PostMapping("/file")
-//	@ApiOperation(value = "파일 업로드", notes = "파일을 등록한다.")
-//	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
-//		@ApiResponse(code = 500, message = "서버 오류") })
-//	public String execWrite(FileDto fileDto, MultipartFile file) throws IOException {
-//		String imgPath = s3Service.upload(fileDto.getFilePath(), file);
-//		fileDto.setFilePath(imgPath);
-//		service.savePost(fileDto);
-//		return "redirest:/file";
-//	}
-	
 	@PostMapping()
 	@ApiOperation(value = "신상정보 등록", notes = "기본 신상정보를 등록한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
 		@ApiResponse(code = 500, message = "서버 오류") })
 	public ResponseEntity<BaseResponseBody> createPersonalInfo(@RequestBody PersonalInfoPostReq personalinfoPostReq) {
 		try {
-//			String impPath = s3Service.uploadFile(files);
-//			fileDto.setFilePath(impPath);
-//			PersonalInfo personalinfo = service.createPersonalInfo(personalinfoPostReq, files);
 			PersonalInfo personalinfo = service.createPersonalInfo(personalinfoPostReq);
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
