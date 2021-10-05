@@ -34,9 +34,10 @@ public class Verification extends BaseEntity {
 	private Date registrationDate; // 등록일
 	private String currentStatus; // 현재상태(승인대기, 승인완료, 거절)
 	private Long userId;
-    @OneToOne
-    @JoinColumn(name = "file_id", nullable = false)
-    private File file;
+	
+//    @OneToOne
+//    @JoinColumn(name = "file_id", nullable = false)
+//    private File file;
 	
 	@Column(columnDefinition = "LONGTEXT")
 	private String reasonsRejection; // 반려사유

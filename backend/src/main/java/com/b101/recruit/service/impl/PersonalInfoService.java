@@ -13,18 +13,16 @@ import java.util.*;
 
 import javax.transaction.Transactional;
 
-import com.b101.recruit.domain.dto.FileDto;
 import com.b101.recruit.domain.dto.GalleryDto;
 import com.b101.recruit.domain.entity.Activity;
 import com.b101.recruit.domain.entity.Certificate;
 import com.b101.recruit.domain.entity.FinalEducation;
-import com.b101.recruit.domain.entity.Files;
 import com.b101.recruit.domain.entity.PersonalInfo;
 import com.b101.recruit.domain.entity.User;
 import com.b101.recruit.domain.repository.ActivityRepository;
 import com.b101.recruit.domain.repository.CertificateRepository;
-import com.b101.recruit.domain.repository.FilesRepository;
 import com.b101.recruit.domain.repository.FinalEducationRepository;
+import com.b101.recruit.domain.repository.GalleryRepository;
 import com.b101.recruit.domain.repository.PersonalInfoRepository;
 import com.b101.recruit.domain.repository.UserRepository;
 import com.b101.recruit.reponse.PersonalInfoPostRes;
@@ -34,7 +32,10 @@ import com.b101.recruit.request.FinalEducationPostReq;
 import com.b101.recruit.request.PersonalInfoPostReq;
 import com.b101.recruit.service.IPersonalInfoService;
 
+import lombok.AllArgsConstructor;
+
 @Service("PersonalInfoService")
+//@AllArgsConstructor
 public class PersonalInfoService implements IPersonalInfoService {
 
 	@Autowired
@@ -62,32 +63,8 @@ public class PersonalInfoService implements IPersonalInfoService {
 	@Value("${server.tomcat.basedir}")
 	private String basedir;
 	
-	private S3Service s3Service;
-	
-	private FilesRepository fileRepository;
-	
-	public List<FileDto> getList() {
-        List<Files> fileEntityList = fileRepository.findAll();
-        List<FileDto> fileDtoList = new ArrayList<>();
-
-        for (Files fileEntity : fileEntityList) {
-            fileDtoList.add(convertEntityToDto(fileEntity));
-        }
-
-        return fileDtoList;
-    }
-
-	private FileDto convertEntityToDto(Files file) {
-        return FileDto.builder()
-                .id(file.getId())
-                .title(file.getTitle())
-                .filePath(file.getFilePath())
-                .imgFullPath("https://" + s3Service.CLOUD_FRONT_DOMAIN_NAME + "/" + file.getFilePath())
-                .build();
-    }
-	
 	@Override
-	public PersonalInfo createPersonalInfo(PersonalInfoPostReq personalinfoPostReq, MultipartFile files)
+	public PersonalInfo createPersonalInfo(PersonalInfoPostReq personalinfoPostReq)
 			throws IllegalStateException, IOException {
 		PersonalInfo personalinfo = new PersonalInfo();
 		User user = userService.findByUserEmail(personalinfoPostReq.getEmail());
@@ -96,25 +73,12 @@ public class PersonalInfoService implements IPersonalInfoService {
 		personalinfo.setAddress(personalinfoPostReq.getAddress());
 		personalinfo.setEnglishName(personalinfoPostReq.getEnglishName());
 		personalinfo.setGender(personalinfoPostReq.getGender());
-		personalinfo.setRepProfile(personalinfoPostReq.getRepProfile());
 		personalinfo.setMilitaryService(personalinfoPostReq.getMilitaryService());
 		personalinfo.setVeteransAffairs(personalinfoPostReq.getVeteransAffairs());
 		personalinfo.setDisabled(personalinfoPostReq.getDisabled());
-		personalinfo.setIntExtAct(personalinfoPostReq.getIntExtAct());
 		personalinfo = personalinfoRepository.save(personalinfo);
 		
 		// 파일 처리
-		if(files != null) {
-			List<Files> filesEntityLiist = fileRepository.findAll();
-			List<FileDto> fileDtoList = new ArrayList<>();
-			
-			for(Files fileEntity : filesEntityLiist) {
-				fileEntity.getId();
-				fileEntity.getTitle();
-				fileEntity.getFilePath();
-				fileRepository.save(fileEntity);
-			}
-		}
 //		if(files != null) {
 //			String realPath = basedir;
 //			// 오늘날짜로 폴더 설정
@@ -156,13 +120,9 @@ public class PersonalInfoService implements IPersonalInfoService {
 		p.setAddress(personalinfo.getAddress());
 		p.setEnglishName(personalinfo.getEnglishName());
 		p.setGender(personalinfo.getGender());
-		p.setRepProfile(personalinfo.getRepProfile());
 		p.setMilitaryService(personalinfo.getMilitaryService());
 		p.setVeteransAffairs(personalinfo.getVeteransAffairs());
-//		p.setFinalEducation(personalinfo.getFinalEducation());
 		p.setDisabled(personalinfo.getDisabled());
-//		p.setTranscript(personalinfo.getTranscript());
-		p.setIntExtAct(personalinfo.getIntExtAct());
 		
 		// 파일 처리
 //		List<PersonalInfo_File> list = fileRepository.findByPersonalInfo_id(id).get();
@@ -195,7 +155,7 @@ public class PersonalInfoService implements IPersonalInfoService {
 		}
 		
 		// 활동사항
-		List<Activity> alist = activityRepository.findByPersonalinfo_id(personalinfo.getId()).get();
+		List<Activity> alist = activityRepository.findAllByPersonalinfo_Id(personalinfo.getId()).get();
 		if(alist != null) {
 			List<ActivityPostReq> activitys = new ArrayList<>();
 			for(Activity a : alist) {
@@ -234,13 +194,9 @@ public class PersonalInfoService implements IPersonalInfoService {
 		personalinfo.setAddress(personalinfoPostReq.getAddress());
 		personalinfo.setEnglishName(personalinfoPostReq.getEnglishName());
 		personalinfo.setGender(personalinfoPostReq.getGender());
-		personalinfo.setRepProfile(personalinfoPostReq.getRepProfile());
 		personalinfo.setMilitaryService(personalinfoPostReq.getMilitaryService());
 		personalinfo.setVeteransAffairs(personalinfoPostReq.getVeteransAffairs());
-//		personalinfo.setFinalEducation(personalinfoPostReq.getFinalEducation());
 		personalinfo.setDisabled(personalinfoPostReq.getDisabled());
-//		personalinfo.setTranscript(personalinfoPostReq.getTranscript());
-		personalinfo.setIntExtAct(personalinfoPostReq.getIntExtAct());
 		return personalinfoRepository.save(personalinfo);
 	}
 	
@@ -296,6 +252,11 @@ public class PersonalInfoService implements IPersonalInfoService {
 	@Override
 	public void deleteCertificate(Long pId, Long cId) {
 		certificateRepository.deleteById(cId);
+	}
+
+	@Override
+	public Optional<List<Activity>> getActivities(Long id) {
+		return activityRepository.findAllByPersonalinfo_Id(id);
 	}
 
 	@Override
@@ -358,5 +319,5 @@ public class PersonalInfoService implements IPersonalInfoService {
 	public void deleteFinalEducation(Long pId, Long fId) {
 		finaleducationRepository.deleteById(fId);		
 	}
-	
+
 }

@@ -11,14 +11,14 @@ import java.util.Optional;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-import com.amazonaws.Response;
 import com.b101.recruit.domain.entity.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,19 +28,17 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.b101.common.model.response.BaseResponseBody;
 import com.b101.recruit.auth.CustomUserDetails;
-import com.b101.recruit.domain.dto.FileDto;
-import com.b101.recruit.domain.repository.FilesRepository;
 import com.b101.recruit.reponse.PersonalInfoPostRes;
 import com.b101.recruit.request.ActivityPostReq;
 import com.b101.recruit.request.CertificatePostReq;
 import com.b101.recruit.request.FinalEducationPostReq;
 import com.b101.recruit.request.PersonalInfoPostReq;
+import com.b101.recruit.service.impl.GalleryService;
 import com.b101.recruit.service.impl.PersonalInfoService;
 import com.b101.recruit.service.impl.S3Service;
 
@@ -48,13 +46,16 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.AllArgsConstructor;
 import springfox.documentation.annotations.ApiIgnore;
 
 @Api(value = "신상정보 API", tags = { "PersonalInfo." })
 @RestController
 @RequestMapping("/api/recruit/personalinfo")
 public class PersonalInfoController {
-	
+
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	@Autowired
 	private S3Service s3Service;
 	
@@ -65,26 +66,14 @@ public class PersonalInfoController {
 	@Value("${server.tomcat.basedir}")
 	private String basedir;
 	
-	@GetMapping("/{personalinfoId}/file")
-	@ApiOperation(value = "파일 리스트", notes = "파일 리스트를 불러온다.")
-	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
-		@ApiResponse(code = 500, message = "서버 오류") })
-	public String dispWrite(Model model) {
-		List<FileDto> fileDtoList = service.getList();
-		model.addAttribute("fileList", fileDtoList);
-		return "/file";
-	}
-	
 	@PostMapping()
 	@ApiOperation(value = "신상정보 등록", notes = "기본 신상정보를 등록한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
 		@ApiResponse(code = 500, message = "서버 오류") })
-	public ResponseEntity<BaseResponseBody> createPersonalInfo(@RequestBody PersonalInfoPostReq personalinfoPostReq,
-			@RequestPart(value = "file", required = false) MultipartFile files, FileDto fileDto) {
+	public ResponseEntity<BaseResponseBody> createPersonalInfo(@RequestBody PersonalInfoPostReq personalinfoPostReq) {
 		try {
-			String impPath = s3Service.uploadFile(files);
-			fileDto.setFilePath(impPath);
-			PersonalInfo personalinfo = service.createPersonalInfo(personalinfoPostReq, files);
+			logger.debug("이메일 확인!! {}", personalinfoPostReq.getEmail());
+			PersonalInfo personalinfo = service.createPersonalInfo(personalinfoPostReq);
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
 			return ResponseEntity.status(500).body(BaseResponseBody.of(500, "Fail"));
@@ -205,7 +194,24 @@ public class PersonalInfoController {
 		service.deleteCertificate(pId, cId);
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
 	}
-	
+
+	@GetMapping("/{personalinfoId}/myActivity")
+	@ApiOperation(value = "활동사항 조회", notes = "활동사항을 조회한다.")
+	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
+			@ApiResponse(code = 500, message = "서버 오류") })
+	public ResponseEntity<Optional<List<Activity>>> getActivities(@PathVariable("personalinfoId") Long id,
+			@ApiIgnore Authentication authentication) {
+		if (authentication == null) {
+			return ResponseEntity.status(401).body(null);
+		}
+		else {
+			Optional<List<Activity>> result = service.getActivities(id);
+			return ResponseEntity.status(200).body(result);
+		}
+
+	}
+
+
 	@PostMapping("/{personalinfoId}/activity")
 	@ApiOperation(value = "활동사항 등록", notes = "활동사항을 등록한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
@@ -252,13 +258,19 @@ public class PersonalInfoController {
 	@ApiOperation(value = "최종학력 등록", notes = "최종학력을 등록한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
 		@ApiResponse(code = 500, message = "서버 오류") })
-	public ResponseEntity<BaseResponseBody> createFinalEducation(@PathVariable(name = "personalinfoId") Long id,
-			@RequestBody FinalEducationPostReq finaleducation) {
-		FinalEducation finaleducation2 = service.createFinalEducation(id, finaleducation);
+	public ResponseEntity<BaseResponseBody> createFinalEducation(@RequestBody FinalEducationPostReq FinalEducationPostReq, @PathVariable(name = "personalinfoId") Long id
+			) {
+
+		logger.info("최종 학력 등록 메서드");
+		logger.info("PersonalInfoId: {}", id);
+
+		// 이미 기존에 작성한 글이 있는지 조회한다.
+
+		FinalEducation finaleducation2 = service.createFinalEducation(id, FinalEducationPostReq);
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
 	}
-	
-	@PutMapping("/{personalinfoId}/{finaleducationId}")
+
+	@PutMapping("/{personalinfoId}/{finaleducationId}/update")
 	@ApiOperation(value = "최종학력 수정", notes = "최종학력을 수정한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
 		@ApiResponse(code = 500, message = "서버 오류") })
@@ -268,7 +280,7 @@ public class PersonalInfoController {
 		return ResponseEntity.status(200).body(finaleducation2);
 	}
 	
-	@DeleteMapping("/{personalinfoId}/{finaleducationId}")
+	@DeleteMapping("/{personalinfoId}/{finaleducationId}/delete")
 	@ApiOperation(value = "최종학력 삭제", notes = "최종학력을 삭제한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
 		@ApiResponse(code = 500, message = "서버 오류") })

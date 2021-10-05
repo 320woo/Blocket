@@ -40,6 +40,4 @@ public class User extends BaseEntity {
     private boolean withdrawal; // 탈퇴 여부
     private int brn; // 사업자등록 번호
     
-    @OneToMany
-    private List<UserRecruit> jobPosting; // 지원한 채용공고들
 }

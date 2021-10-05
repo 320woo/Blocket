@@ -24,12 +24,17 @@
     <h1>3. 관리자가 보유한 이더를 새롭게 생성한 사용자 계정 지갑에 넣어주기</h1>
     <Button label="Submit" @click="sendEther" />
   </div>
+
+  <div class="p-grid">
+    <h1>4. 데이터 저장 트랜잭션 전송</h1>
+    <Button label="Submit" @click="saveState" />
+  </div>
   
 
 </template>
 
 <script>
-import { createWeb3, sendEther } from '@/utils/itemInventory.js'
+import { createWeb3, sendEther, saveState } from '@/utils/itemInventory.js'
 import { reactive } from '@vue/reactivity'
 import defaultImage from "~/images/test.png"
 import defaultUserImage from "~/images/user.png"
@@ -71,13 +76,13 @@ methods: {
     // 이제 생성한 지갑의 정보를 infura의 퍼블릭 노드에 저장하자.
 
   },
-  saveWalletInDB() {
-    
-
-  },
+  saveWalletInDB() {},
   sendEther() {
     sendEther()
   },
+  saveState() {
+    saveState()
+  }
 }
 
 }

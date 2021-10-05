@@ -4,7 +4,6 @@ package com.b101.recruit.service;
 import org.springframework.data.domain.Page;
 
 import com.b101.recruit.domain.dto.VerificationDto;
-import com.b101.recruit.domain.entity.File;
 import com.b101.recruit.domain.entity.Verification;
 import com.b101.recruit.request.VerificationListGetReq;
 import com.b101.recruit.request.VerificationUpdatePatchReq;
@@ -24,9 +23,9 @@ public interface IVerificationService {
 //	void createVerification(Activity apr);
 //	void createVerification(Certificate cpr);
 	
-	Verification createVerification(File file);
+//	Verification createVerification(File file);
 
-	Verification updateVerification(VerificationUpdatePatchReq vcpr);
+//	Verification updateVerification(VerificationUpdatePatchReq vcpr);
 
 	Page<VerificationDto> getVerificationList(VerificationListGetReq vlgr);
 

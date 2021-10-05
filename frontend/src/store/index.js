@@ -19,8 +19,8 @@ export default createStore({
             userphone : null,
             walletAddress: null,
             accessToken: null,
-            show: true
-            
+            show: true,
+            personalInfoId: 0,
         }
     },
     mutations: {
@@ -28,6 +28,7 @@ export default createStore({
             state.user.userId = id
         },
         setUserEmail(state, userEmail) {
+            console.log("vuex 데이터 주입: 이메일")
             state.user.userEmail = userEmail
         },
         setWalletAddress(state, address) {
@@ -35,6 +36,7 @@ export default createStore({
         },
         logout(state) {
             state.user.userId = 0
+            state.user.personalInfoId = 0
             state.user.walletAddress = null
             state.user.show = true
         },
@@ -48,9 +50,17 @@ export default createStore({
             state.user.userbelong = payload.belong;
             state.user.userbrn = payload.brn;
             state.user.userphone = payload.phoneNumber;
+        },
+        setPersonalInfoId(state, payload) {
+            state.user.personalInfoId = payload
         }
     },
     actions: {
+        setUserEmail({ commit }, payload){
+            console.log("actions.js에서 setUserEmail 호출")
+            commit("setUserEmail", payload)
+        },
+
         saveWalletInDB({
             state
         }, payload) {
@@ -113,7 +123,8 @@ export default createStore({
             })
         },
         modify(context, data) {
-            console.log(context);
+            console.log("수정 들어옴" + context);
+            console.log("토큰 :  " + this.state.user.accessToken);
             axios.patch(USER_URL + "/me", {
                 headers: {
                     Authorization: "Bearer " + this.state.user.accessToken
