@@ -7,9 +7,13 @@
 
 <script>
 import Header from "@/layout/Header.vue";
+import * as pService from '@/utils/pService.js'
 export default {
   components: {
     Header,
+  },
+  setup() {
+    pService.UserCheck();
   },
 }
 </script>

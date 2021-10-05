@@ -16,6 +16,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import com.b101.recruit.auth.CustomUserDetailService;
 import com.b101.recruit.auth.JwtAuthenticationFilter;
+import com.b101.recruit.service.IUserSerive;
 import com.b101.recruit.service.impl.UserService;
 
 
@@ -60,6 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+    	http.csrf().disable().cors();
         http.addFilter(corsFilter)
                 .httpBasic().disable()
                 .csrf().disable()
@@ -67,7 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), userService)) //HTTP 요청에 JWT 토큰 인증 필터를 거치도록 필터를 추가
                 .authorizeRequests()
-                .antMatchers("/api/v1/users/me").authenticated()       //인증이 필요한 URL과 필요하지 않은 URL에 대하여 설정
+                .antMatchers("/api/recruit/users/me").authenticated()       //인증이 필요한 URL과 필요하지 않은 URL에 대하여 설정
     	        	    .anyRequest().permitAll()
                 .and().cors();
     }

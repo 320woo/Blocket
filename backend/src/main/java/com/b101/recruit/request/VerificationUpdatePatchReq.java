@@ -10,7 +10,6 @@ import lombok.Setter;
 @ApiModel("VerificationUpdatePatchRequest")
 public class VerificationUpdatePatchReq {
 
-	
 	//검증 id
 	@ApiModelProperty(name = "파일 ID", example = "1")
 	private Long fileId; // 파일 ID? 검증 ID?

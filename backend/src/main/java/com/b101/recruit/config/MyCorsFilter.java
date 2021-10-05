@@ -22,6 +22,7 @@ public class MyCorsFilter extends CorsFilter {
         config.setAllowCredentials(true); // 자격증명 허용 
         config.addAllowedOriginPattern("*"); // 자격증명을 허용할 때 출처를 허용하는 메소드
         config.addAllowedHeader("*"); // 허용할 헤더 설정
+        config.addAllowedMethod("PATCH");
         config.addAllowedMethod("*"); // 허용할 요청 (get post put delete 등등)
         config.addExposedHeader("Authorization"); // 노출할 헤더 설정 원래 authorization은 노출이 안되서 명시적으로 선언해야 보여짐
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(); // corsconfiguration을 url경로 패턴으로 사용하기위한 구현체 

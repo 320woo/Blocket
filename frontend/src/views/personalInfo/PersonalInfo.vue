@@ -23,9 +23,9 @@
           <!-- 인적 사항 부분 -->
           <div class="p-grid user-info" style="margin-top:50px;">
             <div class="p-col-4 ">
-              <div style="font-size: 30px;">조웅현</div>
-              <div><h4>{{ this.state.belong }}</h4></div>
-              <div><h5>{{ this.$store.state.user.userEmail }}</h5></div>
+              <div style="font-size: 30px;">{{ this.$store.state.user.username }}</div>
+              <div><h5> 이메일 : {{ this.$store.state.user.userEmail }}</h5></div>
+              <div><h5> 소속 : {{ this.$store.state.user.userbelong }}</h5></div>
             </div>
             <div class="p-col-8">
             </div>
@@ -179,10 +179,12 @@ export default {
       state.personalInfo = res
     })
     pService.getUserBelong().then(res => {
-      state.belong = res
+      state.belong = res.belong
+      state.name = res.name
     })
     
     const state = reactive({
+      name: null,   // 사용자 이름
       belong: null, // 소속
       defaultImage: defaultImage,
       defaultUserImage: defaultUserImage,
@@ -192,12 +194,15 @@ export default {
       
       // 개인 정보
       personalInfo: {
-        id: '',           // PK
-        dateBirth: '',    // 생년월일
-        address: '',      // 주소
-        englishName: '',  // 영문이름
-        gender: '',       // 성별
-        repProfile: '',   // 대표 프로필 경로
+        address: null,          // 주소
+        dateBirth: null,        // 생년월일
+        englishName: null,      // 영문이름
+        gender: null,           // 성별
+        id: null,               // PK
+        militaryService: null,  // 병역사항
+        veteransAffairs: null,  // 보훈사항
+        disabled: null,         // 장애여부
+        
       },
     })
     return {

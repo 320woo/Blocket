@@ -56,6 +56,7 @@ public class QVerification extends EntityPathBase<Verification> {
     public QVerification(Class<? extends Verification> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.gallery = inits.isInitialized("gallery") ? new QGallery(forProperty("gallery")) : null;
+        this.personalinfo = inits.isInitialized("personalinfo") ? new QPersonalInfo(forProperty("personalinfo"), inits.get("personalinfo")) : null;
     }
 
 }

@@ -11,9 +11,7 @@ import java.util.Optional;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
-import com.amazonaws.Response;
 import com.b101.recruit.domain.entity.*;
-import com.b101.recruit.reponse.UserUpdatePatchRes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +28,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -77,6 +72,7 @@ public class PersonalInfoController {
 		@ApiResponse(code = 500, message = "서버 오류") })
 	public ResponseEntity<BaseResponseBody> createPersonalInfo(@RequestBody PersonalInfoPostReq personalinfoPostReq) {
 		try {
+			logger.debug("이메일 확인!! {}", personalinfoPostReq.getEmail());
 			PersonalInfo personalinfo = service.createPersonalInfo(personalinfoPostReq);
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
