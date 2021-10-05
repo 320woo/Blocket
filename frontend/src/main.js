@@ -16,6 +16,7 @@ import Checkbox from 'primevue/checkbox';
 import FileUpload from 'primevue/fileupload'
 
 import 'primeflex/primeflex.css'
+import './assets/public.css'
 import 'primevue/resources/primevue.min.css'
 import 'primevue/resources/themes/bootstrap4-light-blue/theme.css'
 import 'primeicons/primeicons.css'

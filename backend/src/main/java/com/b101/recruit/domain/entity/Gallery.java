@@ -31,12 +31,24 @@ public class Gallery{
 
     @Column(columnDefinition = "TEXT")
     private String filePath;
-    
+
+    @Column
+    private Long pid;
+
+    @Column
+    private Long sid;
+
+    @Column
+    private String sortation;
+
     @Builder
-    public Gallery(Long id, String title, String filePath) {
+    public Gallery(Long id, String title, String filePath, Long pid, Long sid, String sortation) {
         this.id = id;
         this.title = title;
         this.filePath = filePath;
+        this.pid = pid;
+        this.sid = sid;
+        this.sortation = sortation;
     }
     
 }

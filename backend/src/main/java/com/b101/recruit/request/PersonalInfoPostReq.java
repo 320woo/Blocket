@@ -2,9 +2,6 @@ package com.b101.recruit.request;
 
 import java.sql.Date;
 import java.util.List;
-
-import com.b101.recruit.domain.dto.FileDto;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -44,8 +41,5 @@ public class PersonalInfoPostReq {
 //	private String prosCons; 		
 //	private String selfIntro; 		
 //	private String jobExperience; 
-	
-	@ApiModelProperty(name="파일")
-	private List<FileDto> files;
 	
 }

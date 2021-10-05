@@ -23,6 +23,12 @@ public class QGallery extends EntityPathBase<Gallery> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final NumberPath<Long> pid = createNumber("pid", Long.class);
+
+    public final NumberPath<Long> sid = createNumber("sid", Long.class);
+
+    public final StringPath sortation = createString("sortation");
+
     public final StringPath title = createString("title");
 
     public QGallery(String variable) {
