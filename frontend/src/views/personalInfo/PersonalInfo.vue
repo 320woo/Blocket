@@ -22,12 +22,14 @@
           </div>
           <!-- 인적 사항 부분 -->
           <div class="p-grid user-info" style="margin-top:50px;">
-            <div class="p-col-4 ">
+            
+            <div class="p-col-4">
               <div style="font-size: 30px;">{{ state.user.name }}</div>
               <div><h5> 이메일 : {{ state.user.email }}</h5></div>
               <div><h5> 소속 : {{ state.user.belong }}</h5></div>
             </div>
-            <div class="p-col-8">
+            <div class="p-col-7 p-text-right">
+              <span style="cursor: pointer; font-weight: bold; color: #3F72AF;" @click="goToModify">수정하기</span>
             </div>
           </div>
         </div> <!-- end of 사용자 프로필 -->
@@ -224,6 +226,7 @@
 
 <script>
 import { reactive } from 'vue'
+import router from '../../router'
 import defaultImage from "~/images/test.png"
 import defaultUserImage from "~/images/user.png"
 
@@ -301,6 +304,10 @@ export default {
     changeImg() {
       
     },
+    goToModify() {
+      router.push("Modify")
+    },
+
     openInfoModal() {
       this.state.displayInfoModal = true
     },
@@ -308,7 +315,6 @@ export default {
       // 신상정보 변경사항 저장. (영문이름, 성별, 주소, 생년월일)
       pService.saveInfoModal(this.state.pid, this.state.input).then(res => {
         // 다시 불러오기
-        console.log(res)
         this.state.personalInfo.englishName = res.englishName
         this.state.personalInfo.gender = res.gender
         this.state.personalInfo.address = res.address

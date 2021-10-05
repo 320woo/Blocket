@@ -4,6 +4,7 @@ import Login from "../views/user/Login.vue";
 import Join from "../views/user/Join.vue";
 import Modify from "../views/user/Modify.vue";
 import PersonalInfo from "../views/personalInfo/PersonalInfo.vue"
+import WalletInfo from '../views/wallet/WalletInfo.vue'
 import Test from "../views/test.vue"
 
 
@@ -41,6 +42,11 @@ const routes = [
     path: "/personalInfo",
     name: "PersonalInfo",
     component: PersonalInfo,
+  },
+  {
+    path: "/walletInfo",
+    name: "WalletInfo",
+    component: WalletInfo,
   },
   {
     path: "/test",

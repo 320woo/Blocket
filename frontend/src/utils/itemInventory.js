@@ -1,7 +1,6 @@
 import Web3 from 'web3'
 import axios from 'axios'
 import vueConfig from '../../vue.config'
-import store from '../store'
 
 const BASE_URL = vueConfig.devServer.proxy['/blocket'].target + "/api"
 const WALLET_URL = BASE_URL + "/wallet"
@@ -13,7 +12,6 @@ import {
 
 // Web3 Object 생성
 export function createWeb3() {
-  console.log("web3 객체 생성")
   const web3 = new Web3(new Web3.providers.HttpProvider(BLOCKCHAIN_URL))
   return web3
 }
@@ -53,27 +51,32 @@ export function sendEther() {
 }
 
 // 사용자가 계정을 생성하면 지갑을 생성한다.
-export function createWallet() {
+export function createWallet(email) {
   const web3 = createWeb3()
   const myWallet = web3.eth.accounts.wallet.create(1)
 
   const walletAddress = myWallet[0].address
   const privateKey = myWallet[0].privateKey 
   
-  // 별도의 파일로 저장해야 한다.
-  saveToFile_Chrome("my_private_key.txt", privateKey)
+  const data = {
+    address: walletAddress,
+    balance: 0,
+    receiving_account: 0,
+    email: email,
+  }
 
-  return axios.post(WALLET_URL + "/register", {
+  axios({
+    url: WALLET_URL + "/register",
+    method: "POST",
     Headers: {
       'Content-Type': 'application/json',
     },
-    data: {
-      address: walletAddress,
-      balance: 0,
-      receive_account: 0,
-      email: store.state.user.userEmail
-    }
+    data: data,
   })
+  return {
+    walletAddress,
+    privateKey,
+  }
 }
 
 

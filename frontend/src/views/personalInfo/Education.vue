@@ -12,20 +12,39 @@
     </div>
 
     <div class="p-col">
-      <!-- 입력한 최종학력이 존재하는 경우 -->
       <div class="p-grid">
         <div class="p-col-12">
-          <strong>최종 학력</strong> : {{ state.myGrade.sortation }}
+          <strong>최종 학력</strong> : 
+          <div v-if="state.eInfo.sortation !== ''">
+            {{ state.eInfo.sortation }}
+          </div>
+          <div v-else>
+            아직 입력되지 않았습니다.
+          </div>
         </div>
+
         <div class="p-col-12">
-          <strong>학교명</strong> : {{ state.myGrade.schoolName }} {{ state.myGrade.majorName }}
+          <strong>학교명</strong> : 
+          <div v-if="state.eInfo.name !== ''">
+            {{ state.eInfo.name }}
+          </div>
+          <div v-else>
+            아직 입력되지 않았습니다.
+          </div>
         </div>
+
         <div class="p-col-12">
-          <strong>학점</strong> : {{ state.myGrade.grades }} / {{ state.myGrade.totalScore }}
-        </div>
+          <strong>학점</strong> : 
+          <div v-if="state.eInfo.grades !== ''">
+            {{ state.eInfo.grades }}
+          </div>
+          <div v-else>
+            아직 입력되지 않았습니다.
+          </div>
+        </div> 
       </div>
 
-      <div v-if="!state.isWritten">
+      <div v-if="state.eInfo.name === ''">
         <span style="color: blue; cursor: pointer; display: inline-block;" @click="state.displayEducationModal = true">
           <strong>새로 입력하기</strong>
         </span>
@@ -41,25 +60,25 @@
         <!-- 대학교 이름 검색 -->
         <div class="p-field p-col-6">
           <label for="collegeName">학교명*</label>  
-          <AutoComplete id="collegeName" v-model="this.state.myGrade.schoolInfoObj" 
+          <AutoComplete id="collegeName" v-model="state.sName" 
           :suggestions="filteredColleges" @complete="searchCollege($event)" field="schoolName" placeholder="ex) OO대학교, OO대학" />
         </div>
         <!-- 학과 이름 검색 -->
         <div class="p-field p-col-6">
           <label for="majorName">학과명*</label>
-          <AutoComplete id="majorName" v-model="this.state.myGrade.majorInfoObj" 
+          <AutoComplete id="majorName" v-model="state.mName" 
           :suggestions="filteredMajors" @complete="searchMajor($event)" field="mClass" placeholder="ex) OO학과, OO학" />
         </div>
         <!-- 총 학점 -->
         <div class="p-field p-col-3">
           <label for="grade">취득 학점*</label>
-          <InputText id="grade" class="input-text" type="grade" style="width: 80px;" v-model="state.myGrade.grades" />
+          <InputText id="grade" class="input-text" type="grade" style="width: 80px;" v-model="state.myG" />
         </div>
 
 
         <div class="p-field p-col-3">
           <label for="scoreType">학점 기준</label>
-          <select name="scoreType" id="scoreType" class="select" v-model="state.myGrade.totalScore">
+          <select name="scoreType" id="scoreType" class="select" v-model="state.tScore">
             <option value="4.3">4.3</option>
             <option value="4.5">4.5</option>
           </select>
@@ -68,7 +87,7 @@
         <!-- 학교 분류 ex) 고등학교, 대학교, 대학원,,, -->
         <div class="p-field p-col-12">
           <label for="sortation">학교분류*</label>
-          <select name="sortation" id="sortation" class="select" v-model="state.myGrade.sortation">
+          <select name="sortation" id="sortation" class="select" v-model="state.input.sortation">
             <option value="고등학교">고등학교</option>
             <option value="대학교">대학교</option>
             <option value="대학원(석사졸)">대학원(석사졸)</option>
@@ -103,50 +122,45 @@ export default {
     const majors = ref()           // 모든 전공
     const filteredMajors = ref()   // 검색 결과로 나온 전공들
 
-
     // 최종학력 불러오기
     eService.getFinalEducation().then(res => {
-      state.isWritten = res.isWritten
+      state.id = res.id
+      state.pid = res.personalinfo.id
+      state.uid = res.personalinfo.user.id
+      state.eInfo.grades = res.grades
+      state.eInfo.name = res.name
+      state.eInfo.sortation = res.sortation
+      state.input.sortation = res.sortation
 
-      if (!res.isWritten) {
-        // 최종학력 작성에 필요한 기본사항(pid, userId만 등록해둔다.)
-        state.myGrade.pid = res.pid
-        state.myGrade.userId = res.userId
-      }
-      else {
-        state.myGrade = res
-      }
+      state.sName = res.name.split(" ")[0]          // 대학교 검색 시 내가 선택한 학교명. 없으면 undefined
+      state.mName = res.name.split(" ")[1]          // 학과 검색 시 내가 선택한 학과명. 없으면 undefined
+      state.myG = res.grades.split(" / ")[0]        // 내 학점. 없으면 undefined
+      state.tScore = res.grades.split(" / ")[1]     // 학점 기준. 없으면 undefined
     })
-
 
     const state = reactive({
-      id: '',   // 학력사항 PK
+      id: '',   // 학력사항 PK. 있는 경우에만 불러온다. (업데이트 위해)
+      uid: '',  // 회원 PK
       pid: '',  // 신상정보 PK
       displayEducationModal: false,
-      // 최종 학력 사항
-      isWritten: false,
       // 이미 작성한 내용이 있는 경우, 불러올 때 사용한다.
-      myGrade: {
-        userId: '',                 // 작성자 Id,
-        grades: '',                 // 내가 취득한 평균 학점
-        totalScore: '',             // 학점 점수 기준
-        schoolInfoObj: '',          // 객체로 저장된다.
-        majorInfoObj: '',           // 객체로 저장된다.
-        schoolName: '', 
-        majorName: '',  
-        sortation: '',              // 분류. 대학교, 고등학교, 중학교,
+      eInfo: {
+        grades: '',       // 내가 취득한 평균 학점
+        name: '',         // 학교명
+        sortation: '',    // 분류.
       },
-      // 신규 작성할 내용
+      // 신규 작성할 내용. 나중에 조립해야 함.
       input: {
-        userId: '',
-        schoolName: '',
-        majorName: '',
         grades: '',
-        totalScore: '',
+        name: '',
         sortation: '',
-      }
+      },
+      sName: '',
+      mName: '',
+      myG: '',
+      tScore: '',
     })
-
+    
     onMounted(() => {
       // 모든 대학교 목록 불러오기
       getAllColleges().then(res => {
@@ -175,22 +189,33 @@ export default {
       // 기본적으로, 파일이 반드시 선택되어 있어야 한다.
 
       // 최종 학력 등록하기
-      this.state.myGrade.name = this.state.myGrade.schoolInfoObj.schoolName  + " " + this.state.myGrade.majorInfoObj.mClass
-      
+      this.state.input.name = this.state.sName.schoolName  + " " + this.state.mName.mClass
+      this.state.input.grades = this.state.myG + " / " + this.state.tScore
+
       // 만약 처음으로 작성하는 거라면...
-      if (this.state.isWritten === false) {
-        eService.createFinalEducation(this.state.myGrade).then(
-          alert("최종학력을 등록하였습니다.")
-        )
+      if (this.state.id === '') {
+        eService.createFinalEducation(this.state.input, this.state.uid, this.state.pid).then(res => {
+          // 값 갱신하기
+          console.log("생성한 FE 객체..", res)
+          this.state.eInfo.grades = res.grades
+          this.state.eInfo.name = res.name
+          this.state.eInfo.sortation = res.sortation
+
+          // 등록한 final_education의 id를 저장해야 한다.
+          this.state.id = res.id
+          alert("등록하였습니다.")
+        })
       }
       // 이미 작성되었다면
       else {
         console.log("최종학력 수정")
-        eService.updateFinalEducation(this.state.myGrade)
+        eService.updateFinalEducation(this.state.input, this.state.pid, this.state.id)
         .then(res => {
-          // 변경 사항 갱신하기
-          this.state.myGrade.schoolName = res.schoolName
-          this.state.myGrade.majorName = res.majorName
+          // 값 갱신하기
+          this.state.eInfo.grades = res.grades
+          this.state.eInfo.name = res.name
+          this.state.eInfo.sortation = res.sortation
+          alert("수정하였습니다.")
         })
       }
       this.state.displayEducationModal = false
