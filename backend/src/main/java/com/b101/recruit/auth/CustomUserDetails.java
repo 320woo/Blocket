@@ -9,7 +9,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.b101.recruit.domain.entity.User;
-import com.b101.recruit.domain.entity.UserRecruit;
 
 
 public class CustomUserDetails implements UserDetails{
@@ -52,10 +51,6 @@ public class CustomUserDetails implements UserDetails{
 	}
 	public int getUserType() {
 		return this.user.getType();
-	}
-	
-	public List<UserRecruit> getUserJobPosting() {
-		return this.user.getJobPosting();
 	}
 
 	@Override

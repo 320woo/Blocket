@@ -3,7 +3,6 @@ package com.b101.recruit.reponse;
 import java.sql.Date;
 import java.util.List;
 
-import com.b101.recruit.domain.dto.FileDto;
 import com.b101.recruit.domain.entity.Certificate;
 import com.b101.recruit.request.ActivityPostReq;
 import com.b101.recruit.request.CertificatePostReq;
@@ -48,9 +47,6 @@ public class PersonalInfoPostRes {
 //	private String prosCons; 		
 //	private String selfIntro; 		
 //	private String jobExperience; 
-	
-//	@ApiModelProperty(name="파일")
-//	private List<FileDto> files;
 	
 	@ApiModelProperty(name="어학, 자격증")
 	private List<CertificatePostReq> certificates;

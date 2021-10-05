@@ -13,17 +13,14 @@ import java.util.*;
 
 import javax.transaction.Transactional;
 
-import com.b101.recruit.domain.dto.FileDto;
 import com.b101.recruit.domain.dto.GalleryDto;
 import com.b101.recruit.domain.entity.Activity;
 import com.b101.recruit.domain.entity.Certificate;
 import com.b101.recruit.domain.entity.FinalEducation;
-import com.b101.recruit.domain.entity.Files;
 import com.b101.recruit.domain.entity.PersonalInfo;
 import com.b101.recruit.domain.entity.User;
 import com.b101.recruit.domain.repository.ActivityRepository;
 import com.b101.recruit.domain.repository.CertificateRepository;
-import com.b101.recruit.domain.repository.FilesRepository;
 import com.b101.recruit.domain.repository.FinalEducationRepository;
 import com.b101.recruit.domain.repository.GalleryRepository;
 import com.b101.recruit.domain.repository.PersonalInfoRepository;
@@ -66,34 +63,6 @@ public class PersonalInfoService implements IPersonalInfoService {
 	@Value("${server.tomcat.basedir}")
 	private String basedir;
 	
-	private S3Service s3Service;
-	
-	private FilesRepository fileRepository;
-	
-//	public void savePost(FileDto fileDto) {
-//		fileRepository.save(fileDto.toEntity());
-//	}
-//	
-//	public List<FileDto> getList() {
-//        List<Files> fileEntityList = fileRepository.findAll();
-//        List<FileDto> fileDtoList = new ArrayList<>();
-//
-//        for (Files fileEntity : fileEntityList) {
-//            fileDtoList.add(convertEntityToDto(fileEntity));
-//        }
-//
-//        return fileDtoList;
-//    }
-//
-//	public FileDto convertEntityToDto(Files file) {
-//        return FileDto.builder()
-//                .id(file.getId())
-//                .title(file.getTitle())
-//                .filePath(file.getFilePath())
-//                .imgFullPath("https://" + s3Service.CLOUD_FRONT_DOMAIN_NAME + "/" + file.getFilePath())
-//                .build();
-//    }
-	
 	@Override
 	public PersonalInfo createPersonalInfo(PersonalInfoPostReq personalinfoPostReq)
 			throws IllegalStateException, IOException {
@@ -112,17 +81,6 @@ public class PersonalInfoService implements IPersonalInfoService {
 		personalinfo = personalinfoRepository.save(personalinfo);
 		
 		// 파일 처리
-//		if(files != null) {
-//			List<Files> filesEntityLiist = fileRepository.findAll();
-//			List<FileDto> fileDtoList = new ArrayList<>();
-//			
-//			for(Files fileEntity : filesEntityLiist) {
-//				fileEntity.getId();
-//				fileEntity.getTitle();
-//				fileEntity.getFilePath();
-//				fileRepository.save(fileEntity);
-//			}
-//		}
 //		if(files != null) {
 //			String realPath = basedir;
 //			// 오늘날짜로 폴더 설정
@@ -167,9 +125,7 @@ public class PersonalInfoService implements IPersonalInfoService {
 		p.setRepProfile(personalinfo.getRepProfile());
 		p.setMilitaryService(personalinfo.getMilitaryService());
 		p.setVeteransAffairs(personalinfo.getVeteransAffairs());
-//		p.setFinalEducation(personalinfo.getFinalEducation());
 		p.setDisabled(personalinfo.getDisabled());
-//		p.setTranscript(personalinfo.getTranscript());
 		p.setIntExtAct(personalinfo.getIntExtAct());
 		
 		// 파일 처리
@@ -245,9 +201,7 @@ public class PersonalInfoService implements IPersonalInfoService {
 		personalinfo.setRepProfile(personalinfoPostReq.getRepProfile());
 		personalinfo.setMilitaryService(personalinfoPostReq.getMilitaryService());
 		personalinfo.setVeteransAffairs(personalinfoPostReq.getVeteransAffairs());
-//		personalinfo.setFinalEducation(personalinfoPostReq.getFinalEducation());
 		personalinfo.setDisabled(personalinfoPostReq.getDisabled());
-//		personalinfo.setTranscript(personalinfoPostReq.getTranscript());
 		personalinfo.setIntExtAct(personalinfoPostReq.getIntExtAct());
 		return personalinfoRepository.save(personalinfo);
 	}

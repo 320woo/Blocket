@@ -57,10 +57,8 @@ public class GalleryController {
 		// galleryService는 DB에 데이터를 조작하기 위한 서비스
 		galleryService.savePost(galleryDto);
 
+//		vService.createVerification(galleryDto);
 
-		vService.createVerification(galleryDto);
-
-		
 		return "redirest:/gallery";
 	}
 	
