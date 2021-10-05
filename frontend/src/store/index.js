@@ -21,7 +21,9 @@ export default createStore({
             accessToken: null,
             show: true,
             personalInfoId: 0,
-        }
+        },
+        file:{},
+        verifications:{},
     },
     mutations: {
         setUserId(state, id) {
@@ -52,6 +54,12 @@ export default createStore({
         },
         setPersonalInfoId(state, payload) {
             state.user.personalInfoId = payload
+        },
+        setFile(state,payload){
+            state.file = payload;
+        },
+        setVerifications(state,payload){
+            state.verifications = payload;
         }
     },
     actions: {
@@ -145,8 +153,77 @@ export default createStore({
                 //     console.log(err);
                 // });
             
+        },
+    getFileInfo(context,payload){
+                console.log(payload);
+            if(localStorage.getItem("accessToken")){
+                const url = "/api/recruit/Gallery/galleryDetail/";
+                return http.get(url+payload.fileId).then((data)=>{
+                    console.log(data.data);
+                    context.commit("setFile",data.data)
+                })
+            }
+        },
+        // getActivity(context,payload){
+        //      if(localStorage.getItem("accessToken")){
+        //         const url = "/api/recruit/personalinfo/";
+        //         return http.get(url+payload.personalinfoId+"/"+payload.activityId);
+        //     }
+        // },
+        // getCerificate(context,payload){
+        //     if(localStorage.getItem("accessToken")){
+        //         const url = "/api/recruit/personalinfo/";
+        //         return http.get(url+payload.personalinfoId+"/"+payload.certificateId);
+        //     }
+        // },
+        // getFinalEducation(context,payload){
+        //     if(localStorage.getItem("accessToken")){
+        //         const url = "/api/recruit/personalinfo/";
+        //         return http.get(url+payload.personalinfoId+"/"+payload.fianlEducationId);
+        //     }
+        // },
+        patchVerification(context,payload){
+            console.log(payload);
+            if(localStorage.getItem("accessToken")){
+                const url = "/api/recruit/verification";
+                const headers = {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                };
+                return http.patch(url,payload,{headers}).then((res)=>{
+                    if(res.data.statusCode==200){
+                        console.log(res.data);
+                        // alert(res.data.message);
+                    }
+                }).catch((err)=>{
+                    //  alert(err.data.message);
+                    // alert(err);
+                    console.log(err);
+                });
+            }
+        },
+        getVerifications(context,payload){
+            if(localStorage.getItem("accessToken")){
+                const url = "/api/recruit/verification/list";
+                const headers = {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                };
+                return http.post(url,payload,{headers}).then((res)=>{
+                    if(res.data.statusCode==200){
+                        alert(res.data.message);
+                    }
+                }).catch((err)=>{
+                     alert(err.data.message);
+                });
+            }
         }
     },
-    getters: {},
-    modules: {}
+    getters: {
+        file(state){
+            return state.file;
+        },
+        verifications(state){
+            return state.verifications;
+        },
+    },
+    modules: {},
 });

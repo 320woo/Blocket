@@ -20,7 +20,7 @@ public class VerificationUpdatePatchRes extends BaseResponseBody {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	private Date registrationDate;
 	private String currentStatus;
-	private String resonsRejection;
+	private String reasonsRejection;
 
 	public static VerificationUpdatePatchRes of(Integer statusCode, String message, Verification verification) {
 		VerificationUpdatePatchRes res = new VerificationUpdatePatchRes();
@@ -30,7 +30,7 @@ public class VerificationUpdatePatchRes extends BaseResponseBody {
 		res.setUserId(verification.getUserId());
 		res.setRegistrationDate(verification.getRegistrationDate());
 		res.setCurrentStatus(verification.getCurrentStatus());
-		res.setResonsRejection(verification.getReasonsRejection());
+		res.setReasonsRejection(verification.getReasonsRejection());
 		return res;
 	}
 }

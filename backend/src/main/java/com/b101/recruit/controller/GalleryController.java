@@ -4,19 +4,31 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import com.b101.recruit.service.impl.VerificationService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.b101.recruit.domain.dto.GalleryDto;
+import com.b101.recruit.domain.entity.Gallery;
+import com.b101.recruit.reponse.GalleryRes;
 import com.b101.recruit.service.impl.GalleryService;
+import com.b101.recruit.service.impl.PersonalInfoService;
 import com.b101.recruit.service.impl.S3Service;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
+import springfox.documentation.annotations.ApiIgnore;
 
 @Controller
 @AllArgsConstructor
@@ -30,6 +42,8 @@ public class GalleryController {
 	private GalleryService galleryService;
 
 	private VerificationService vService;
+	
+	private PersonalInfoService pService;
 
 	@GetMapping("/gallery")
     public String dispWrite(Model model) {
@@ -60,6 +74,20 @@ public class GalleryController {
 		vService.createVerification(galleryDto);
 
 		return "redirect:/gallery";
+	}
+	
+	@GetMapping("/galleryDetail/{galleryId}")
+	@ApiOperation(value = "파일 상세조회", notes = "파일 정보를 불러온다.")
+	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
+		@ApiResponse(code = 500, message = "서버 오류") })
+	public ResponseEntity<GalleryRes> getFileDetail(@PathVariable(name = "galleryId") Long gId, @ApiIgnore Authentication authentication ) {
+		System.out.println(authentication);
+		Gallery gallery = galleryService.getGallery(gId).get();
+		System.out.println(gallery.getFilePath());
+		Object object = pService.getSortationDetail(gallery.getSortation(),gallery.getSid());
+		String currentStatus = vService.getCurrentStatus(gId);
+		if(gallery!=null&&object!=null) return ResponseEntity.status(200).body(GalleryRes.of(gallery,object,currentStatus));
+		else return null;
 	}
 	
 }
