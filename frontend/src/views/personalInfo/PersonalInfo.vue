@@ -199,11 +199,9 @@ export default {
         englishName: '',  // 영문이름
         gender: '',       // 성별
         id: '',           // PK
+        intExtAct: '',
+        militaryService: '',
         
-        
-        
-        
-        repProfile: '',   // 대표 프로필 경로
       },
     })
     return {
