@@ -16,6 +16,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import com.b101.recruit.auth.CustomUserDetailService;
 import com.b101.recruit.auth.JwtAuthenticationFilter;
+import com.b101.recruit.service.IUserSerive;
 import com.b101.recruit.service.impl.UserService;
 
 
@@ -60,6 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+    	http.csrf().disable().cors();
         http.addFilter(corsFilter)
                 .httpBasic().disable()
                 .csrf().disable()
