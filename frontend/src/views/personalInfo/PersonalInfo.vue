@@ -194,13 +194,14 @@ export default {
       
       // 개인 정보
       personalInfo: {
-        address: '',      // 주소
-        dateBirth: '',    // 생년월일
-        englishName: '',  // 영문이름
-        gender: '',       // 성별
-        id: '',           // PK
-        intExtAct: '',
-        militaryService: '',
+        address: null,          // 주소
+        dateBirth: null,        // 생년월일
+        englishName: null,      // 영문이름
+        gender: null,           // 성별
+        id: null,               // PK
+        militaryService: null,  // 병역사항
+        veteransAffairs: null,  // 보훈사항
+        disabled: null,         // 장애여부
         
       },
     })

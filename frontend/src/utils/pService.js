@@ -51,7 +51,9 @@ export async function getMyInfo() {
       address: res.data[0].address,
       englishName: res.data[0].englishName,
       gender: res.data[0].gender,
-      repProfile: '',
+      disabled: res.data[0].disabled,
+      militaryService: res.data[0].militaryService,
+      veteransAffairs: res.data[0].veteransAffairs,
     }
   })
   return result
