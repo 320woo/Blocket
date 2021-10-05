@@ -5,13 +5,16 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import com.b101.recruit.domain.entity.Verification;
 
-//@Repository
+@Repository
 public interface VerificationRepository extends JpaRepository<Verification, Long>{
 
 //	Optional<Verification> findByFileId(Long fileId);
 
 	Page<Verification> findByCurrentStatusContaining(Pageable pageable, String verified);
+
+	Optional<Verification> findByGalleryId(Long fileId);
 }
