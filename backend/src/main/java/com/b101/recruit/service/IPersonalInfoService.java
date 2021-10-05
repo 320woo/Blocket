@@ -22,7 +22,7 @@ import com.b101.recruit.request.PersonalInfoPostReq;
 
 public interface IPersonalInfoService {
 
-	PersonalInfo createPersonalInfo(PersonalInfoPostReq personalinfoPostReq, MultipartFile files) throws IllegalStateException, IOException;
+	PersonalInfo createPersonalInfo(PersonalInfoPostReq personalinfoPostReq) throws IllegalStateException, IOException;
 	
 	PersonalInfoPostRes getonePersonalInfo(Long id, String email);
 	
@@ -55,8 +55,8 @@ public interface IPersonalInfoService {
 	void deleteFinalEducation(Long pId, Long fId);
 	
 	// 파일
-	List<FileDto> getList();
-	FileDto convertEntityToDto(Files file);
-	void savePost(FileDto fileDto);
+//	List<FileDto> getList();
+//	FileDto convertEntityToDto(Files file);
+//	void savePost(FileDto fileDto);
 	
 }
