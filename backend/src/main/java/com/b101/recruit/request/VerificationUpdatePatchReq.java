@@ -9,9 +9,7 @@ import lombok.Setter;
 @Setter
 @ApiModel("VerificationUpdatePatchRequest")
 public class VerificationUpdatePatchReq {
-	
-	@ApiModelProperty(name = "관리자 ID", example = "admin@ssafy.com")
-	private String userEmail; // 관리자 확인용
+
 	//검증 id
 	@ApiModelProperty(name = "파일 ID", example = "1")
 	private Long fileId; // 파일 ID? 검증 ID?

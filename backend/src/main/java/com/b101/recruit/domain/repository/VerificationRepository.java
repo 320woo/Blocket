@@ -16,5 +16,5 @@ public interface VerificationRepository extends JpaRepository<Verification, Long
 
 	Page<Verification> findByCurrentStatusContaining(Pageable pageable, String verified);
 
-	Optional<Verification> findByFileId(Long fileId);
+	Optional<Verification> findByGalleryId(Long fileId);
 }

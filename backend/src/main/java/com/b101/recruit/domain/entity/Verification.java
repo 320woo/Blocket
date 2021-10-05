@@ -38,7 +38,7 @@ public class Verification extends BaseEntity {
 	private Long userId;
 	
     @OneToOne
-    @JoinColumn(name = "file_id", nullable = false)
+    @JoinColumn(name = "gallery_id", nullable = false)
     private Gallery gallery;
 	
 	@Column(columnDefinition = "LONGTEXT")

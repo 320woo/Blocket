@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.b101.recruit.domain.dto.VerificationDto;
 import com.b101.recruit.domain.entity.Gallery;
+import com.b101.recruit.domain.entity.PersonalInfo;
 import com.b101.recruit.domain.entity.Verification;
 import com.b101.recruit.domain.repository.ActivityRepository;
 import com.b101.recruit.domain.repository.CertificateRepository;
@@ -52,7 +53,8 @@ public class VerificationService implements IVerificationService {
 		
 		Verification verification = new Verification();
 		Gallery gallery = new Gallery(galleryDto.getId(), galleryDto.getTitle(), galleryDto.getFilePath(), galleryDto.getPid(), galleryDto.getSid(), galleryDto.getSortation());
-//		verification.setPersonalinfo(galleryDto.getPid());
+		PersonalInfo personalInfo = personalInfoRepository.findById(gallery.getPid()).get();
+		verification.setPersonalinfo(personalInfo);
 		verification.setCurrentStatus("승인대기");
 		verification.setGallery(gallery);
 		Long userId = personalInfoRepository.findUserIdById(gallery.getPid());
@@ -62,7 +64,7 @@ public class VerificationService implements IVerificationService {
 
 	@Override
 	public Verification updateVerification(VerificationUpdatePatchReq vcpr) {
-		Optional<Verification> verification = verificationRepository.findByFileId(vcpr.getFileId());
+		Optional<Verification> verification = verificationRepository.findByGalleryId(vcpr.getFileId());
 		if (verification.isPresent()) {
 			String status = vcpr.getVerified();
 			verification.get().setCurrentStatus(status);
