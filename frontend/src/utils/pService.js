@@ -21,7 +21,7 @@ export function getUserBelong() {
 
 export function UserDelete() {
     console.log("탈퇴 pService : " + store.state.user.accessToken);
-    return axios.delete(USER_URL, {
+    return axios.delete(USER_URL + "/me", {
         headers: {
             Authorization: "Bearer " + store.state.user.accessToken
         }
@@ -29,13 +29,11 @@ export function UserDelete() {
 }
 
 export function UserCheck() {
-    console.log("조회 pService : " + store.state.user.accessToken);
+    console.log("유저정보 check")
     return axios.get(USER_URL +  "/me", {
         headers: {
             Authorization: "Bearer " + store.state.user.accessToken
         }
-    }).then(({data}) => {
-        console.log(data)
     })
 }
 

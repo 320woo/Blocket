@@ -33,6 +33,7 @@
                 <InputText
                     type="text"
                     id="name"
+                    maxlength="8"
                     name="name"
                     v-model="name"
                     ref="name"

@@ -57,7 +57,7 @@ export default createStore({
             console.log(state)
             console.log(payload)
         },
-        login(context, {email, password}) {
+        login(context, { email, password }) {
             console.log("로그인");
             http
                 .post("/api/recruit/users/login", {
@@ -93,10 +93,10 @@ export default createStore({
             http
                 .get("/api/recruit/users/" + email, {email: email})
                 .then(({data}) => {
-                    console.log(data)
+                    console.log("메세지" + data.message)
                     if (data.statusCode == 200) {
                         alert("가입이 가능한 이메일입니다.")
-                    } else {
+                    } else if(data.statusCode == 409) {
                         alert("이미 있는 이메일입니다.")
                     }
                 })
@@ -108,9 +108,34 @@ export default createStore({
                 }
             }).then(({data}) => {
                 context.commit("userinfo", data);
-                pService.UserCheck();
+                
+
             })
         },
+        modify(context, data) {
+            console.log(context);
+            axios.patch(USER_URL + "/me", {
+                headers: {
+                    Authorization: "Bearer " + this.state.user.accessToken
+                }
+            },data)
+                // const url = USER_URL + "/me";
+                // const headers = {
+                //     Authorization: "Bearer " + localStorage.getItem("accessToken"),
+                // }
+                // return axios.patch(url, { headers }, data,)
+                //     .then((res) => {
+                //     if(res.data.statusCode==200){
+                //         console.log(res.data);
+                //         // alert(res.data.message);
+                //     }   
+                // }).catch((err)=>{
+                //     //  alert(err.data.message);
+                //     // alert(err);
+                //     console.log(err);
+                // });
+            
+        }
     },
     getters: {},
     modules: {}
