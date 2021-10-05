@@ -97,7 +97,7 @@ public class UserController {
 			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
 		} else {
 			CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-			String userEmail = userDetails.getUsername();
+			String userEmail = userDetails.getUserEmail();
 			User user = userService.findByUserEmail(userEmail);
 			if (user != null)
 				return ResponseEntity.ok(UserRes.of(200,user));				
@@ -118,7 +118,7 @@ public class UserController {
 			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
 		} else {
 			CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-			String userEmail = userDetails.getUsername();
+			String userEmail = userDetails.getUserEmail();
 			long user = userService.deleteUser(userEmail);
 			if (user > 0) {
 				return ResponseEntity.ok(BaseResponseBody.of(200, "탈퇴되었습니다."));
@@ -135,11 +135,12 @@ public class UserController {
 			@ApiResponse(code = 404, message = "수정 실패"), @ApiResponse(code = 500, message = "서버 오류") })
 	public ResponseEntity<UserUpdatePatchRes> patchUser(@ApiIgnore Authentication authentication,
 			@RequestBody @ApiParam(value = "수정 정보") UserUpdatePatchReq UserUpdatePatchReq) {
+		System.out.println("회원수정");
 		if (authentication == null) {
 			return ResponseEntity.status(401).body(UserUpdatePatchRes.of(401, "로그인 인증 실패"));
 		} else {
 			CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-			String userEmail = userDetails.getUsername();
+			String userEmail = userDetails.getUserEmail();
 			long user = userService.updateUser(userEmail, UserUpdatePatchReq);
 			if (user > 0) {
 				return ResponseEntity.ok(UserUpdatePatchRes.of(200, "수정이 완료됐습니다."));
