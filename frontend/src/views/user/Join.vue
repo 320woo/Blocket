@@ -102,6 +102,8 @@
 <script>
     import http from "@/utils/http-common";
     import axios from 'axios'
+    import store from '../../store'
+    import { createWallet } from "@/utils/itemInventory.js"
 
     export default {
         name: "signup",
@@ -166,24 +168,32 @@
                         withdrawal: 0
                     })
                     .then(({data}) => {
-                        console.log(data);
                         let msg = "회원가입 실패!!";
                         if (data.statusCode == 200) {
                             msg = "회원가입 완료";
-                            // 회원가입이 완료되면, 신상정보를 등록한다.
-                            console.log("신상정보를 등록합니다..")
+                            
+                            // 이메일을 vuex에 설정한다. 
+                            store.dispatch("setUserEmail", this.email)
 
                             axios({
                                 url: 'http://localhost:8000/api/recruit/personalinfo',
                                 method: 'POST',
                                 headers: {
-                                    Authentication: 'Bearer ' + this.$store.state.accessToken, 
+                                    // 회원가입 로직이므로 토큰이 없다.
                                     'Content-Type': 'application/json'
                                 },
                                 data: {
                                     'email': this.$store.state.user.userEmail
+
                                 }
-                            })
+                            }).then(
+                                // 신상정보를 등록하였으면, 지갑을 생성한다.
+                                createWallet().then(res => {
+                                    console.log(res)
+                                })
+
+
+                            )
 
 
                             this.$router.push("/login");

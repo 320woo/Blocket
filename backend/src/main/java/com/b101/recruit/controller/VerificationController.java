@@ -59,11 +59,11 @@ public class VerificationController {
 
 			User user = userService.findByUserEmail(userEmail);
 
-			if (user != null &&user.getType()==2) {
-				Verification verification = verificationService.updateVerification(vupr);
-				if(verification!=null)
-					return ResponseEntity.ok(VerificationUpdatePatchRes.of(200, "검증이 완료되었습니다.", verification));
-			}
+//			if (user != null &&user.getType()==2) {
+//				Verification verification = verificationService.updateVerification(vupr);
+//				if(verification!=null)
+//					return ResponseEntity.ok(VerificationUpdatePatchRes.of(200, "검증이 완료되었습니다.", verification));
+//			}
 
 			return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
 		}

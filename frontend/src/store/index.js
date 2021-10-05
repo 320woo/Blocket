@@ -9,7 +9,8 @@ export default createStore({
             userEmail: null,
             walletAddress: null,
             accessToken: null,
-            show: true
+            show: true,
+            personalInfoId: 0,
         }
     },
     mutations: {
@@ -17,6 +18,7 @@ export default createStore({
             state.user.userId = id
         },
         setUserEmail(state, userEmail) {
+            console.log("vuex 데이터 주입: 이메일")
             state.user.userEmail = userEmail
         },
         setWalletAddress(state, address) {
@@ -24,15 +26,24 @@ export default createStore({
         },
         logout(state) {
             state.user.userId = 0
+            state.user.personalInfoId = 0
             state.user.walletAddress = null
             state.user.show = true
         },
         login(state, payload) {
             state.user.accessToken = payload.accessToken;
             state.user.show = false;
+        },
+        setPersonalInfoId(state, payload) {
+            state.user.personalInfoId = payload
         }
     },
     actions: {
+        setUserEmail({ commit }, payload){
+            console.log("actions.js에서 setUserEmail 호출")
+            commit("setUserEmail", payload)
+        },
+
         saveWalletInDB({
             state
         }, payload) {
@@ -62,6 +73,7 @@ export default createStore({
                         context.commit("setUserEmail", email)
                         // vuex에 잘 저장되었나..?
                         context.commit("login", data);
+
                     }
                 })
                 .catch((error) => {

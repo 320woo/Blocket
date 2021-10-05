@@ -2,6 +2,7 @@ package com.b101.recruit.service.impl;
 
 import java.util.Optional;
 
+import com.b101.recruit.domain.dto.GalleryDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Service;
 import com.b101.recruit.domain.dto.VerificationDto;
 import com.b101.recruit.domain.entity.Activity;
 import com.b101.recruit.domain.entity.Certificate;
-import com.b101.recruit.domain.entity.File;
 import com.b101.recruit.domain.entity.FinalEducation;
 import com.b101.recruit.domain.entity.Verification;
 import com.b101.recruit.domain.repository.ActivityRepository;
@@ -47,34 +47,35 @@ public class VerificationService implements IVerificationService {
 	@Autowired
 	VerificationRepository verificationRepository;
 
-	@Autowired
-	JpaVerificationRepository jpaVerificationRepository;
+//	@Autowired
+//	JpaVerificationRepository jpaVerificationRepository;
 	
 	@Autowired
 	PersonalInfoRepository personalInfoRepository;
 
-	@Override
-	public Verification createVerification(File file) throws NullPointerException {
-		Verification verification = new Verification();
-		verification.setPersonalinfo(file.getPersonalInfo());
-		verification.setCurrentStatus("승인대기");
-		verification.setFile(file);
-		Long userId = personalInfoRepository.findUserIdById(file.getPersonalInfo().getId());
-		verification.setUserId(userId); 
-		return verificationRepository.save(verification);
-	}
+//	@Override
+//	public Verification createVerification(GalleryDto galleryDto) throws NullPointerException {
+//		
+//		Verification verification = new Verification();
+//		verification.setPersonalinfo(file.getPersonalInfo());
+//		verification.setCurrentStatus("승인대기");
+//		verification.setFile(file);
+//		Long userId = personalInfoRepository.findUserIdById(file.getPersonalInfo().getId());
+//		verification.setUserId(userId); 
+//		return verificationRepository.save(verification);
+//	}
 
-	@Override
-	public Verification updateVerification(VerificationUpdatePatchReq vcpr) {
-		Optional<Verification> verification = verificationRepository.findByFileId(vcpr.getFileId());
-		if (verification.isPresent()) {
-			String status = vcpr.getVerified();
-			verification.get().setCurrentStatus(status);
-			if (status.equals("거절")) verification.get().setReasonsRejection(vcpr.getResonsRejection());
-			return verificationRepository.save(verification.get());
-		}
-		return null;
-	}
+//	@Override
+//	public Verification updateVerification(VerificationUpdatePatchReq vcpr) {
+//		Optional<Verification> verification = verificationRepository.findByFileId(vcpr.getFileId());
+//		if (verification.isPresent()) {
+//			String status = vcpr.getVerified();
+//			verification.get().setCurrentStatus(status);
+//			if (status.equals("거절")) verification.get().setReasonsRejection(vcpr.getResonsRejection());
+//			return verificationRepository.save(verification.get());
+//		}
+//		return null;
+//	}
 
 	@Override
 	public Page<VerificationDto> getVerificationList(VerificationListGetReq vlgr) {
