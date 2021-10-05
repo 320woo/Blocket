@@ -18,22 +18,32 @@ public class GalleryDto {
 	private String title;
 	private String filePath;
 	private String imgFullPath;
+	private Long pid;
+	private Long sid;
+	private String sortation;
 	
 	public Gallery toEntity(){
         Gallery build = Gallery.builder()
                 .id(id)
                 .title(title)
                 .filePath(filePath)
+                .pid(pid)
+                .sid(sid)
+                .sortation(sortation)
                 .build();
         return build;
     }
 
     @Builder
-    public GalleryDto(Long id, String title, String filePath, String imgFullPath) {
+    public GalleryDto(Long id, String title, String filePath, String imgFullPath, Long pid, Long sid, String sortation) {
         this.id = id;
         this.title = title;
         this.filePath = filePath;
         this.imgFullPath = imgFullPath;
+        this.pid = pid;
+        this.sid = sid;
+        this.sortation = sortation;
+
     }
 	
 }

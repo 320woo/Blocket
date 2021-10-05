@@ -199,7 +199,7 @@ public class PersonalInfoService implements IPersonalInfoService {
 		}
 		
 		// 활동사항
-		List<Activity> alist = activityRepository.findByPersonalinfo_id(personalinfo.getId()).get();
+		List<Activity> alist = activityRepository.findAllByPersonalinfo_Id(personalinfo.getId()).get();
 		if(alist != null) {
 			List<ActivityPostReq> activitys = new ArrayList<>();
 			for(Activity a : alist) {
@@ -303,6 +303,11 @@ public class PersonalInfoService implements IPersonalInfoService {
 	}
 
 	@Override
+	public Optional<List<Activity>> getActivities(Long id) {
+		return activityRepository.findAllByPersonalinfo_Id(id);
+	}
+
+	@Override
 	public Activity createActivity(Long id, ActivityPostReq activity) {
 		Activity act = new Activity();
 		act.setName(activity.getName());
@@ -362,5 +367,5 @@ public class PersonalInfoService implements IPersonalInfoService {
 	public void deleteFinalEducation(Long pId, Long fId) {
 		finaleducationRepository.deleteById(fId);		
 	}
-	
+
 }

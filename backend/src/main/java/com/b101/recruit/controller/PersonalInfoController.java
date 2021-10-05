@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.amazonaws.Response;
 import com.b101.recruit.domain.entity.*;
+import com.b101.recruit.reponse.UserUpdatePatchRes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -219,7 +220,24 @@ public class PersonalInfoController {
 		service.deleteCertificate(pId, cId);
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
 	}
-	
+
+	@GetMapping("/{personalinfoId}/myActivity")
+	@ApiOperation(value = "활동사항 조회", notes = "활동사항을 조회한다.")
+	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
+			@ApiResponse(code = 500, message = "서버 오류") })
+	public ResponseEntity<Optional<List<Activity>>> getActivities(@PathVariable("personalinfoId") Long id,
+			@ApiIgnore Authentication authentication) {
+		if (authentication == null) {
+			return ResponseEntity.status(401).body(null);
+		}
+		else {
+			Optional<List<Activity>> result = service.getActivities(id);
+			return ResponseEntity.status(200).body(result);
+		}
+
+	}
+
+
 	@PostMapping("/{personalinfoId}/activity")
 	@ApiOperation(value = "활동사항 등록", notes = "활동사항을 등록한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),

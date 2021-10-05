@@ -2,6 +2,7 @@ package com.b101.recruit.service.impl;
 
 import java.util.Optional;
 
+import com.b101.recruit.domain.dto.GalleryDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -54,7 +55,8 @@ public class VerificationService implements IVerificationService {
 	PersonalInfoRepository personalInfoRepository;
 
 	@Override
-	public Verification createVerification(File file) throws NullPointerException {
+	public Verification createVerification(GalleryDto galleryDto) throws NullPointerException {
+		
 		Verification verification = new Verification();
 		verification.setPersonalinfo(file.getPersonalInfo());
 		verification.setCurrentStatus("승인대기");

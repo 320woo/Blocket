@@ -31,7 +31,7 @@ export async function getUserBelong() {
   return result
 }
 
-
+// 신상정보 불러오기
 export async function getMyInfo() {
   let result = ''
   // 먼저 유저에 대한 personalInfo Id를 불러와야 한다. 

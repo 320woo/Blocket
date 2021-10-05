@@ -39,7 +39,9 @@ public interface IPersonalInfoService {
 	Certificate updateCertificate(Long pId, Long cId, CertificatePostReq certificate);
 	
 	void deleteCertificate(Long pId, Long cId);
-	
+
+	Optional<List<Activity>> getActivities(Long id);
+
 	Activity createActivity(Long id, ActivityPostReq activity);
 	
 	Activity updateActivity(Long pId, Long aId, ActivityPostReq activity);

@@ -11,7 +11,12 @@
       </div>
     </div>
 
-    <div class="p-col">내용내용</div>
+    <div class="p-col" v-for="act in state.myActivity" :key="act.id">
+      {{ act.activity }}
+      {{ act.name }}
+      {{ act.description }}
+      {{ act.period }}
+    </div>
 
   </div>
 
@@ -24,10 +29,11 @@
     <div class="p-field">
       <label for="activityType">활동 구분*</label>
       <select name="type" id="activityType" class="select">
-        <option value="1">정규직</option>
-        <option value="2">계약직</option>
-        <option value="3">프로젝트</option>
-        <option value="4">인턴</option>
+        <option value="정규직">정규직</option>
+        <option value="계약직">계약직</option>
+        <option value="프로젝트">프로젝트</option>
+        <option value="인턴">인턴</option>
+        <option value="교육 이수">교육 이수</option>
       </select>
     </div> 
     <div class="p-field">
@@ -63,6 +69,7 @@
 
 <script>
 import { reactive, onMounted } from 'vue'
+import * as aService from '@/utils/activityService.js'
 
 export default {
   name: 'Activity', 
@@ -70,17 +77,42 @@ export default {
 
   ],
   setup() {
+    // 활동사항 불러오기
+    aService.getActivities().then(resp => {
+      if (resp.isWritten === false) {
+        state.input.uid = resp.uid
+        state.input.pid = resp.pid
+      }
+      else {
+        resp.isWritten = true
+        state.myActivity = resp    // 배열이 된다.
+      }
+    })
+
     const state = reactive({
       displayActivityModal: false,
 
-      // 활동 사항
-      activityName: '', 
+      myActivity: '',   // DB에서 받아온 내용을 저장하는 변수.
+
+      isWritten: false,  // 기존에 작성된 내역이 존재하는지
       startDate: '',
       endDate: '',
+      // 활동 사항
+      input: {          // 새로 입력한 값을 저장하는 변수
+        activity: '', 
+        description: '',
+        name: '',
+        period: '',    // startDate와 endDate 데이터 결합
+        uid: '',
+        pid: '',
+
+      },
+      
+      
     })
 
     onMounted(() => {
-
+      
     })
     
     return {
