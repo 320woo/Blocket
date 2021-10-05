@@ -11,7 +11,7 @@ import com.b101.recruit.domain.entity.Verification;
 //@Repository
 public interface VerificationRepository extends JpaRepository<Verification, Long>{
 
-	Optional<Verification> findByFileId(Long fileId);
+//	Optional<Verification> findByFileId(Long fileId);
 
 	Page<Verification> findByCurrentStatusContaining(Pageable pageable, String verified);
 }
