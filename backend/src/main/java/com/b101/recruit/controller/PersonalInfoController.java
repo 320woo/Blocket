@@ -126,7 +126,7 @@ public class PersonalInfoController {
 		}
 	}
 	
-	@PutMapping("/{personalinfoId}")
+	@PutMapping("/{personalinfoId}/updatePersonalInfo")
 	@ApiOperation(value = "신상정보 수정", notes = "신상정보를 수정한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
 		@ApiResponse(code = 500, message = "서버 오류") })

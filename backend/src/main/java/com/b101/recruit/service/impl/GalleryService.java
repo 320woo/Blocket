@@ -2,6 +2,7 @@ package com.b101.recruit.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -43,5 +44,9 @@ public class GalleryService {
                 .imgFullPath("https://" + s3Service.CLOUD_FRONT_DOMAIN_NAME + "/" + gallery.getFilePath())
                 .build();
     }
+
+	public Optional<Gallery> getGallery(Long gId) {
+		return galleryRepository.findById(gId);
+	}
     
 }
