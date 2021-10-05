@@ -35,22 +35,23 @@ public class VerificationService implements IVerificationService {
 
 //	@Autowired
 //	JpaVerificationRepository jpaVerificationRepository;
-	
+
 	@Autowired
 	PersonalInfoRepository personalInfoRepository;
 
 	@Override
 	public Verification createVerification(GalleryDto galleryDto) throws NullPointerException {
-		
+
 		Verification verification = new Verification();
-		Gallery gallery = new Gallery(galleryDto.getId(), galleryDto.getTitle(), galleryDto.getFilePath(), galleryDto.getPid(), galleryDto.getSid(), galleryDto.getSortation());
+		Gallery gallery = new Gallery(galleryDto.getId(), galleryDto.getTitle(), galleryDto.getFilePath(),
+				galleryDto.getPid(), galleryDto.getSid(), galleryDto.getSortation());
 //		verification.setPersonalinfo(galleryDto.getPid());
 		PersonalInfo personalInfo = personalInfoRepository.findById(gallery.getPid()).get();
 		verification.setPersonalinfo(personalInfo);
 		verification.setCurrentStatus("승인대기");
 		verification.setGallery(gallery);
 		Long userId = personalInfoRepository.findUserIdById(gallery.getPid());
-		verification.setUserId(userId); 
+		verification.setUserId(userId);
 		return verificationRepository.save(verification);
 	}
 
@@ -69,16 +70,18 @@ public class VerificationService implements IVerificationService {
 	@Override
 	public Page<VerificationDto> getVerificationList(VerificationListGetReq vlgr) {
 		int size = vlgr.getSize();
-		int page = vlgr.getPage() - 1;
+		int page = vlgr.getPage() <= 0 ? 0 : vlgr.getPage() - 1;
 		String verified = vlgr.getVerified();
 		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "registrationDate"));
 		if (verified.equals("")) {
 			Page<Verification> pageTuts = verificationRepository.findAll(pageable);
-			Page<VerificationDto> verList = pageTuts.map(Verification -> new VerificationDto());
+			Page<VerificationDto> verList = pageTuts.map(m -> new VerificationDto(m.getId(),m.getPersonalinfo().getId(),m.getUserId(),m.getGallery().getId(),m.getRegistrationDate(),m.getCurrentStatus(),m.getReasonsRejection()));
+			
+//			Page<VerificationDto> verList = new PageImpl<>()
 			return verList;
 		} else {
-			Page<Verification> pageTuts = verificationRepository.findByCurrentStatusContaining(pageable,verified);
-			Page<VerificationDto> verList = pageTuts.map(Verification -> new VerificationDto());
+			Page<Verification> pageTuts = verificationRepository.findByCurrentStatusContaining(pageable, verified);
+			Page<VerificationDto> verList = pageTuts.map(m -> new VerificationDto(m.getId(),m.getPersonalinfo().getId(),m.getUserId(),m.getGallery().getId(),m.getRegistrationDate(),m.getCurrentStatus(),m.getReasonsRejection()));
 			return verList;
 		}
 	}
