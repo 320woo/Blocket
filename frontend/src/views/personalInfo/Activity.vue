@@ -16,7 +16,7 @@
   </div>
 
   <!-- 활동 사항 추가 modal 창 -->
-  <Dialog header="활동사항 입력" v-model:visible="state.displayActivityModal" :style="{width: '30vw'}" :modal="true">
+  <Dialog header="활동사항 입력" v-model:visible="state.displayActivityModal" :style="{width: '50vw'}" :modal="true">
     <div class="p-field">
       <label for="activityName">이름*</label>
       <InputText id="activityName" class="input-text" type="activityName" aria-describedby="username1-help" placeholder="예: 소매관리자" />

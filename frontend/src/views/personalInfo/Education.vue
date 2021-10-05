@@ -15,17 +15,17 @@
       <!-- 입력한 최종학력이 존재하는 경우 -->
       <div class="p-grid">
         <div class="p-col-12">
-          최종 학력 : {{ state.myGrade.sortation }}
+          <strong>최종 학력</strong> : {{ state.myGrade.sortation }}
         </div>
         <div class="p-col-12">
-          학교명 : {{ state.myGrade.schoolInfo }} {{ state.myGrade.majorInfo }}
+          <strong>학교명</strong> : {{ state.myGrade.schoolName }} {{ state.myGrade.majorName }}
         </div>
         <div class="p-col-12">
-          학점 : {{ state.myGrade.grades }} / {{ state.myGrade.totalScore }}
+          <strong>학점</strong> : {{ state.myGrade.grades }} / {{ state.myGrade.totalScore }}
         </div>
       </div>
 
-      <div v-if="!state.myGrade.isItWritten">
+      <div v-if="!state.isWritten">
         <span style="color: blue; cursor: pointer; display: inline-block;" @click="state.displayEducationModal = true">
           <strong>새로 입력하기</strong>
         </span>
@@ -92,7 +92,6 @@
 import { reactive, onMounted, ref } from 'vue'
 import { getAllColleges, getAllMajors } from '@/utils/colleges.js'
 import { FilterService, FilterMatchMode }  from 'primevue/api'
-import { useStore } from 'vuex'
 
 import * as eService from '@/utils/educationService.js'
 
@@ -100,33 +99,26 @@ export default {
   name: 'Education',
   props: [],
   setup() {
-    const store = useStore()
-
-    // props 확인해보기
-
     const colleges = ref()         // 모든 학교
     const filteredColleges = ref() // 검색 결과로 나온 학교들
     const majors = ref()           // 모든 전공
     const filteredMajors = ref()   // 검색 결과로 나온 전공들
 
     const state = reactive({
-      store: store,
       displayEducationModal: false,
-          // 최종 학력 사항
+      // 최종 학력 사항
+      isWritten: false,
       myGrade: {
-        id: '', // 학력 사항 Pk. 있는 경우에만 값이 들어간다.
-        pid: '',     // 신상정보 PK
-        userId: '', // 작성자 Id,
-        isItWritten: false,   // DB에서 데이터를 받아오는 경우 true가 된다.
-        grades: '',   // 내가 취득한 평균 학점
-        totalScore: '', // 학점 점수 기준
-        schoolInfoObj: '', // 객체로 저장된다.
-        majorInfoObj: '', // 객체로 저장된다.
-        schoolInfo: '', 
-        majorInfo: '',  
-        name: '',
-        sortation: '',  // 분류. 대학교, 고등학교, 중학교,
-        
+        id: '',                     // 학력 사항 Pk. 있는 경우에만 값이 들어간다.
+        pid: '',                    // 신상정보 PK
+        userId: '',                 // 작성자 Id,
+        grades: '',                 // 내가 취득한 평균 학점
+        totalScore: '',             // 학점 점수 기준
+        schoolInfoObj: '',          // 객체로 저장된다.
+        majorInfoObj: '',           // 객체로 저장된다.
+        schoolName: '', 
+        majorName: '',  
+        sortation: '',              // 분류. 대학교, 고등학교, 중학교,
       },
     })
 
@@ -142,26 +134,16 @@ export default {
       })
 
       // 최종학력 불러오기
-      eService.getFinalEducation(store.state.user.personalInfoId).then(res => {
-        // 만약 저장되어 있는 최종 학력이 존재하지 않는경우 ...
-        if (res.data.length === 0) {
-          state.myGrade.isItWritten = false
+      eService.getFinalEducation().then(res => {
+        state.isWritten = res.isWritten
+
+        if (!res.isWritten) {
+          // 최종학력 작성에 필요한 기본사항(pid, userId만 등록해둔다.)
+          state.myGrade.pid = res.pid
+          state.myGrade.userId = res.userId
         } 
         else {
-          state.myGrade.isItWritten = true
-
-          // 객체의 데이터를 하나하나 넣어준다.
-          const name = res.data[0].name.split(" ")
-          const gradeInfo = res.data[0].grades.split("/")
-
-          state.myGrade.id = res.data[0].id
-          state.myGrade.schoolInfo = name[0]
-          state.myGrade.schoolInfoObj = name[0]
-          state.myGrade.majorInfo = name[1]
-          state.myGrade.majorInfoObj = name[1]
-          state.myGrade.grades = gradeInfo[0]
-          state.myGrade.totalScore = gradeInfo[1]
-          state.myGrade.sortation = res.data[0].sortation
+          state.myGrade = res
         }
       })
     })
@@ -181,25 +163,24 @@ export default {
     saveEducationModal() {
       // 기본적으로, 파일이 반드시 선택되어 있어야 한다.
 
-
       // 최종 학력 등록하기
-      this.state.myGrade.pid = this.state.personalInfo.id
-      this.state.myGrade.userId = this.state.store.state.user.userId
       this.state.myGrade.name = this.state.myGrade.schoolInfoObj.schoolName  + " " + this.state.myGrade.majorInfoObj.mClass
       
       // 만약 처음으로 작성하는 거라면...
-      if (!this.state.myGrade.isItWritten) {
-        console.log("최종학력 작성")
-        eService.createFinalEducation(this.state.myGrade)
+      if (this.state.isWritten === false) {
+        eService.createFinalEducation(this.state.myGrade).then(
+          alert("최종학력을 등록하였습니다.")
+        )
       }
       // 이미 작성되었다면
       else {
         console.log("최종학력 수정")
         eService.updateFinalEducation(this.state.myGrade)
-        .then(
-          // 데이터 갱신이 필요하다.
-
-        )
+        .then(res => {
+          // 변경 사항 갱신하기
+          this.state.myGrade.schoolName = res.schoolName
+          this.state.myGrade.majorName = res.majorName
+        })
       }
       this.state.displayEducationModal = false
     },

@@ -25,6 +25,7 @@ export default createStore({
         },
         logout(state) {
             state.user.userId = 0
+            state.user.personalInfoId = 0
             state.user.walletAddress = null
             state.user.show = true
         },

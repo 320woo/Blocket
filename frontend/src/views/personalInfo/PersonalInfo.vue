@@ -44,10 +44,10 @@
             </div>
           </div>
           <div class="p-ml-3" >
-            <div class="p-mb-2">성별: {{ state.personalInfo.gender }}</div>
-            <div class="p-mb-2">영문 이름: {{ state.personalInfo.englishName }}</div>
-            <div class="p-mb-2">생년월일: {{ state.personalInfo.dateBirth }}</div>
-            <div class="p-mb-2">주소: {{ state.personalInfo.address }}</div>
+            <div class="p-mb-2"><strong>성별</strong> {{ state.personalInfo.gender }}</div>
+            <div class="p-mb-2"><strong>영문 이름</strong> {{ state.personalInfo.englishName }}</div>
+            <div class="p-mb-2"><strong>생년월일</strong> {{ state.personalInfo.dateBirth }}</div>
+            <div class="p-mb-2"><strong>주소</strong> {{ state.personalInfo.address }}</div>
           </div>
         </div> 
 
@@ -56,7 +56,6 @@
         <Activity />
 
         <Certification />
-
 
         <!-- 병역사항 기재 -->
         <div class="p-col profile">
@@ -161,14 +160,12 @@
 </template> <!-- end of HTML code -->
 
 <script>
-import { reactive, onMounted } from 'vue'
+import { reactive } from 'vue'
 import defaultImage from "~/images/test.png"
 import defaultUserImage from "~/images/user.png"
-import store from '../../store'
 
 import * as pService from '@/utils/pService.js' // default를 붙이면 중괄호 없이 가져올 수 있다..! 반대로 default가 없는 경우에는 중괄호 필수
-// import { useToast } from 'primevue/usetoast'
-
+// 자식 컴포넌트
 import Activity from "./Activity.vue"
 import Education from "./Education.vue"
 import Certification from "./Certification.vue"
@@ -178,27 +175,15 @@ export default {
   components: { Activity, Education, Certification },
   setup() {
     pService.checkToken() // 토큰 정보 확인
-    pService.getMyInfo().then(res => {
-      state.personalInfo.id = res.data[0].id
-      store.commit("setPersonalInfoId", res.data[0].id)
-      state.personalInfo.dateBirth = res.data[0].dateBirth
-      state.personalInfo.address = res.data[0].address
-      state.personalInfo.englishName = res.data[0].englishName
-      state.personalInfo.gender = res.data[0].gender
-      // 병역 사항 불러오기
-
-      // 보훈 사항 불러오기
-
-      // 장애 여부 불러오기
-    }) 
-
-    // 파일 첨부 관련 변수 - 토스트
-    // const toast = useToast()
+    pService.getMyInfo().then(res => {  // 각 함수는 비동기 처리하였음
+      state.personalInfo = res
+    })
+    pService.getUserBelong().then(res => {
+      state.belong = res
+    })
     
     const state = reactive({
-      belong: null,
-      walletAddress: null,
-      privateKey: null,
+      belong: null, // 소속
       defaultImage: defaultImage,
       defaultUserImage: defaultUserImage,
 
@@ -215,17 +200,8 @@ export default {
         repProfile: '',   // 대표 프로필 경로
       },
     })
-    onMounted(() => {
-      // user 테이블 정보 조회
-      pService.getUserBelong().then(res => {
-        state.belong = res.data.belong
-        store.commit("setUserId", res.data.id)
-      })
-    })
-
     return {
       state,
-      // toast,
     }
   },
 
