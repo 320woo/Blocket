@@ -76,6 +76,7 @@ export default {
   setup() {
     // 활동사항 불러오기
     aService.getActivities().then(resp => {
+      console.log("활동사항 data : " +resp);
       if (resp.isWritten === false) {
         state.input.uid = resp.uid
         state.input.pid = resp.pid
@@ -96,16 +97,14 @@ export default {
       endDate: '',
       // 활동 사항
       input: {          // 새로 입력한 값을 저장하는 변수
+        id : '',
         activity: '', 
         description: '',
         name: '',
         period: '',    // startDate와 endDate 데이터 결합
         uid: '',
         pid: '',
-
       },
-      
-      
     })
 
     onMounted(() => {
@@ -121,7 +120,17 @@ export default {
       this.state.displayActivityModal = true
     },
     saveActivityModal() {
+      if (this.state.isWritten === false) {
+        aService.createActivity(this.state.input).then(
+          alert("최종활동을 등록하였습니다.")
+        )
+      }
+
       this.state.displayActivityModal = false
+    },
+    onUpload() {
+      // toast는 메시지를 오버레이하기 위해 필요한 툴이다.
+      // this.toast.add({severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000});
     },
   }
 }

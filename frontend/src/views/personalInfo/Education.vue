@@ -135,7 +135,7 @@ export default {
       // 최종학력 불러오기
       eService.getFinalEducation().then(res => {
         state.isWritten = res.isWritten
-
+      
         if (!res.isWritten) {
           // 최종학력 작성에 필요한 기본사항(pid, userId만 등록해둔다.)
           state.myGrade.pid = res.pid

@@ -69,44 +69,6 @@ export function getFinalEducation(personalInfoId) {
 }
 export function checkLogin() {
 
-
-export function createFinalEducation(myGrade) {
-  const obj = {
-    "grades": myGrade.grades + "/" + myGrade.totalScore,
-    "id": myGrade.id,
-    "name": myGrade.name,
-    "sortation": myGrade.sortation,
-    "userId": myGrade.userId
-  }
-  return axios({
-    url: INFO_URL + "/" + myGrade.id + "/finaleducation",
-    method: "POST", 
-    headers: {
-      Authorization: "Bearer "+ store.state.user.accessToken,
-      'Content-Type': 'application/json'
-    },
-    data: obj,
-  })
-}
-
-
-export function updateFinalEducation(myGrade) {
-  const obj = {
-    "grades": myGrade.grades + "/" + myGrade.totalScore,
-    "id": myGrade.pid,
-    "name": myGrade.name,
-    "sortation": myGrade.sortation,
-    "userId": myGrade.userId
-  }
-  return axios({
-    url: INFO_URL + "/" + myGrade.pid + "/" + myGrade.id + "/update",
-    method: "PUT", 
-    headers: {
-      Authorization: "Bearer "+ store.state.user.accessToken,
-      'Content-Type': 'application/json'
-    },
-    data: obj,
-  })
     if (store.state.user.accessToken !== null) {
         router.push("/")
     }

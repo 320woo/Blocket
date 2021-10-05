@@ -22,7 +22,7 @@ export async function getActivities() {
       Authorization:"Bearer "+ store.state.user.accessToken
     }
   })
-  .then(resp => {
+    .then(resp => {
     // CASE 1. 데이터가 없는 경우
     if (resp.data.length === 0) {
       result = {
@@ -41,8 +41,28 @@ export async function getActivities() {
 }
 
 // 활동사항 등록하기
-export async function createActivity() {
-
+export async function createActivity(myActivity) {
+  const temp = {
+    "id" : myActivity.id,
+    "name" : myActivity.name,
+    "activity" : myActivity.activity, 
+    "period" : myActivity.period,
+    "description" : myActivity.description,
+    "userId" : myActivity.uid,
+  }
+  console.log(myActivity.pid);
+  await axios({
+    url: INFO_URL + "/" + myActivity.pid + "/activity",
+    method: "POST", 
+    headers: {
+      Authorization: "Bearer "+ store.state.user.accessToken,
+      'Content-Type': 'application/json'
+    },
+    data: temp,
+  })
+  .then(res => {
+    console.log(res)
+  })
 }
 
 // 활동사항 수정하기
