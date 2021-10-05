@@ -25,7 +25,7 @@ public interface IVerificationService {
 	
 //	Verification createVerification(File file);
 
-	Verification updateVerification(VerificationUpdatePatchReq vcpr);
+//	Verification updateVerification(VerificationUpdatePatchReq vcpr);
 
 	Page<VerificationDto> getVerificationList(VerificationListGetReq vlgr);
 

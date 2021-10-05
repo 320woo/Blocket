@@ -65,17 +65,17 @@ public class VerificationService implements IVerificationService {
 //		return verificationRepository.save(verification);
 //	}
 
-	@Override
-	public Verification updateVerification(VerificationUpdatePatchReq vcpr) {
-		Optional<Verification> verification = verificationRepository.findByFileId(vcpr.getFileId());
-		if (verification.isPresent()) {
-			String status = vcpr.getVerified();
-			verification.get().setCurrentStatus(status);
-			if (status.equals("거절")) verification.get().setReasonsRejection(vcpr.getResonsRejection());
-			return verificationRepository.save(verification.get());
-		}
-		return null;
-	}
+//	@Override
+//	public Verification updateVerification(VerificationUpdatePatchReq vcpr) {
+//		Optional<Verification> verification = verificationRepository.findByFileId(vcpr.getFileId());
+//		if (verification.isPresent()) {
+//			String status = vcpr.getVerified();
+//			verification.get().setCurrentStatus(status);
+//			if (status.equals("거절")) verification.get().setReasonsRejection(vcpr.getResonsRejection());
+//			return verificationRepository.save(verification.get());
+//		}
+//		return null;
+//	}
 
 	@Override
 	public Page<VerificationDto> getVerificationList(VerificationListGetReq vlgr) {
