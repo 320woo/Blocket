@@ -105,7 +105,7 @@
     import http from "@/utils/http-common";
     import axios from 'axios'
     import store from '../../store'
-    import { createWallet } from "@/utils/itemInventory.js"
+    import router from '../../router'
 
     export default {
         name: "signup",
@@ -188,17 +188,9 @@
                                     'email': this.$store.state.user.userEmail
 
                                 }
-                            }).then(
-                                // 신상정보를 등록하였으면, 지갑을 생성한다.
-                                createWallet().then(res => {
-                                    console.log(res)
-                                })
-
-
-                            )
-
-
-                            this.$router.push("/login");
+                            })
+                            // router.push({name: "WalletInfo", params: { email: this.email }});
+                            router.push("/login")
                         }
                         console.log(msg);
                     })

@@ -64,15 +64,7 @@ export default createStore({
     },
     actions: {
         setUserEmail({ commit }, payload){
-            console.log("actions.js에서 setUserEmail 호출")
             commit("setUserEmail", payload)
-        },
-
-        saveWalletInDB({
-            state
-        }, payload) {
-            console.log(state)
-            console.log(payload)
         },
         login(context, { email, password }) {
             console.log("로그인");

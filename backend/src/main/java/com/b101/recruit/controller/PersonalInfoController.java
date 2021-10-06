@@ -130,10 +130,10 @@ public class PersonalInfoController {
 	@ApiOperation(value = "신상정보 수정", notes = "신상정보를 수정한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
 		@ApiResponse(code = 500, message = "서버 오류") })
-	public ResponseEntity<BaseResponseBody> updatePersonalInfo(@PathVariable(name = "personalinfoId") Long id,
+	public ResponseEntity<PersonalInfo> updatePersonalInfo(@PathVariable(name = "personalinfoId") Long id,
 			@RequestBody PersonalInfoPostReq personalinfoPostReq) {
 		PersonalInfo result = service.updatePersonalInfo(id, personalinfoPostReq);
-		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+		return ResponseEntity.status(200).body(result);
 	}
 	
 	@DeleteMapping("/{personalinfoId}")
@@ -258,7 +258,7 @@ public class PersonalInfoController {
 	@ApiOperation(value = "최종학력 등록", notes = "최종학력을 등록한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
 		@ApiResponse(code = 500, message = "서버 오류") })
-	public ResponseEntity<BaseResponseBody> createFinalEducation(@RequestBody FinalEducationPostReq FinalEducationPostReq, @PathVariable(name = "personalinfoId") Long id
+	public ResponseEntity<FinalEducation> createFinalEducation(@RequestBody FinalEducationPostReq FinalEducationPostReq, @PathVariable(name = "personalinfoId") Long id
 			) {
 
 		logger.info("최종 학력 등록 메서드");
@@ -266,8 +266,8 @@ public class PersonalInfoController {
 
 		// 이미 기존에 작성한 글이 있는지 조회한다.
 
-		FinalEducation finaleducation2 = service.createFinalEducation(id, FinalEducationPostReq);
-		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+		FinalEducation result = service.createFinalEducation(id, FinalEducationPostReq);
+		return ResponseEntity.status(200).body(result);
 	}
 
 	@PutMapping("/{personalinfoId}/{finaleducationId}/update")
