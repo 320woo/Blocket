@@ -25,10 +25,12 @@ export async function getActivities() {
     }
   })
   .then(res => {
-    if (res.data === []) {
+    // 데이터가 없는 경우에 res.data = []와 같이 나온다. 이 경우, 데이터가 있는 경우와 맞춰서 줘야 한다.
+    if (res.data.length === 0) {
       result = {
-        pid: pid,
+        data: 'NoData',
         uid: uid,
+        pid: pid,
       }
     }
     else {
@@ -67,7 +69,19 @@ export async function deleteActivity(pid, id) {
     }
   })
   .then(res => {
-    result = res
+    // 데이터가 없는 경우
+    if (res.data.length === 0) {
+      result = {
+        data: 'NoData',
+        uid: null,
+        pid: null,
+      } 
+    }
+    // 데이터가 하나 이상 존재하는 경우
+    else {
+      result = res
+    }
+    
   })
   return result
 }

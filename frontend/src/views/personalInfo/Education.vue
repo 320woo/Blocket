@@ -205,7 +205,6 @@ export default {
       if (state.id === '') {
         eService.createFinalEducation(state.input, state.uid, state.pid).then(res => {
           // 값 갱신하기
-          console.log("생성한 FE 객체..", res)
           state.eInfo.grades = res.grades
           state.eInfo.name = res.name
           state.eInfo.sortation = res.sortation
@@ -217,7 +216,6 @@ export default {
       }
       // 이미 작성되었다면
       else {
-        console.log("최종학력 수정")
         eService.updateFinalEducation(state.input, state.pid, state.id)
         .then(res => {
           // 값 갱신하기

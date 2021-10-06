@@ -60,23 +60,48 @@
 </template>
 
 <script>
-import { reactive, onMounted } from 'vue'
+import { reactive } from 'vue'
+
+// vuelidate를 이용한 validataion
+// import { required } from '@vuelidate/validators'
+// import { useVuelidate } from '@vuelidate/core'
+
+import * as cService from '@/utils/CertificationService.js'
 
 export default {
   name: 'Certification', 
   setup() {
+    // Created
+    cService.getCertification().then(res => {
+      if (res.data === 'NoData') {
+        state.uid = res.uid
+        state.pid = res.pid
+      }
+      else {
+        state.pid = res[0].personalinfo.id
+        state.uid = res[0].personalinfo.user.id
+        state.input.userId = res[0].personalinfo.user.id
+        state.cInfo = res
+      }
+    })
+    
+
+
     const state = reactive({
+      uid: '',
+      pid: '',
       displayCertModal: false,
-
+      cInfo: '',
       // 어학, 자격증
-      certName: '',
-      certsortation: '',
-      acquisitionDate: '',
-      certScore: '',
+      input: {
+        userId: '',
+        certName: '',
+        certsortation: '',
+        acquisitionDate: '',
+        certScore: '',
+      },
     })
-    onMounted(() => {
 
-    })
     return {
       state,
     }

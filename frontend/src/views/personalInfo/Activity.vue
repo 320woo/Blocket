@@ -11,7 +11,15 @@
       </div>
     </div>
 
-    <div class="p-col" v-for="act in state.aInfo" :key="act.id">
+
+    <div class="p-col-12" v-if="state.aInfo === ''">
+      입력한 활동사항이 없습니다.
+      <span style="color: blue; cursor: pointer; display: inline-block;" @click="state.displayActivityModal = true">
+        <strong>새로 입력하기</strong>
+      </span>
+    </div>
+
+    <div v-else class="p-col" v-for="act in state.aInfo" :key="act.id">
       <div class="p-mt-3">
         <div class="p-col-12">
           <strong>활동구분:</strong> {{ act.activity }}
@@ -116,13 +124,12 @@ export default {
     aService.getActivities().then(res => {
       // []로 올 수도 있고, [{...}]로 올 수도 있고, [{...}, {...}]로 올 수도 있다.
       // CASE1. []로 오는 경우 ( 등록된 데이터가 없는 경우 )
-      if (res === []) {
+      if (res.data === 'NoData') {
         state.pid = res.pid
         state.uid = res.uid
       }
       // CASE2. 최소 1개의 데이터가 존재하는 경우
       else {
-        console.log(res)
         state.pid = res[0].personalinfo.id
         state.uid = res[0].personalinfo.user.id
         state.input.userId = res[0].personalinfo.user.id
@@ -134,17 +141,12 @@ export default {
       pid: '',          // 신상정보 PK
       uid: '',          // User PK
       displayActivityModal: false,
-      displayActivityModifyModal: false,
       startDate: '',
       endDate: '',
       // 활동 사항
-      aInfo: {
-        activity:'',
-        description: '',
-        name: '',
-        period: '',
-      },
-      input: {          // 새로 입력한 값을 저장하는 변수
+      aInfo: '',
+      // 새로 입력한 값을 저장하는 변수
+      input: {          
         userId: '', 
         activity: '', 
         description: '',
@@ -170,9 +172,9 @@ export default {
       if (!isFormValid) { 
         return
       }      
-      saveActivityModal()
+      createActivity()
     }
-    const saveActivityModal = () => {
+    const createActivity = () => {
       // 데이터 전처리
       state.input.period = JSON.stringify(state.startDate) + " ~ " + JSON.stringify(state.endDate)
       aService.createActivity(state.input, state.pid).then(res => { 
@@ -180,6 +182,18 @@ export default {
       })
       state.displayActivityModal = false
       alert("활동사항을 저장하였습니다.")
+
+      // 입력을 완료하였으면, Form 내 값을 모두 초기화 한다.
+      resetForm()
+    }
+
+    const resetForm = () => {
+      state.input.activity = ''
+      state.input.description = ''
+      state.input.name = ''
+      state.input.period = ''
+      state.startDate = ''
+      state.endDate = ''
     }
     
     return {
@@ -193,8 +207,13 @@ export default {
     },
     deleteActivity(id) {
       aService.deleteActivity(this.state.pid, id).then(res => {
-        console.log("삭제한 후,,,", res)
-        this.state.aInfo = res.data
+        // 데이터가 없는 경우 res.data는 'NoData'이다.
+        if (res.data === 'NoData') {
+          this.state.aInfo = ''
+        }
+        else {
+          this.state.aInfo = res.data
+        }
       })
       alert("삭제하였습니다.")
     }

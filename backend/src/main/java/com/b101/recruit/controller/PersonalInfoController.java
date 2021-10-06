@@ -164,7 +164,24 @@ public class PersonalInfoController {
 		List<PersonalInfoPostReq> personalinfoList = service.getAllPersonalInfo(pageable, email);
 		return ResponseEntity.status(200).body(personalinfoList);
 	}
-	
+
+
+	@GetMapping("/{personalinfoId}/myCertificate")
+	@ApiOperation(value = "어학, 자격증 조회", notes = "어학, 자격증을 조회한다.")
+	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
+			@ApiResponse(code = 500, message = "서버 오류") })
+	public ResponseEntity<Optional<List<Certificate>>> getCertification(@PathVariable("personalinfoId") Long id,
+		@ApiIgnore Authentication authentication) {
+		if (authentication == null) {
+			return ResponseEntity.status(401).body(null);
+		}
+		else {
+			Optional<List<Certificate>> result = service.getCertification(id);
+			return ResponseEntity.status(200).body(result);
+		}
+	}
+
+
 	@PostMapping("/{personalinfoId}/certificate")
 	@ApiOperation(value = "어학, 자격증 등록", notes = "어학, 자격증을 등록한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
@@ -209,7 +226,6 @@ public class PersonalInfoController {
 			Optional<List<Activity>> result = service.getActivities(id);
 			return ResponseEntity.status(200).body(result);
 		}
-
 	}
 
 	@PostMapping("/{personalinfoId}/activity")
