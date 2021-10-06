@@ -33,9 +33,6 @@ public class VerificationService implements IVerificationService {
 	@Autowired
 	VerificationRepository verificationRepository;
 
-//	@Autowired
-//	JpaVerificationRepository jpaVerificationRepository;
-
 	@Autowired
 	PersonalInfoRepository personalInfoRepository;
 
@@ -87,8 +84,28 @@ public class VerificationService implements IVerificationService {
 	}
 
 	@Override
-	public String getCurrentStatus(Long gId) {
-		return verificationRepository.findByGalleryId(gId).get().getCurrentStatus();
+	public Verification getVerification(Long gId) {
+		return verificationRepository.findByGalleryId(gId).get();
 	}
+	
+//	@Override
+//	public VerificationDto findByCertificationId(Long cId) {
+//		
+//		Verification v = verificationRepository.findBySid(cId);
+//		VerificationDto verificationDto = new VerificationDto(v.getId(),v.getPersonalinfo().getId(),v.getUserId(),v.getGallery().getId(),v.getRegistrationDate(),v.getCurrentStatus(),v.getReasonsRejection());
+//		return null;
+//	}
+//	
+//	@Override
+//	public VerificationDto findByActivityId(Long aId) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//	
+//	@Override
+//	public VerificationDto findByFinalEducationId(Long fId) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 }

@@ -1,6 +1,7 @@
 package com.b101.recruit.reponse;
 
 import com.b101.recruit.domain.entity.Gallery;
+import com.b101.recruit.domain.entity.Verification;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
@@ -23,9 +24,10 @@ public class GalleryRes {
 	private String sortation; // 구분
 	private Long sid;
 	private String currentStatus;
+	private String reasonsRejection;
 	private Object data;
 
-	public static GalleryRes of(Gallery gallery,Object object,String currentStatus) {
+	public static GalleryRes of(Gallery gallery,Object object,Verification verification) {
 		GalleryRes res = new GalleryRes();
 		res.setId(gallery.getId());
 		res.setPid(gallery.getPid());
@@ -34,7 +36,8 @@ public class GalleryRes {
 		res.setFilePath(gallery.getFilePath());
 		res.setSortation(gallery.getSortation());
 		res.setData(object);
-		res.setCurrentStatus(currentStatus);
+		res.setCurrentStatus(verification.getCurrentStatus());
+		res.setReasonsRejection(verification.getReasonsRejection());
 		return res;
 	}
 
