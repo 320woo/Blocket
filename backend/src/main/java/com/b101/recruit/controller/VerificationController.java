@@ -78,22 +78,23 @@ public class VerificationController {
 			@RequestBody @ApiParam(value = "검증 정보", required = true) VerificationListGetReq verificationListGetReq
 			,@ApiIgnore Authentication authentication
 			) {
-		if (authentication == null) {
-			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
-		} else {
-			CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
-			String userEmail = userDetails.getUsername();
+//		System.out.println(verificationListGetReq.getSize());
+//		if (authentication == null) {
+//			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
+//		} else {
+//			CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
+//			String userEmail = userDetails.getUsername();
 
-			User user = userService.findByUserEmail(userEmail);
+			User user = userService.findByUserEmail("test@naver.com");
 
 			if (user != null &&user.getType()==2) {
 				Page<VerificationDto> verList = verificationService.getVerificationList(verificationListGetReq);
-				if(verList.isEmpty()) 
-				return ResponseEntity.ok(VerificationListRes.of(200, "검증 목록 조회 완료.", verList));
+				if(!verList.isEmpty()) 
+					return ResponseEntity.ok(VerificationListRes.of(200, "검증 목록 조회 완료.", verList));
 			}
 
 			return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
-		}
+//		}
 	}
 	
 //	// 활동내역 상태 변경
