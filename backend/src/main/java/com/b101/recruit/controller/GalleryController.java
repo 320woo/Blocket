@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.b101.recruit.domain.dto.GalleryDto;
 import com.b101.recruit.domain.entity.Gallery;
+import com.b101.recruit.domain.entity.Verification;
 import com.b101.recruit.reponse.GalleryRes;
 import com.b101.recruit.service.impl.GalleryService;
 import com.b101.recruit.service.impl.PersonalInfoService;
@@ -101,8 +102,8 @@ public class GalleryController {
 		Gallery gallery = galleryService.getGallery(gId).get();
 		System.out.println(gallery.getFilePath());
 		Object object = pService.getSortationDetail(gallery.getSortation(),gallery.getSid());
-		String currentStatus = vService.getCurrentStatus(gId);
-		if(gallery!=null&&object!=null) return ResponseEntity.status(200).body(GalleryRes.of(gallery,object,currentStatus));
+		Verification verification = vService.getVerification(gId);
+		if(gallery!=null&&object!=null) return ResponseEntity.status(200).body(GalleryRes.of(gallery,object,verification));
 		else return null;
 	}
 	

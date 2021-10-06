@@ -1,8 +1,8 @@
 <template>
-    <div >
-        <Panel>
+    <div class="p-grid">
+        <Panel class="p-col-6 p-offset-3">
             <template #header>
-                {{file.name}}
+                <div class="header-font">{{file.title}}</div>
             </template>
             <div v-if="check=='act'">
                 <div>
@@ -12,7 +12,7 @@
                     type="text"
                     name="name"
                     v-model="file.data.name"
-                    class="InputText" disabled/>
+                    class="InputText p-m-2" disabled/>
 
                 <div>
                     <label for="activity">활동구분</label>
@@ -21,7 +21,7 @@
                     type="text"
                     name="activity"
                     v-model="file.data.activity"
-                    class="InputText" disabled/>
+                    class="InputText p-m-2" disabled/>
                 <div>
                     <label for="activity">기간</label>
                 </div>
@@ -29,7 +29,7 @@
                     type="text"
                     name="period"
                     v-model="file.data.period"
-                    class="InputText" disabled/>
+                    class="InputText p-m-2" disabled/>
                 <div>
                     <label for="activity">설명</label>
                 </div>
@@ -37,7 +37,7 @@
                     type="text"
                     name="description"
                     v-model="file.data.description"
-                    class="InputText" disabled/>
+                    class="InputText p-m-2" disabled/>
             </div>
 
             <div v-else-if="check=='cert'">
@@ -48,7 +48,7 @@
                     type="text"
                     name="name"
                     v-model="file.data.name"
-                    class="InputText" disabled/>
+                    class="InputText p-m-2" disabled/>
 
                 <div>
                     <label for="sortation">자격구분</label>
@@ -57,7 +57,7 @@
                     type="text"
                     name="sortation"
                     v-model="file.data.sortation"
-                    class="InputText" disabled/>
+                    class="InputText p-m-2" disabled/>
                 <div>
                     <label for="acquisitionDate">기간</label>
                 </div>
@@ -65,7 +65,7 @@
                     type="text"
                     name="acquisitionDate"
                     v-model="file.data.acquisitionDate"
-                    class="InputText" disabled/>
+                    class="InputText p-m-2" disabled/>
                 <div>
                     <label for="score">점수/등급</label>
                 </div>
@@ -73,17 +73,17 @@
                     type="text"
                     name="score"
                     v-model="file.data.score"
-                    class="InputText" disabled/>
+                    class="InputText p-m-2" disabled/>
             </div>
             <div v-else-if="check=='edu'">
                 <div>
-                    <label for="name">최종 학교명</label>
+                    <label for="name p-m-2">최종 학교명</label>
                 </div>
                 <InputText
                     type="text"
                     name="name"
                     v-model="file.data.name"
-                    class="InputText" disabled/>
+                    class="InputText p-m-2" disabled/>
 
                 <div>
                     <label for="sortation">학교구분</label>
@@ -92,7 +92,7 @@
                     type="text"
                     name="sortation"
                     v-model="file.data.sortation"
-                    class="InputText" disabled/>
+                    class="InputText p-m-2" disabled/>
                 <div>
                     <label for="grades">학점</label>
                 </div>
@@ -100,7 +100,7 @@
                     type="text"
                     name="grades"
                     v-model="file.data.grades"
-                    class="InputText" disabled/>
+                    class="InputText p-m-2" disabled/>
             </div>
             <div>
                     <label for="verified">승인여부</label>
@@ -109,7 +109,7 @@
                     type="text"
                     name="verified"
                     v-model="file.currentStatus"
-                    class="InputText" disabled/>
+                    class="InputText p-m-2" disabled/>
 
             <div class="btn">
             <div>
@@ -119,13 +119,13 @@
             <InputText
                     type="text"
                     name="resonsRejection"
-                    v-model="verify.reasonsRejection"
+                    v-model="file.reasonsRejection"
+                    :placeholder="`${file.reasonsRejection}`"
                     aria-describedby="resons-rejection"
-                    class="InputText"/>
-            <small v-show="rejectCheck" :v-model="rejectCheck" id="resons-rejection" class="p-error">사유를 입력해주세요.</small>
+                    class="InputText p-m-2"/>
             </div>
-                <Button label="승인" class="p-button-raised p-button-primary" @click="accept"/>
-                <Button label="거부" class="p-button-raised p-button-danger" @click="refuse"/>
+                <Button label="승인" id="accept-btn" class="p-button-raised p-button-primary p-m-1" @click="accept"/>
+                <Button label="거부" class="p-button-raised p-button-danger p-m-1" @click="refuse"/>
             </div>
 
         </Panel>
@@ -150,7 +150,7 @@ export default {
       }
   },
   created() {
-    // let fileId = this.$route.query.no;
+    // const fileId = this.$route.query.no;
     const fileId = 1;
     this.verify.fileId = fileId;
     this.$store.dispatch("getFileInfo", { fileId });
@@ -161,16 +161,16 @@ export default {
   methods: {
       accept(){
           this.verify.verified = "승인완료";
-          this.$store.dispatch("patchVerification", this.verify);
+          this.$store.dispatch("patchVerification", this.verify).then(()=>{
+            alert("검증이 완료되었습니다.");
+          });
       },
       refuse(){
-          this.verify.verified = "거절";
-        //   if(this.verify.reasonsRejection==="") this.rejectCheck=true;
-        //   else if(this.verify.reasonsRejection!==""){
-            //   this.rejectCheck=false;
-            // this.verify.reasonsRejection=this.file.reasonsRejection;
-              this.$store.dispatch("patchVerification", this.verify);
-    //   }
+        this.verify.verified = "거절";
+        this.verify.reasonsRejection = this.file.reasonsRejection;
+        this.$store.dispatch("patchVerification", this.verify).then(()=>{
+        alert("검증이 완료되었습니다.");
+        });
       }
   },
 }
@@ -181,7 +181,13 @@ export default {
         width: 40%;
         margin: auto;
     }
-        .InputText {
+    .InputText {
         width: 100%;
+    }
+    #accept-btn {
+        background-color: #3F72AF;
+    }
+    #accept-btn:hover {
+        background-color: #212D4E;
     }
 </style>
