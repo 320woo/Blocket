@@ -14,6 +14,9 @@ import Textarea from 'primevue/textarea'
 import Calendar from 'primevue/calendar'
 import Checkbox from 'primevue/checkbox';
 import FileUpload from 'primevue/fileupload'
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import Paginator from 'primevue/paginator';
 
 import 'primeflex/primeflex.css'
 import './assets/public.css'
@@ -36,4 +39,7 @@ createApp(App)
   .component("Checkbox", Checkbox)
   .component("Calendar", Calendar)
   .component("FileUpload", FileUpload)
+  .component("DataTable", DataTable)
+  .component("Column", Column)
+  .component("Paginator", Paginator)
   .mount("#app");

@@ -60,11 +60,23 @@ export default createStore({
         },
         setVerifications(state,payload){
             state.verifications = payload;
-        }
+        },
+        setFileVerified(state,payload){
+            state.file.currentStatus = payload.currentStatus;
+            state.file.reasonsRejection = payload.reasonsRejection;
+        },
     },
     actions: {
         setUserEmail({ commit }, payload){
+            console.log("actions.js에서 setUserEmail 호출")
             commit("setUserEmail", payload)
+        },
+
+        saveWalletInDB({
+            state
+        }, payload) {
+            console.log(state)
+            console.log(payload)
         },
         login(context, { email, password }) {
             console.log("로그인");
@@ -166,6 +178,7 @@ export default createStore({
                 return http.patch(url,payload,{headers}).then((res)=>{
                     if(res.data.statusCode==200){
                         console.log(res.data);
+                        context.commit("setFileVerified",res.data);
                         // alert(res.data.message);
                     }
                 }).catch((err)=>{
@@ -175,23 +188,31 @@ export default createStore({
                 });
             }
         },
-        getVerifications(context,payload){
+        async getVerifications(context,payload){
+            let result="";
             if(localStorage.getItem("accessToken")){
                 const url = "/api/recruit/verification/list";
                 const headers = {
                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 };
-                 return http.post(url,payload,{headers}).then((res)=>{
+                await http.post(url,payload,{headers}).then((res)=>{
                     // if(res.data.statusCode==200){
                         console.log(res.data.verificationList);
                         context.commit("setVerifications",res.data.verificationList);
+                        result = res.data;
                         // return res.data.verificationList;
                         // alert(res.data.message);
                     // }
                 }).catch((err)=>{
-                     alert(err);
+                     console.log(err);
+                    //  console.log(err.data);
+                    //  if(err.data.statusCode==404){
+                    //     context.commit("setVerifications",null);
+                    //     result = null;
+                    //  }
                 });
             }
+            return result;
         }
     },
     getters: {
