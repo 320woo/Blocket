@@ -60,7 +60,11 @@ export default createStore({
         },
         setVerifications(state,payload){
             state.verifications = payload;
-        }
+        },
+        setFileVerified(state,payload){
+            state.file.currentStatus = payload.currentStatus;
+            state.file.reasonsRejection = payload.reasonsRejection;
+        },
     },
     actions: {
         setUserEmail({ commit }, payload){
@@ -158,30 +162,12 @@ export default createStore({
                 console.log(payload);
             if(localStorage.getItem("accessToken")){
                 const url = "/api/recruit/Gallery/galleryDetail/";
-                return http.get(url+payload.fileId).then((data)=>{
-                    console.log(data.data);
-                    context.commit("setFile",data.data)
+                return http.get(url+payload.fileId).then((res)=>{
+                    console.log(res.data);
+                    context.commit("setFile",res.data)
                 })
             }
         },
-        // getActivity(context,payload){
-        //      if(localStorage.getItem("accessToken")){
-        //         const url = "/api/recruit/personalinfo/";
-        //         return http.get(url+payload.personalinfoId+"/"+payload.activityId);
-        //     }
-        // },
-        // getCerificate(context,payload){
-        //     if(localStorage.getItem("accessToken")){
-        //         const url = "/api/recruit/personalinfo/";
-        //         return http.get(url+payload.personalinfoId+"/"+payload.certificateId);
-        //     }
-        // },
-        // getFinalEducation(context,payload){
-        //     if(localStorage.getItem("accessToken")){
-        //         const url = "/api/recruit/personalinfo/";
-        //         return http.get(url+payload.personalinfoId+"/"+payload.fianlEducationId);
-        //     }
-        // },
         patchVerification(context,payload){
             console.log(payload);
             if(localStorage.getItem("accessToken")){
@@ -192,29 +178,29 @@ export default createStore({
                 return http.patch(url,payload,{headers}).then((res)=>{
                     if(res.data.statusCode==200){
                         console.log(res.data);
-                        // alert(res.data.message);
+                        context.commit("setFileVerified",res.data);
                     }
                 }).catch((err)=>{
-                    //  alert(err.data.message);
-                    // alert(err);
                     console.log(err);
                 });
             }
         },
-        getVerifications(context,payload){
+        async getVerifications(context,payload){
+            let result="";
             if(localStorage.getItem("accessToken")){
                 const url = "/api/recruit/verification/list";
                 const headers = {
                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 };
-                return http.post(url,payload,{headers}).then((res)=>{
-                    if(res.data.statusCode==200){
-                        alert(res.data.message);
-                    }
+                await http.post(url,payload,{headers}).then((res)=>{
+                        console.log(res.data.verificationList);
+                        context.commit("setVerifications",res.data.verificationList);
+                        result = res.data;
                 }).catch((err)=>{
-                     alert(err.data.message);
+                     console.log(err);
                 });
             }
+            return result;
         }
     },
     getters: {
