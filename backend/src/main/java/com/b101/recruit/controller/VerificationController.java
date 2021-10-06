@@ -82,7 +82,7 @@ public class VerificationController {
 			@RequestBody @ApiParam(value = "검증 정보", required = true) VerificationListGetReq verificationListGetReq
 			,@ApiIgnore Authentication authentication
 			) {
-		System.out.println(verificationListGetReq.getSize());
+>>>>>>> 0dd41833bbb91b85f0c87b30416123b8a6d0b4ae
 		if (authentication == null) {
 			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
 		} else {
