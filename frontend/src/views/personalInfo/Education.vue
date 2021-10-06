@@ -1,6 +1,7 @@
 <template>
   <!-- 최종 학력 -->
   <div class="p-col profile">
+    <Toast1/>
     <div class="p-grid">
       <div class="p-col-10">
         <span class="header-font">최종 학력</span>
@@ -97,7 +98,6 @@ import * as eService from '@/utils/educationService.js'
 
 export default {
   name: 'Education',
-  props: [],
   setup() {
     const colleges = ref()         // 모든 학교
     const filteredColleges = ref() // 검색 결과로 나온 학교들
@@ -136,7 +136,7 @@ export default {
       // 최종학력 불러오기
       eService.getFinalEducation().then(res => {
         state.isWritten = res.isWritten
-
+      
         if (!res.isWritten) {
           // 최종학력 작성에 필요한 기본사항(pid, userId만 등록해둔다.)
           state.myGrade.pid = res.pid
@@ -169,7 +169,8 @@ export default {
       // 만약 처음으로 작성하는 거라면...
       if (this.state.isWritten === false) {
         eService.createFinalEducation(this.state.myGrade).then(
-          alert("최종학력을 등록하였습니다.")
+          this.$toast.add({severity:'success', summary: '시스템 정보', group: 'center', detail:'최종 학력 등록완료', life: 1000})
+          
         )
       }
       // 이미 작성되었다면
@@ -180,6 +181,7 @@ export default {
           // 변경 사항 갱신하기
           this.state.myGrade.schoolName = res.schoolName
           this.state.myGrade.majorName = res.majorName
+          this.$toast.add({severity:'success', summary: '시스템 정보', group: 'center', detail:'최종 학력 수정완료', life: 1000});
         })
       }
       this.state.displayEducationModal = false

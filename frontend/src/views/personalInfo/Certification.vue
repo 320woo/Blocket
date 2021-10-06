@@ -64,9 +64,6 @@ import { reactive, onMounted } from 'vue'
 
 export default {
   name: 'Certification', 
-  props: [
-
-  ],
   setup() {
     const state = reactive({
       displayCertModal: false,
