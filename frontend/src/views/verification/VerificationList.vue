@@ -49,18 +49,12 @@ export default {
         console.log(res.verificationList);
         });
     },
-    mounted() {
-        // console.log(this.pageable);
-        // this.pageable = this.verifications;
-        // console.log(this.verifications.verificationList);
-    },
     methods:{
         onPage(event){
             this.req.page = event.page;
             this.$store.dispatch("getVerifications", this.req);
         },
         clickStatus(){
-            // console.log(this.req.verified);
             this.req.verified = this.selectStatus.name;
             this.$store.dispatch("getVerifications", this.req);
         }

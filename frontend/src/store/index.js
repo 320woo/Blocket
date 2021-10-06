@@ -179,11 +179,8 @@ export default createStore({
                     if(res.data.statusCode==200){
                         console.log(res.data);
                         context.commit("setFileVerified",res.data);
-                        // alert(res.data.message);
                     }
                 }).catch((err)=>{
-                    //  alert(err.data.message);
-                    // alert(err);
                     console.log(err);
                 });
             }
@@ -196,20 +193,11 @@ export default createStore({
                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 };
                 await http.post(url,payload,{headers}).then((res)=>{
-                    // if(res.data.statusCode==200){
                         console.log(res.data.verificationList);
                         context.commit("setVerifications",res.data.verificationList);
                         result = res.data;
-                        // return res.data.verificationList;
-                        // alert(res.data.message);
-                    // }
                 }).catch((err)=>{
                      console.log(err);
-                    //  console.log(err.data);
-                    //  if(err.data.statusCode==404){
-                    //     context.commit("setVerifications",null);
-                    //     result = null;
-                    //  }
                 });
             }
             return result;
