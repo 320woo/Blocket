@@ -2,6 +2,8 @@ package com.b101.recruit.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.b101.recruit.domain.dto.GalleryDto;
 import com.b101.recruit.domain.entity.Gallery;
+import com.b101.recruit.domain.entity.Verification;
 import com.b101.recruit.reponse.GalleryRes;
 import com.b101.recruit.service.impl.GalleryService;
 import com.b101.recruit.service.impl.PersonalInfoService;
@@ -58,7 +61,7 @@ public class GalleryController {
 	// form으로부터 넘어온 파일 객체를 받기 위해, MultipartFile 타입의 파라미터를 작성
 	public String execWrite(GalleryDto galleryDto,
 							MultipartFile file,
-							@PathVariable("personalInfoId") long pid, @PathVariable("sid") long sid, @PathVariable("sortation") String sortation) throws IOException {
+							@PathVariable("personalInfoId") long pid, @PathVariable("sid") long sid, @PathVariable("sortation") String sortation) throws IOException, NoSuchAlgorithmException {
 
 		// s3Service는 AWS S3의 비즈니스 로직을 담당하며, 파일을 조작
 //		String imgPath = s3Service.upload(file);
@@ -67,7 +70,21 @@ public class GalleryController {
 		galleryDto.setPid(pid);
 		galleryDto.setSid(sid);
 		galleryDto.setSortation(sortation);
-		
+
+		// 파일을 해시값으로 변환하기 (SHA-256 알고리즘을 사용)
+		MessageDigest mdSHA256 = MessageDigest.getInstance("SHA-256"); // NoSuchAlgorithmException 을 throws 해야 한다
+		mdSHA256.update(file.getBytes()); // 파일 바이트로 messageDigest 를 갱신
+		byte[] sha256hash = mdSHA256.digest(); // 해시 digest 의 반환 값은 byte 배열이므로 담을 변수를 선언
+
+		// byte 배열을 16진수 문자열로 변환하여 표시
+		StringBuilder hexSHA256hash = new StringBuilder();
+		for (byte b : sha256hash) {
+			String hexString = String.format("%02x", b);
+			hexSHA256hash.append(hexString);
+		}
+
+		galleryDto.setTitle(String.valueOf(hexSHA256hash)); // 변환한 해시값을 title 에 담는다.
+
 		// galleryService는 DB에 데이터를 조작하기 위한 서비스
 		galleryService.savePost(galleryDto);
 
@@ -85,8 +102,8 @@ public class GalleryController {
 		Gallery gallery = galleryService.getGallery(gId).get();
 		System.out.println(gallery.getFilePath());
 		Object object = pService.getSortationDetail(gallery.getSortation(),gallery.getSid());
-		String currentStatus = vService.getCurrentStatus(gId);
-		if(gallery!=null&&object!=null) return ResponseEntity.status(200).body(GalleryRes.of(gallery,object,currentStatus));
+		Verification verification = vService.getVerification(gId);
+		if(gallery!=null&&object!=null) return ResponseEntity.status(200).body(GalleryRes.of(gallery,object,verification));
 		else return null;
 	}
 	

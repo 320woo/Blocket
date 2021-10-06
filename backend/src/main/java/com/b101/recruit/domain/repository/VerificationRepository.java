@@ -19,4 +19,5 @@ public interface VerificationRepository extends JpaRepository<Verification, Long
 
 	Optional<Verification> findByGalleryId(Long fileId);
 	String findCurrentStatusByGalleryId(Long gId);
+//	Verification findBySid(Long cId);
 }
