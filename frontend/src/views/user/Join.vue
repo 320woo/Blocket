@@ -189,7 +189,8 @@
 
                                 }
                             })
-                            router.push({name: "WalletInfo", params: { email: this.email }});
+                            // router.push({name: "WalletInfo", params: { email: this.email }});
+                            router.push("/login")
                         }
                         console.log(msg);
                     })

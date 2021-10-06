@@ -55,55 +55,67 @@
 
     <!-- 학력 사항 Modal 창 -->
   <Dialog header="최종 학력 입력" v-model:visible="state.displayEducationModal" :style="{width: '40vw'}" :modal="true">
+    <form class="p-grid" @submit.prevent="handleSubmit(!v$.$invalid)">
       
-      <div class="p-grid">
-        <!-- 대학교 이름 검색 -->
-        <div class="p-field p-col-6">
-          <label for="collegeName">학교명*</label>  
-          <AutoComplete id="collegeName" v-model="state.sName" 
-          :suggestions="filteredColleges" @complete="searchCollege($event)" field="schoolName" placeholder="ex) OO대학교, OO대학" />
-        </div>
-        <!-- 학과 이름 검색 -->
-        <div class="p-field p-col-6">
-          <label for="majorName">학과명*</label>
-          <AutoComplete id="majorName" v-model="state.mName" 
-          :suggestions="filteredMajors" @complete="searchMajor($event)" field="mClass" placeholder="ex) OO학과, OO학" />
-        </div>
-        <!-- 총 학점 -->
-        <div class="p-field p-col-3">
-          <label for="grade">취득 학점*</label>
-          <InputText id="grade" class="input-text" type="grade" style="width: 80px;" v-model="state.myG" />
-        </div>
-
-
-        <div class="p-field p-col-3">
-          <label for="scoreType">학점 기준</label>
-          <select name="scoreType" id="scoreType" class="select" v-model="state.tScore">
-            <option value="4.3">4.3</option>
-            <option value="4.5">4.5</option>
-          </select>
-        </div>
-
-        <!-- 학교 분류 ex) 고등학교, 대학교, 대학원,,, -->
-        <div class="p-field p-col-12">
-          <label for="sortation">학교분류*</label>
-          <select name="sortation" id="sortation" class="select" v-model="state.input.sortation">
-            <option value="고등학교">고등학교</option>
-            <option value="대학교">대학교</option>
-            <option value="대학원(석사졸)">대학원(석사졸)</option>
-            <option value="대학원(박사졸)">대학원(박사졸)</option>
-          </select>
-        </div>
-
+      <!-- 대학교 이름 검색 -->
+      <div class="p-field p-col-6">
+        <label for="collegeName" :class="{'p-invalid':v$.sName.$invalid && submitted}">학교명*</label>  
+        <AutoComplete id="collegeName" :class="{'p-invalid':v$.sName.$invalid && submitted}" v-model="v$.sName.$model" 
+        :suggestions="filteredColleges" @complete="searchCollege($event)" field="schoolName" placeholder="ex) OO대학교, OO대학" />
+        <small v-if="(v$.sName.$invalid && submitted) || v$.sName.$pending.$response" class="p-error">
+          {{ v$.sName.required.$message.replace('Value', '학교명') }}
+        </small>
       </div>
+
+      <!-- 학과 이름 검색 -->
+      <div class="p-field p-col-6">
+        <label for="majorName" :class="{'p-invalid':v$.mName.$invalid && submitted}">학과명*</label>
+        <AutoComplete id="majorName" :class="{'p-invalid':v$.sName.$invalid && submitted}" v-model="v$.mName.$model" 
+        :suggestions="filteredMajors" @complete="searchMajor($event)" field="mClass" placeholder="ex) OO학과, OO학" />
+        <small v-if="(v$.mName.$invalid && submitted) || v$.mName.$pending.$response" class="p-error">
+          {{ v$.mName.required.$message.replace('Value', '학과명') }}
+        </small>
+      </div>
+      <!-- 총 학점 -->
+      <div class="p-field p-col-3">
+        <label for="grade" :class="{'p-invalid':v$.myG.$invalid && submitted}">취득 학점*</label>
+        <InputText id="grade" class="input-text" :class="{'p-invalid':v$.myG.$invalid && submitted}" 
+        type="grade" style="width: 80px;" v-model="v$.myG.$model" />
+        <small v-if="(v$.myG.$invalid && submitted) || v$.myG.$pending.$response" class="p-error">
+          {{ v$.myG.required.$message.replace('Value', '평균학점') }}
+        </small>
+      </div>
+
+
+      <div class="p-field p-col-3">
+        <label for="scoreType">학점 기준</label>
+        <select name="scoreType" id="scoreType" class="select" v-model="state.tScore">
+          <option value="4.3">4.3</option>
+          <option value="4.5">4.5</option>
+        </select>
+      </div>
+
+      <!-- 학교 분류 ex) 고등학교, 대학교, 대학원,,, -->
+      <div class="p-field p-col-12">
+        <label for="sortation">학교분류*</label>
+        <select name="sortation" id="sortation" class="select" v-model="state.input.sortation">
+          <option value="고등학교">고등학교</option>
+          <option value="대학교">대학교</option>
+          <option value="대학원(석사졸)">대학원(석사졸)</option>
+          <option value="대학원(박사졸)">대학원(박사졸)</option>
+        </select>
+      </div>
+      
       <!-- 졸업 증명서 첨부 -->
-      <div class="p-field">
+      <div class="p-field p-col-12">
         <label for="file" class="for">졸업 증명서 첨부*</label>
         <FileUpload mode="basic" name="demo[]" url="./" accept="image/*" :maxFileSize="1000000" @upload="onUpload" />
       </div>
-      <template #footer>
-          <Button label="저장" icon="pi pi-check" @click="saveEducationModal" autofocus />
-      </template>
+      <div class="p-col-12">
+        <Button type="submit" label="저장" autofocus style="width: 100%;" />
+      </div>
+      
+    </form>  
   </Dialog>
 </template>
 
@@ -113,6 +125,10 @@ import { getAllColleges, getAllMajors } from '@/utils/colleges.js'
 import { FilterService, FilterMatchMode }  from 'primevue/api'
 
 import * as eService from '@/utils/educationService.js'
+
+// vuelidate를 이용한 validataion
+import { required } from '@vuelidate/validators'
+import { useVuelidate } from '@vuelidate/core'
 
 export default {
   name: 'Education',
@@ -160,7 +176,60 @@ export default {
       myG: '',
       tScore: '',
     })
+
+    const rules = {
+      sName: { required },
+      mName: { required },
+      myG: { required },
+    }
+
+    const submitted = ref(false)
+    const v$ = useVuelidate(rules, state)
     
+    const handleSubmit = (isFormValid) => {
+      submitted.value = true
+      if (!isFormValid) {
+        return
+      }      
+      saveEducationModal()
+    }
+
+    const saveEducationModal = () => {
+      // 기본적으로, 파일이 반드시 선택되어 있어야 한다.
+
+      // 최종 학력 등록하기
+      state.input.name = state.sName.schoolName  + " " + state.mName.mClass
+      state.input.grades = state.myG + " / " + state.tScore
+
+      // 만약 처음으로 작성하는 거라면...
+      if (state.id === '') {
+        eService.createFinalEducation(state.input, state.uid, state.pid).then(res => {
+          // 값 갱신하기
+          console.log("생성한 FE 객체..", res)
+          state.eInfo.grades = res.grades
+          state.eInfo.name = res.name
+          state.eInfo.sortation = res.sortation
+
+          // 등록한 final_education의 id를 저장해야 한다.
+          state.id = res.id
+          alert("등록하였습니다.")
+        })
+      }
+      // 이미 작성되었다면
+      else {
+        console.log("최종학력 수정")
+        eService.updateFinalEducation(state.input, state.pid, state.id)
+        .then(res => {
+          // 값 갱신하기
+          state.eInfo.grades = res.grades
+          state.eInfo.name = res.name
+          state.eInfo.sortation = res.sortation
+          alert("수정하였습니다.")
+        })
+      }
+      state.displayEducationModal = false
+    }
+
     onMounted(() => {
       // 모든 대학교 목록 불러오기
       getAllColleges().then(res => {
@@ -179,46 +248,12 @@ export default {
       filteredColleges,
       majors, 
       filteredMajors,
+      v$, handleSubmit, submitted
     }
   },
   methods: {
     openEducationModal() {
       this.state.displayEducationModal = true
-    },
-    saveEducationModal() {
-      // 기본적으로, 파일이 반드시 선택되어 있어야 한다.
-
-      // 최종 학력 등록하기
-      this.state.input.name = this.state.sName.schoolName  + " " + this.state.mName.mClass
-      this.state.input.grades = this.state.myG + " / " + this.state.tScore
-
-      // 만약 처음으로 작성하는 거라면...
-      if (this.state.id === '') {
-        eService.createFinalEducation(this.state.input, this.state.uid, this.state.pid).then(res => {
-          // 값 갱신하기
-          console.log("생성한 FE 객체..", res)
-          this.state.eInfo.grades = res.grades
-          this.state.eInfo.name = res.name
-          this.state.eInfo.sortation = res.sortation
-
-          // 등록한 final_education의 id를 저장해야 한다.
-          this.state.id = res.id
-          alert("등록하였습니다.")
-        })
-      }
-      // 이미 작성되었다면
-      else {
-        console.log("최종학력 수정")
-        eService.updateFinalEducation(this.state.input, this.state.pid, this.state.id)
-        .then(res => {
-          // 값 갱신하기
-          this.state.eInfo.grades = res.grades
-          this.state.eInfo.name = res.name
-          this.state.eInfo.sortation = res.sortation
-          alert("수정하였습니다.")
-        })
-      }
-      this.state.displayEducationModal = false
     },
     // 대학교 검색
     searchCollege(event) {

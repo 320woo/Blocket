@@ -142,8 +142,8 @@
   <!-- ============================== Modal ============================== -->
 
   <!-- 신상정보 Modal 창 -->
-  <Dialog header="기본 정보 수정" v-model:visible="state.displayInfoModal" :style="{width: '30vw'}" :modal="true">
-    <div class="p-fluid p-grid p-formgrid">
+  <Dialog header="기본 정보 수정" v-model:visible="state.displayInfoModal" :style="{width: '40vw'}" :modal="true">    
+    <form @submit.prevent="handleSubmit(!v$.$invalid)" class="p-fluid p-grid p-formgrid">
       <div class="p-field p-col-12">
         <label for="gender">성별</label>
         <select name="gender" id="gender" class="select" v-model="state.input.gender">
@@ -153,23 +153,34 @@
       </div>
 
       <div class="p-field p-col-12">
-        <label for="englishName">영문이름</label>
-        <InputText id="englishName" class="input-text" type="englishName" style="width: 100%;" v-model="state.input.englishName" required placeholder="ex) SSAFY, Kim" />
+        <label for="englishName" :class="{'p-invalid':v$.input.englishName.$invalid && submitted}">영문이름*</label>
+        <InputText id="englishName" class="input-text" :class="{'p-invalid':v$.input.englishName.$invalid && submitted}" 
+        type="englishName" style="width: 100%;" v-model="v$.input.englishName.$model" placeholder="ex) SSAFY, Kim" />
+        <small v-if="(v$.input.englishName.$invalid && submitted) || v$.input.englishName.$pending.$response" class="p-error">
+          {{ v$.input.englishName.required.$message.replace('Value', 'english Name') }}
+        </small>
+      </div>
+      
+
+      <div class="p-field p-col-12">
+        <label for="dateBirth" :class="{'p-invalid':v$.input.dateBirth.$invalid && submitted}">생년월일*</label>
+        <Calendar id="dateBirth" class="calendar" :class="{'p-invalid':v$.input.dateBirth.$invalid && submitted}" 
+        v-model="v$.input.dateBirth.$model" :showIcon="true" />
+        <small v-if="(v$.input.dateBirth.$invalid && submitted) || v$.input.dateBirth.$pending.$response" class="p-error">
+          {{ v$.input.dateBirth.required.$message.replace('Value', 'date Birth') }}
+        </small>
       </div>
 
       <div class="p-field p-col-12">
-        <label for="dateBirth">생년월일</label>
-        <Calendar id="dateBirth" class="calendar" v-model="state.input.dateBirth" :showIcon="true" />
+        <label for="address" :class="{'p-error':v$.input.address.$invalid && submitted}">주소*</label>
+        <InputText id="address" class="input-text" :class="{'p-invalid':v$.input.address.$invalid && submitted}" 
+        type="address" style="width: 100%;" v-model="v$.input.address.$model" />
+        <small v-if="(v$.input.address.$invalid && submitted) || v$.input.address.$pending.$response" class="p-error">
+          {{ v$.input.address.required.$message.replace('Value', 'address') }}
+        </small>
       </div>
-
-      <div class="p-field p-col-12">
-        <label for="address">주소</label>
-        <InputText id="address" class="input-text" type="address" style="width: 100%;" v-model="state.input.address" />
-      </div>
-    </div>
-    <template #footer>
-      <Button label="저장" icon="pi pi-check" @click="saveInfoModal" autofocus />
-    </template>
+      <Button label="저장" type="submit" autofocus />
+    </form>  
   </Dialog>
 
   <!-- 병역 사항 관련 Modal창 -->
@@ -225,16 +236,21 @@
 </template> <!-- end of HTML code -->
 
 <script>
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import router from '../../router'
 import defaultImage from "~/images/test.png"
 import defaultUserImage from "~/images/user.png"
 
+// utils
 import * as pService from '@/utils/pService.js' // default를 붙이면 중괄호 없이 가져올 수 있다..! 반대로 default가 없는 경우에는 중괄호 필수
 // 자식 컴포넌트
 import Activity from "./Activity.vue"
 import Education from "./Education.vue"
 import Certification from "./Certification.vue"
+
+// vuelidate를 이용한 validataion
+import { required } from '@vuelidate/validators'
+import { useVuelidate } from '@vuelidate/core'
 
 export default {
   name: 'PersonalInfo',
@@ -295,12 +311,53 @@ export default {
         gender: '',
       },
     })
+    const rules = {
+      input: {
+        englishName: { required },
+        address: { required },
+        dateBirth: { required },
+        gender: { required },
+      }
+    }
+
+    const submitted = ref(false)
+    const v$ = useVuelidate(rules, state)
+
+    const handleSubmit = (isFormValid) => {
+      submitted.value = true
+      if (!isFormValid) {
+        return
+      }      
+      saveInfoModal()
+    }
+
+    const saveInfoModal = () => {
+      // 신상정보 변경사항 저장. (영문이름, 성별, 주소, 생년월일)
+      pService.saveInfoModal(state.pid, state.input).then(res => {
+        // 다시 불러오기
+        state.personalInfo.englishName = res.englishName
+        state.personalInfo.gender = res.gender
+        state.personalInfo.address = res.address
+        state.personalInfo.dateBirth = res.dateBirth
+        // 모달 창 띄울 때 입력한 값 보이기 위해
+        state.input.englishName = res.englishName
+        state.input.gender = res.gender
+        state.input.address = res.address
+        state.input.dateBirth = res.dateBirth          
+      })
+      state.displayInfoModal = false
+    }
+
     return {
-      state,
+      state, v$, handleSubmit, submitted
     }
   },
 
   methods: {
+    isRequired(value) {
+      return value? true : 'This field is required'
+    },
+
     changeImg() {
       
     },
@@ -310,22 +367,6 @@ export default {
 
     openInfoModal() {
       this.state.displayInfoModal = true
-    },
-    saveInfoModal() {
-      // 신상정보 변경사항 저장. (영문이름, 성별, 주소, 생년월일)
-      pService.saveInfoModal(this.state.pid, this.state.input).then(res => {
-        // 다시 불러오기
-        this.state.personalInfo.englishName = res.englishName
-        this.state.personalInfo.gender = res.gender
-        this.state.personalInfo.address = res.address
-        this.state.personalInfo.dateBirth = res.dateBirth
-        // 모달 창 띄울 때 입력한 값 보이기 위해
-        this.state.input.englishName = res.englishName
-        this.state.input.gender = res.gender
-        this.state.input.address = res.address
-        this.state.input.dateBirth = res.dateBirth          
-      })
-      this.state.displayInfoModal = false
     },
     // 병역사항 모달창
     openArmyModal() {
