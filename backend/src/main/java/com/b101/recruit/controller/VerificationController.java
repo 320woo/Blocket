@@ -82,14 +82,12 @@ public class VerificationController {
 			@RequestBody @ApiParam(value = "검증 정보", required = true) VerificationListGetReq verificationListGetReq
 			,@ApiIgnore Authentication authentication
 			) {
-		System.out.println(verificationListGetReq.getSize());
 		if (authentication == null) {
 			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
 		} else {
 			CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
 			String userEmail = userDetails.getUsername();
-
-			User user = userService.findByUserEmail("test@naver.com");
+			User user = userService.findByUserEmail(userEmail);
 
 			if (user != null &&user.getType()==2) {
 				Page<VerificationDto> verList = verificationService.getVerificationList(verificationListGetReq);

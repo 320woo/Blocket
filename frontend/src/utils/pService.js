@@ -21,7 +21,6 @@ export function UserDelete() {
 }
 
 export function UserCheck() {
-  console.log("유저정보 check")
   return axios.get(USER_URL + "/me", {
       headers: {
           Authorization: "Bearer " + store.state.user.accessToken
@@ -58,11 +57,11 @@ export async function getMyInfo() {
     // 최초 등록 시, 주소-영문이름-성별-생년월일은 반드시 한번에 등록되어야 한다.
     result = res.data[0]
   })
-  console.log(result)
   return result
 }
 
 export async function saveInfoModal(pid, input) {
+  let result = ''
   await axios({
     url: INFO_URL + "/" + pid + "/updatePersonalInfo",
     method: "PUT",
@@ -70,7 +69,8 @@ export async function saveInfoModal(pid, input) {
       'Content-Type': 'application/json'
     },
     data: JSON.stringify(input)
+  }).then(res => {
+    result = res.data
   })
-  input.dateBirth = JSON.stringify(input.dateBirth).slice(1, 11)
-  return input
+  return result
 }

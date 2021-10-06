@@ -11,118 +11,193 @@
       </div>
     </div>
 
-    <div class="p-col" v-for="act in state.myActivity" :key="act.id">
-      {{ act.activity }}
-      {{ act.name }}
-      {{ act.description }}
-      {{ act.period }}
+    <div class="p-col" v-for="act in state.aInfo" :key="act.id">
+      <div class="p-mt-3">
+        <div class="p-col-12">
+          <strong>활동구분:</strong> {{ act.activity }}
+        </div>
+        <div class="p-col-12">
+          <strong>활동명:</strong> {{ act.name }}
+        </div>
+        <div class="p-col-12">
+          <strong>설명:</strong> {{ act.description }}  
+        </div>
+        <div class="p-col-12">
+          <strong>기간:</strong> {{ act.period }}  
+        </div>
+        <div class="p-d-flex p-col-4">
+          <div class="p-mr-2">
+            <Button icon="pi pi-times" class="p-button-rounded p-button-text" @click="deleteActivity(act.id)" />
+          </div> 
+        </div>
+      </div>
     </div>
-
   </div>
 
   <!-- 활동 사항 추가 modal 창 -->
   <Dialog header="활동사항 입력" v-model:visible="state.displayActivityModal" :style="{width: '50vw'}" :modal="true">
-    <div class="p-field">
-      <label for="activityName">이름*</label>
-      <InputText id="activityName" class="input-text" type="activityName" aria-describedby="username1-help" placeholder="예: 소매관리자" />
-    </div> 
-    <div class="p-field">
-      <label for="activityType">활동 구분*</label>
-      <select name="type" id="activityType" class="select">
-        <option value="정규직">정규직</option>
-        <option value="계약직">계약직</option>
-        <option value="프로젝트">프로젝트</option>
-        <option value="인턴">인턴</option>
-        <option value="교육 이수">교육 이수</option>
-      </select>
-    </div> 
-    <div class="p-field">
-      <label for="description">설명*</label>
-      <InputText id="description" class="input-text" type="description" aria-describedby="username1-help" placeholder="간단한 설명을 적어 주세요." />
-    </div>
-    <div class="p-fluid p-grid p-formgrid">
+    <form @submit.prevent="handleSubmit(!v$.$invalid)" class="p-fluid p-grid p-formgrid">
       <div class="p-field p-col-12">
-        <label for="icon">시작일*</label>
-        <Calendar id="icon" class="calendar" v-model="state.startDate" :showIcon="true" />
-        <!-- Error msg 출력 -->
-        <div></div>
-      </div>
+        <label for="activityName" :class="{'p-invalid':v$.input.name.$invalid && submitted}">이름*</label>
+        <InputText id="activityName" class="input-text" :class="{'p-invalid':v$.input.name.$invalid && submitted}" 
+        v-model="v$.input.name.$model" type="activityName" placeholder="예: 소매관리자" />
+        <small v-if="(v$.input.name.$invalid && submitted) || v$.input.name.$pending.$response" class="p-error">
+          {{ v$.input.name.required.$message.replace('Value', '이름') }}
+        </small>
+      </div> 
+
       <div class="p-field p-col-12">
-        <label for="icon">종료일*</label>
-        <Calendar id="icon" class="calendar" v-model="state.endDate" :showIcon="true" />
-        <!-- Error msg 출력 -->
-        <div></div>
+        <label for="activityType" :class="{'p-invalid':v$.input.activity.$invalid && submitted}">활동 구분*</label>
+        <select name="type" id="activityType" class="select" :class="{'p-invalid':v$.input.activity.$invalid && submitted}" 
+        v-model="v$.input.activity.$model">
+          <option value="정규직">정규직</option>
+          <option value="계약직">계약직</option>
+          <option value="프로젝트">프로젝트</option>
+          <option value="인턴">인턴</option>
+          <option value="교육 이수">교육 이수</option>
+        </select>
+        <small v-if="(v$.input.activity.$invalid && submitted) || v$.input.activity.$pending.$response" class="p-error">
+          {{ v$.input.activity.required.$message.replace('Value', '활동구분') }}
+        </small>
+      </div> 
+
+      <div class="p-field p-col-12">
+        <label for="description" :class="{'p-invalid':v$.input.description.$invalid && submitted}">설명*</label>
+        <InputText id="description" class="input-text" :class="{'p-invalid':v$.input.description.$invalid && submitted}" 
+        v-model="v$.input.description.$model" type="description" placeholder="간단한 설명을 적어 주세요." />
+        <small v-if="(v$.input.description.$invalid && submitted) || v$.input.description.$pending.$response" class="p-error">
+          {{ v$.input.description.required.$message.replace('Value', '설명') }}
+        </small>
       </div>
+
+      <div class="p-field p-col-12">
+        <label for="icon" :class="{'p-invalid':v$.startDate.$invalid && submitted}">시작일*</label>
+        <Calendar id="icon" class="calendar" :class="{'p-invalid':v$.startDate.$invalid && submitted}" 
+        v-model="v$.startDate.$model" :showIcon="true" />
+        <small v-if="(v$.startDate.$invalid && submitted) || v$.startDate.$pending.$response" class="p-error">
+          {{ v$.startDate.required.$message.replace('Value', '시작일') }}
+        </small>
+      </div>
+
+      <div class="p-field p-col-12">
+        <label for="icon" :class="{'p-invalid':v$.endDate.$invalid && submitted}">종료일*</label>
+        <Calendar id="icon" class="calendar" :class="{'p-invalid':v$.endDate.$invalid && submitted}"
+        v-model="v$.endDate.$model" :showIcon="true" />
+        <small v-if="(v$.endDate.$invalid && submitted) || v$.endDate.$pending.$response" class="p-error">
+          {{ v$.endDate.required.$message.replace('Value', '종료일') }}
+        </small>
+      </div>
+
       <!-- 관련 서류 제출 -->
-      <div class="p-field p-md-6">
+      <div class="p-field p-col-12">
         <label for="file" class="for">활동 증명서 첨부*</label>
         <FileUpload mode="basic" name="demo[]" url="./" accept="image/*" :maxFileSize="1000000" @upload="onUpload" />
       </div>
 
-
-    </div>
-      <template #footer>
-          <Button label="저장" icon="pi pi-check" @click="saveActivityModal" autofocus />
-      </template>
+      <div class="p-col-12" style="padding: 0;">
+        <Button type="submit" label="저장" autofocus style="width: 100%;" />
+      </div>
+    </form>
   </Dialog>
 </template>
 
 <script>
-import { reactive, onMounted } from 'vue'
+import { reactive, ref } from 'vue'
 import * as aService from '@/utils/activityService.js'
+
+// vuelidate를 이용한 validataion
+import { required } from '@vuelidate/validators'
+import { useVuelidate } from '@vuelidate/core'
 
 export default {
   name: 'Activity', 
   setup() {
-    // 활동사항 불러오기
-    aService.getActivities().then(resp => {
-      if (resp.isWritten === false) {
-        state.input.uid = resp.uid
-        state.input.pid = resp.pid
+    // 활동사항 불러오기. 단 이 때 여러개일 수 있다.
+    aService.getActivities().then(res => {
+      // []로 올 수도 있고, [{...}]로 올 수도 있고, [{...}, {...}]로 올 수도 있다.
+      // CASE1. []로 오는 경우 ( 등록된 데이터가 없는 경우 )
+      if (res === []) {
+        state.pid = res.pid
+        state.uid = res.uid
       }
+      // CASE2. 최소 1개의 데이터가 존재하는 경우
       else {
-        resp.isWritten = true
-        state.myActivity = resp    // 배열이 된다.
+        console.log(res)
+        state.pid = res[0].personalinfo.id
+        state.uid = res[0].personalinfo.user.id
+        state.input.userId = res[0].personalinfo.user.id
+        state.aInfo = res
       }
     })
 
     const state = reactive({
+      pid: '',          // 신상정보 PK
+      uid: '',          // User PK
       displayActivityModal: false,
-
-      myActivity: '',   // DB에서 받아온 내용을 저장하는 변수.
-
-      isWritten: false,  // 기존에 작성된 내역이 존재하는지
+      displayActivityModifyModal: false,
       startDate: '',
       endDate: '',
       // 활동 사항
+      aInfo: {
+        activity:'',
+        description: '',
+        name: '',
+        period: '',
+      },
       input: {          // 새로 입력한 값을 저장하는 변수
+        userId: '', 
         activity: '', 
         description: '',
         name: '',
-        period: '',    // startDate와 endDate 데이터 결합
-        uid: '',
-        pid: '',
-
+        period: '',
       },
-      
-      
     })
 
-    onMounted(() => {
-      
-    })
+    const rules = {
+      input: {
+        activity: { required }, 
+        description: { required },
+        name: { required },
+      },
+      startDate: { required },
+      endDate: { required },
+    }
+    const submitted = ref(false)
+    const v$ = useVuelidate(rules, state)
+
+    const handleSubmit = (isFormValid) => {
+      submitted.value = true
+      if (!isFormValid) { 
+        return
+      }      
+      saveActivityModal()
+    }
+    const saveActivityModal = () => {
+      // 데이터 전처리
+      state.input.period = JSON.stringify(state.startDate) + " ~ " + JSON.stringify(state.endDate)
+      aService.createActivity(state.input, state.pid).then(res => { 
+        state.aInfo = res.data
+      })
+      state.displayActivityModal = false
+      alert("활동사항을 저장하였습니다.")
+    }
     
     return {
-      state,
+      state, v$, handleSubmit, submitted
     }
   },
+
   methods: {
     openActivityModal() {
       this.state.displayActivityModal = true
     },
-    saveActivityModal() {
-      this.state.displayActivityModal = false
-    },
+    deleteActivity(id) {
+      aService.deleteActivity(this.state.pid, id).then(res => {
+        console.log("삭제한 후,,,", res)
+        this.state.aInfo = res.data
+      })
+      alert("삭제하였습니다.")
+    }
   }
 }
 </script>
