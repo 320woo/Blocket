@@ -44,6 +44,10 @@
         </div> 
       </div>
 
+      <div class="p-col-12" style="text-align: end;">
+        {{ state.vInfo_edu.currentStatus }}
+      </div>
+
       <div v-if="state.eInfo.name === ''">
         <span style="color: blue; cursor: pointer; display: inline-block;" @click="state.displayEducationModal = true">
           <strong>새로 입력하기</strong>
@@ -153,6 +157,16 @@ export default {
       state.mName = res.name.split(" ")[1]          // 학과 검색 시 내가 선택한 학과명. 없으면 undefined
       state.myG = res.grades.split(" / ")[0]        // 내 학점. 없으면 undefined
       state.tScore = res.grades.split(" / ")[1]     // 학점 기준. 없으면 undefined
+
+      // 최종학력을 불러왔으면, 검증 내역도 함께 불러온다.
+      const setVInfo = async () => {
+        await eService.findEduVerif(state.pid, state.id)
+        .then(res => {
+          console.log(res)
+          state.vInfo_edu = res
+        })
+      }
+      setVInfo()
     })
 
     const state = reactive({
@@ -166,6 +180,7 @@ export default {
         name: '',         // 학교명
         sortation: '',    // 분류.
       },
+      vInfo_edu: '',
       // 신규 작성할 내용. 나중에 조립해야 함.
       input: {
         grades: '',
@@ -213,29 +228,57 @@ export default {
 
       // 만약 처음으로 작성하는 거라면...
       if (state.id === '') {
-        eService.createFinalEducation(state.input, state.uid, state.pid, state.galleryDto, state.file)
-        .then(res => {
-          // 값 갱신하기
-          state.eInfo.grades = res.grades
-          state.eInfo.name = res.name
-          state.eInfo.sortation = res.sortation
+        const temp = async() => {
+          await eService.createFinalEducation(state.input, state.uid, state.pid, state.galleryDto, state.file)
+          .then(res => {
+            // 값 갱신하기
+            state.eInfo.grades = res.grades
+            state.eInfo.name = res.name
+            state.eInfo.sortation = res.sortation
 
-          // 등록한 final_education의 id를 저장해야 한다.
-          state.id = res.id
+            // 등록한 final_education의 id를 저장해야 한다.
+            state.id = res.id
 
-          alert("등록하였습니다.")
-        })
+            alert("등록하였습니다.")
+
+            // 검증 내역을 불러온다.
+            const setVInfo = async () => {
+              await eService.findEduVerif(state.pid, state.id)
+              .then(res => {
+                
+                console.log(res)
+                state.vInfo_edu = res
+              })
+            }
+            setVInfo()
+          })
+        }
+        temp()
       }
       // 이미 작성되었다면
       else {
-        eService.updateFinalEducation(state.input, state.pid, state.id, state.galleryDto, state.file)
-        .then(res => {
-          // 값 갱신하기
-          state.eInfo.grades = res.grades
-          state.eInfo.name = res.name
-          state.eInfo.sortation = res.sortation
-          alert("수정하였습니다.")
-        })
+        const temp = async () => {
+          await eService.updateFinalEducation(state.input, state.pid, state.id, state.galleryDto, state.file)
+          .then(res => {
+            // 값 갱신하기
+            state.eInfo.grades = res.grades
+            state.eInfo.name = res.name
+            state.eInfo.sortation = res.sortation
+            alert("수정하였습니다.")
+
+            // 업데이트를 하였으면, 다시 검증 내역을 불러온다.
+            const setVInfo = async () => {
+              await eService.findEduVerif(state.pid, state.id)
+              .then(res => {
+                console.log("최종 학력을 수정하였습니다. 검증 내역은:", res)
+                state.vInfo_edu = res
+              })
+            }
+            setVInfo()
+          })
+        }
+        temp()
+
       }
       state.displayEducationModal = false
     }

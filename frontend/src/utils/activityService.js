@@ -55,7 +55,7 @@ export async function createActivity(input, pid, uid, galleryDto, file) {
     },
     data: input
     // 등록한 후, 모든 목록을 반환한다.
-  }).then(res => {
+  }).then(async res => {
     result = res
 
     console.log(res.data)
@@ -63,7 +63,7 @@ export async function createActivity(input, pid, uid, galleryDto, file) {
     
     // GalleryDto 등록한다.
     galleryDto.sid = res.data[res.data.length -1].id
-    axios({
+    await axios({
       url: FILE_URL + "/saveInDB",
       method: "POST",
       headers: {
@@ -71,10 +71,10 @@ export async function createActivity(input, pid, uid, galleryDto, file) {
       },
       data: galleryDto,
     })
-    .then(res => {
+    .then(async res => {
       console.log("gallery 테이블 저장 결과", res)     
       // 여기서 받아온 Gallery의 PK를 통해 파일을 최종적으로 업로드한다.
-      axios({
+      await axios({
         url: FILE_URL + "/" + res.data.id + "/S3Upload",
         method: "POST",
         data: file

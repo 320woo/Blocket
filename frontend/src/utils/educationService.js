@@ -116,22 +116,22 @@ export async function updateFinalEducation(input, pid, sid, galleryDto, file) { 
     },
     data: temp,
   })
-  .then(res => {
+  .then(async res => {
     result = res.data  // final_Education의 PK 포함.
     // 수정했으면, 파일도 수정한다. 정확히는 기존에 있는 Verif, Gallery를 삭제하고 재등록
-    axios({
+    await axios({
       url: FILE_URL + "/" + pid + "/" + sid + "/edu/deleteGallery",
       method: "DELETE",
       headers: {
         Authorization: "Bearer "+ store.state.user.accessToken,
       }
     })
-    .then(res => {
+    .then(async res => {
       // 정상적으로 된 경우, Verif와 Gallery가 삭제되고 삭제된 Gallery의 PK를 반환한다. 
       console.log(res)
       // 다시 gallery와 파일, Verif를 등록한다.
       galleryDto.sid = sid
-      axios({
+      await axios({
         url: FILE_URL + "/saveInDB",
         method: "POST",
         headers: {
@@ -139,10 +139,10 @@ export async function updateFinalEducation(input, pid, sid, galleryDto, file) { 
         },
         data: galleryDto,
       })
-      .then(res => {
+      .then(async res => {
         console.log("gallery 테이블 저장 결과", res)     
         // 여기서 받아온 Gallery의 PK를 통해 파일을 최종적으로 업로드한다.
-        axios({
+        await axios({
           url: FILE_URL + "/" + res.data.id + "/S3Upload",
           method: "POST",
           data: file
@@ -151,10 +151,25 @@ export async function updateFinalEducation(input, pid, sid, galleryDto, file) { 
           console.log(res)
         })
       })
-
     })
-    
+  })
+  return result
+}
 
+
+export async function findEduVerif(pid, id) {
+  let result = ''
+  
+  await axios({
+    url: INFO_URL + "/" + pid + "/" + id + "/findEduVerif",
+    method: "POST",
+    headers: {
+      Authorization:"Bearer "+ store.state.user.accessToken,
+    }
+  })
+  .then(res => {
+    console.log("최종학력에 대한 검증 내용은 다음과 같습니다.", res)
+    result = res.data
   })
   return result
 }
