@@ -11,7 +11,7 @@
         <div class="p-col-5">
         <Panel id="panel" class="box box-stretched">
             <template #header>
-                <div class="header-font">{{file.title}}</div>
+                <div class="header-font">{{file.galleryId}}&nbsp;{{file.title}}</div>
             </template>
             <div v-if="check=='act'">
                 <div>
@@ -146,6 +146,7 @@ import { mapGetters } from "vuex";
 export default {
   computed: {
     ...mapGetters(["file"]),
+    ...mapGetters(["user"]),
   },
   data(){
       return{

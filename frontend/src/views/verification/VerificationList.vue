@@ -1,5 +1,7 @@
 <template>
     <div class="p-col-6 p-offset-3">
+        <h2>검증 목록 조회</h2>        
+
         <div class="status">
             <Dropdown v-model="selectStatus" :options="status" optionLabel="name" placeholder="검증상태" />
             <Button id="sort-btn" class="p-ml-1" @click="clickStatus">검색</Button>

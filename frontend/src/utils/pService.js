@@ -40,7 +40,8 @@ export function checkToken() {
 export function checkLogin() {
 
     if (store.state.user.accessToken !== null) {
-        router.push("/")
+      if(store.state.user.type===2) router.push("/verificationList")
+      else router.push("/")
     }
 }
 
