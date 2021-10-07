@@ -167,28 +167,6 @@ export default createStore({
             }
             
         },
-        // patchVerification(context,payload){
-        //     console.log(payload);
-        //     if(localStorage.getItem("accessToken")){
-        //         const url = "/api/recruit/verification";
-        //         const headers = {
-        //             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        //         };
-        //         return http.patch(url,payload,{headers}).then((res)=>{
-        //             if(res.data.statusCode==200){
-        //                 console.log(res.data);
-        //                 context.commit("setFileVerified",res.data);
-
-                        
-        //             }
-        //         }).catch((err)=>{
-                    
-                    
-                    
-        //             console.log(err);
-        //         });
-        //     }
-        // },
 
     getFileInfo(context,payload){
                 console.log(payload);

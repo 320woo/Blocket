@@ -178,7 +178,9 @@
                                 belong: this.state.belong,
                                 phoneNumber: this.state.phoneNumber,
                                 brn: this.state.brn,
-                            });
+                            }).then(()=>{
+                        this.$toast.add({severity:'success', summary: '시스템 정보', group: 'bb', detail:'수정이 완료되었습니다.'})
+                    });
                 this.$toast.removeGroup('bc');
             },
             onReject() {
@@ -187,6 +189,9 @@
             deleteUser() {
                 if (confirm("정말 탈퇴 하시겠습니까?")) {
                     pService.UserDelete();
+                    setTimeout(() => {
+                         if(this.$store.state.user.check == 200)this.$toast.add({severity:'success', summary: '시스템 정보', group: 'center', detail:'탈퇴 되었습니다.', life: 1000})
+                    }, 1000);
                 }
             },
             home() {

@@ -1,5 +1,6 @@
 <template>
     <div class="p-grid p-jc-center vertical-container" style="background-color: #F9F7F7;">
+    <Toast1/>
         <div  class="p-col-5">
         <Card id ="card" class="box box-stretched">
             <template #content>
@@ -186,7 +187,7 @@ export default {
             // 승인 후 트랜잭션 전송한다.
             const result = etherService.saveState(fileHash) // 트랜잭션 전송 후의 트랜잭션 해시이다.
             console.log(result) // 트랜잭션 해시. reasons_rejection에 넣기
-            alert("검증이 완료되었습니다.");
+            this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'bb', detail:'검증이 완료되었습니다.'})
           });
       },
       refuse(){
