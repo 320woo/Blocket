@@ -65,7 +65,6 @@ public class UserController {
 		String userEmail = userLoginPostReq.getEmail();
 		String password = userLoginPostReq.getPassword();
 		User user = userService.findByUserEmail(userEmail);
-		System.out.println(user.getEmail());
 		if (user != null) {
 			if (passwordEncoder.matches(password, user.getPassword())) {
 				return ResponseEntity.ok(UserLoginPostRes.of(200, "로그인에 성공하였습니다.", JwtTokenUtil.createToken(user.getEmail()),user.getType()));

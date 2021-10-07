@@ -162,16 +162,15 @@
                     this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'이름을 입력해주세요.', life: 1000});
                     err = false    
                 }
+                if(!this.belong){
+                    this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'소속을 입력해주세요.', life: 1000}); 
+                    err = false
+                }
                 if(!this.phoneNumber){
                     this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'연락처를 입력해주세요.', life: 1000}); 
                     err = false
                 }
                 
-                if(!this.belong){
-                    this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'소속을 입력해주세요.', life: 1000}); 
-                    err = false
-                }
-
                 if (!err) 
                     console.log("빈칸을 채워주세요")
                 else 

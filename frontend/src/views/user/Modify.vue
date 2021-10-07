@@ -1,5 +1,24 @@
 <template>
     <div>
+        <Toast position="bottom-center" group="bc">
+            <template #message="slotProps">
+                <div class="p-d-flex p-flex-column">
+                    <div class="p-text-center">
+                        <i class="pi pi-exclamation-triangle" style="font-size: 3rem"></i>
+                        <h4>{{slotProps.message.summary}}</h4>
+                        <p>{{slotProps.message.detail}}</p>
+                    </div>
+                    <div class="p-grid p-fluid">
+                        <div class="p-col-6">
+                            <Button id="bt" class="p-button-success" label="Yes" @click="onConfirm"></Button>
+                        </div>
+                        <div class="p-col-6">
+                            <Button id="bt" class="p-button-secondary" label="No" @click="onReject"></Button>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </Toast>
         <div class="login-form">
             <Panel header="Blocket을 체험해보세요." id="panel">
                 <div>
@@ -12,7 +31,7 @@
                     name="email"
                     v-model="state.email"
                     class="InputText"/>
-                <div>
+                <!-- <div>
                     <label for="username1">비밀번호</label>
                 </div>
                 <InputText
@@ -22,7 +41,7 @@
                     v-model="password"
                     ref="password"
                     class="InputText"
-                    placeholder="6자 이상"/>
+                    placeholder="6자 이상"/> -->
                 <div>
                     <label for="username1">이름</label>
                 </div>
@@ -98,7 +117,7 @@
         name: "signup",
         computed: {},
         setup() {
-          pService.checkToken()  
+        //   pService.checkToken()  
           pService.UserCheck().then(res => {  // 각 함수는 비동기 처리하였음
             state.email = res.email
             state.name = res.name
@@ -117,26 +136,32 @@
     }
         },
         methods: {
-            Solo() {
-                this.solo = true;
-                this.company = false;
-                this.type = "회원"
-                this.show_brn = false;
-            },
-            Company() {
-                this.solo = false;
-                this.company = true;
-                this.type = "기업"
-                this.show_brn = true;
-            },
             modifyUser() {
                 let err = true;
                 let msg = "";
-                err && !this.email && ((msg = "이메일을 입력해주세요"), (err = false));
-                err && !this.password && ((msg = "비밀번호를 입력해주세요"), (err = false));
-                err && !this.name && ((msg = "이름을 입력해주세요"), (err = false));
-                err && !this.phoneNumber && ((msg = "연락처를 입력해주세요"), (err = false));
-                if (!err) alert(msg);
+                if(!this.email){
+                    this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'이메일을 입력해주세요.', life: 1000});
+                    err = false
+                    }
+                if(!this.password){
+                    this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'비밀번호를 입력해주세요.', life: 1000});
+                    err = false
+                }
+                if(!this.name){
+                    this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'이름을 입력해주세요.', life: 1000});
+                    err = false    
+                }
+                if(!this.belong){
+                    this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'소속을 입력해주세요.', life: 1000}); 
+                    err = false
+                }
+                if(!this.phoneNumber){
+                    this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'연락처를 입력해주세요.', life: 1000}); 
+                    err = false
+                }
+                
+
+                if (!err) console.log(msg);
                 else {
                     if (confirm("수정 하시겠습니까?")) {
                         this.$store.dispatch("modify",
@@ -187,6 +212,7 @@
 
     .InputText {
         width: 100%;
+        margin-bottom: 20px;
     }
 
     #panel {
@@ -212,4 +238,17 @@
     .center-btn {
         text-align: center;
     }
+</style>
+<style lang="scss" scoped>
+#bt {
+    min-width: 10rem;
+    margin-right: .5rem;
+}
+
+@media screen and (max-width: 960px) {
+    #bt {
+        width: 100%;
+        margin-bottom: .5rem;
+    }
+}
 </style>
