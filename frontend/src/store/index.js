@@ -17,6 +17,7 @@ export default createStore({
             userbelong: null,
             userbrn: null,
             userphone : null,
+            type:0,
             walletAddress: null,
             accessToken: null,
             show: true,
@@ -32,6 +33,9 @@ export default createStore({
         setUserEmail(state, userEmail) {
             state.user.userEmail = userEmail
         },
+        setUserType(state, type) {
+            state.user.type = type
+        },
         setWalletAddress(state, address) {
             state.user.walletAddress = address
         },
@@ -44,6 +48,7 @@ export default createStore({
         login(state, payload) {
             state.user.accessToken = payload.accessToken;
             state.user.show = false;
+            state.user.type=payload.type;
         },
         userinfo(state, payload) {
             console.log(payload.name);
@@ -204,6 +209,9 @@ export default createStore({
         }
     },
     getters: {
+        user(state){
+            return state.user;
+        },
         file(state){
             return state.file;
         },
