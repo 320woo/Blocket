@@ -1,7 +1,6 @@
 import vueConfig from '../../vue.config'
 import store from '../store'
 import axios from 'axios'
-
 import * as pService from '@/utils/pService.js'
 
 const BASE_URL = vueConfig.devServer.proxy['/blocket'].target + "/api"

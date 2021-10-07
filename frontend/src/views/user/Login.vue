@@ -63,11 +63,17 @@
                 // 사용자 입력값 체크하기
                 let err = true;
                 let msg = "";
-                !this.email_id && ((msg = "ID를 입력해주세요"), (err = false));
-                !this.password && ((msg = "비밀번호를 입력해주세요"), (err = false));
+                if(!this.email_id){
+                    this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'이메일을 입력해주세요.', life: 1000});
+                    err = false
+                    }
+                if(!this.password){
+                    this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'비밀번호를 입력해주세요.', life: 1000});
+                    err = false
+                    }
 
                 if (!err) 
-                    alert(msg);
+                    console.log(msg);
                 else {
                     this
                         .$store
@@ -75,7 +81,12 @@
                             //form에서 받은 값을 action에 있는 login 함수로 들고
                             email: this.email_id,
                             password: this.password
+                            
                         });
+
+                    if (this.$store.state.user.accessToken != null) {
+                        this.$router.push("/");
+                    }
                 }
             }
         }
