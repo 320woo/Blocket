@@ -105,5 +105,10 @@ public class VerificationService implements IVerificationService {
 //		return null;
 //	}
 
+
+	@Override
+	public void deleteByGallery(Gallery gallery) {
+		verificationRepository.deleteByGallery(gallery);
+	}
 }
 

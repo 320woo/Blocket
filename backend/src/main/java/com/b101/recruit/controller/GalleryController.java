@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -63,7 +64,7 @@ public class GalleryController {
     @PostMapping("/saveInDB")
 	public Gallery createGallery(@RequestBody GalleryDto galleryDto) {
 		SimpleDateFormat date = new SimpleDateFormat("yyyymmddHHmmss");
-		String fileName = galleryDto.getFilePath() + date.format(new Date());
+		String fileName = galleryDto.getFilePath() + "-" + date.format(new Date());
 		galleryDto.setFilePath(fileName);
 
 		// DB에 저장한 객체를 반환한다. 이 객체를 반환받아, 다시 S3에 파일로 저장하는 걸 진행해야 한다.
@@ -86,8 +87,6 @@ public class GalleryController {
 		galleryDto.setFilePath(gallery.getFilePath());
 		galleryDto.setSortation(gallery.getSortation());
 		galleryDto.setId(gallery.getId());
-
-		System.out.println("서버에 올릴 파일 이름은..." + gallery.getFilePath().toString());
 
 		// s3Service는 AWS S3의 비즈니스 로직을 담당하며, 파일을 조작
 		String imgPath = s3Service.upload(galleryDto.getFilePath(), file);
@@ -124,6 +123,30 @@ public class GalleryController {
 		Verification verification = vService.getVerification(gId);
 		if(gallery!=null&&object!=null) return ResponseEntity.status(200).body(GalleryRes.of(gallery,object,verification));
 		else return null;
+	}
+
+	// 특정 사람(personalInfo)의 특정 분류(sortation)의 특정한 값(id)에 해당하는 파일을 찾아야 한다.
+	@Transactional
+	@DeleteMapping("/{personalInfoId}/{sid}/{sortation}/deleteGallery")
+	@ApiOperation(value = "DB내 파일 삭제", notes = "파일을 삭제한다.")
+	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
+			@ApiResponse(code = 500, message = "서버 오류") })
+	public String deleteGallery(@PathVariable("personalInfoId") Long pid,
+														  @PathVariable("sid") Long sid, @PathVariable("sortation") String sortation,
+														  @ApiIgnore Authentication authentication) {
+		if (authentication == null) {
+			return "권한이 없습니다.";
+		}
+		else {
+			Gallery result = galleryService.findByPidAndSidAndSortation(pid, sid, sortation);
+
+			// 먼저 Verification을 삭제한다.
+			vService.deleteByGallery(result);
+			// 이후 Gallery에서 등록된 파일을 삭제한다.
+			galleryService.deleteGallery(result.getId());
+			// 삭제한 gallery의 PK를 반환한다.
+			return result.getId().toString();
+		}
 	}
 	
 }

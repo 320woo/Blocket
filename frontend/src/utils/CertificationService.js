@@ -6,6 +6,7 @@ import * as pService from '@/utils/pService.js'
 
 const BASE_URL = vueConfig.devServer.proxy['/blocket'].target + "/api"
 const INFO_URL = BASE_URL + "/recruit/personalinfo"
+const FILE_URL = BASE_URL + "/recruit/Gallery"
 
 export async function getCertification() {
   let result = ''
@@ -44,8 +45,9 @@ export async function getCertification() {
 }
 
 
-export async function createCertification(input, pid) {
+export async function createCertification(input, pid, uid, galleryDto, file) {
   let result = ''
+  input.userId = uid
   await axios({
     url: INFO_URL + "/" + pid + "/certificate",
     method: "POST",
@@ -57,6 +59,32 @@ export async function createCertification(input, pid) {
   })
   .then(res => {
     result = res.data
+
+    // res.data[res.data.length -1] 이 가장 마지막에 추가된 항목이다.
+
+    // GalleryDto 등록한다.
+    galleryDto.sid = res.data[res.data.length -1].id
+
+    axios({
+      url: FILE_URL + "/saveInDB",
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: galleryDto,
+    })
+    .then(res => {
+      console.log("gallery 테이블 저장 결과", res)     
+      // 여기서 받아온 Gallery의 PK를 통해 파일을 최종적으로 업로드한다.
+      axios({
+        url: FILE_URL + "/" + res.data.id + "/S3Upload",
+        method: "POST",
+        data: file
+      })
+      .then(res => { 
+        console.log(res)
+      })
+    })
   })
   return result
 }

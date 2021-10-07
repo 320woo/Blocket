@@ -35,6 +35,8 @@ public interface IVerificationService {
 
 	Verification getVerification(Long gId);
 
+	void deleteByGallery(Gallery gallery);
+
 //	VerificationDto findByCertificationId(Long cId);
 
 }

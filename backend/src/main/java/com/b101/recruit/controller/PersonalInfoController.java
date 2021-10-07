@@ -12,6 +12,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import com.b101.recruit.domain.entity.*;
+import com.b101.recruit.service.impl.VerificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,6 +63,12 @@ public class PersonalInfoController {
 	
 	@Autowired
 	private PersonalInfoService service;
+
+	@Autowired
+	private GalleryService gService;
+
+	@Autowired
+	private VerificationService vService;
 	
 	// 저장할 기본 디렉토리 설정 application.property 파일에 설정하고 가져온다.
 	@Value("${server.tomcat.basedir}")
@@ -215,7 +223,7 @@ public class PersonalInfoController {
 //		return ResponseEntity.status(200).body(certificate2);
 //	}
 
-
+	@Transactional
 	@DeleteMapping("/{personalinfoId}/{certificateId}/CertDelete")
 	@ApiOperation(value = "어학, 자격증 삭제", notes = "어학, 자격증을 삭제한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
@@ -226,6 +234,13 @@ public class PersonalInfoController {
 			return ResponseEntity.status(401).body(null);
 		}
 		else {
+			// 어학, 자격증 삭제하기 전에 Verifaction, gallery 삭제하기
+			Gallery result = gService.findByPidAndSidAndSortation(pId, cId, "cert");
+			// Verification 삭제
+			vService.deleteByGallery(result);
+			// 갤러리 파일 삭제
+			gService.deleteGallery(result.getId());
+			// 어학, 자격증 삭제
 			service.deleteCertificate(pId, cId);
 			return getCertification(pId, authentication);
 		}
@@ -277,6 +292,7 @@ public class PersonalInfoController {
 //	}
 
 
+	@Transactional
 	@DeleteMapping("/{personalinfoId}/{activityId}/ActDelete")
 	@ApiOperation(value = "활동사항 삭제", notes = "활동사항을 삭제한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
@@ -287,7 +303,16 @@ public class PersonalInfoController {
 			return ResponseEntity.status(401).body(null);
 		}
 		else {
+			// 1. gallery 객체 먼저 찾기
+			Gallery result = gService.findByPidAndSidAndSortation(pId, aId, "act");
+
+			// Verification 삭제
+			vService.deleteByGallery(result);
+			// 갤러리 파일 삭제
+			gService.deleteGallery(result.getId());
+			// 활동사항 삭제
 			service.deleteActivity(pId, aId);
+			// 목록 반환.
 			return getActivities(pId, authentication);
 		}
 	}
@@ -335,14 +360,14 @@ public class PersonalInfoController {
 		}
 	}
 	
-	@DeleteMapping("/{personalinfoId}/{finaleducationId}/delete")
-	@ApiOperation(value = "최종학력 삭제", notes = "최종학력을 삭제한다.")
-	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
-		@ApiResponse(code = 500, message = "서버 오류") })
-	public ResponseEntity<BaseResponseBody> deleteFinalEducation(@PathVariable(name = "personalinfoId") Long pId,
-			@PathVariable(name = "finaleducationId") Long fId) {
-		service.deleteFinalEducation(pId, fId);
-		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
-	}
+//	@DeleteMapping("/{personalinfoId}/{finaleducationId}/delete")
+//	@ApiOperation(value = "최종학력 삭제", notes = "최종학력을 삭제한다.")
+//	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
+//		@ApiResponse(code = 500, message = "서버 오류") })
+//	public ResponseEntity<BaseResponseBody> deleteFinalEducation(@PathVariable(name = "personalinfoId") Long pId,
+//			@PathVariable(name = "finaleducationId") Long fId) {
+//		service.deleteFinalEducation(pId, fId);
+//		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+//	}
 	
 }

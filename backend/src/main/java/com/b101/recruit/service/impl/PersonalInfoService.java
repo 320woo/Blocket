@@ -292,7 +292,6 @@ public class PersonalInfoService implements IPersonalInfoService {
 		activityRepository.deleteById(aId);
 	}
 
-
 	@Override
 	public Optional<List<FinalEducation>> getFinalEducation(Long personalInfoId) {
 		return finaleducationRepository.findByPersonalinfo_id(personalInfoId);

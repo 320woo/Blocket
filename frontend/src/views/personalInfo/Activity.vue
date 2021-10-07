@@ -98,8 +98,12 @@
 
       <!-- 관련 서류 제출 -->
       <div class="p-field p-col-12">
-        <label for="file" class="for">활동 증명서 첨부*</label>
-        <FileUpload mode="basic" name="demo[]" url="./" accept="image/*" :maxFileSize="10485760" @upload="onUpload" />
+        <label for="file" class="for" :class="{'p-invalid':v$.file.$invalid && submitted}">활동 증명서 첨부*</label>
+        <FileUpload mode="basic" name="demo[]" url="./" accept="image/*" :class="{'p-invalid':v$.file.$invalid && submitted}"
+        :customUpload="true" :maxFileSize="10485760" @select="getFileInfo" v-model="v$.file.$model" />
+        <small v-if="(v$.file.$invalid && submitted) || v$.file.$pending.$response" class="p-error">
+          {{ v$.file.required.$message.replace('Value', 'file') }}
+        </small>
       </div>
 
       <div class="p-col-12" style="padding: 0;">
@@ -153,6 +157,14 @@ export default {
         name: '',
         period: '',
       },
+      galleryDto: {
+        title: '',
+        filePath: '',
+        pid: '',
+        sid: '',
+        sortation: 'act',
+      },
+      file: '',
     })
 
     const rules = {
@@ -161,6 +173,7 @@ export default {
         description: { required },
         name: { required },
       },
+      file : { required },
       startDate: { required },
       endDate: { required },
     }
@@ -177,7 +190,8 @@ export default {
     const createActivity = () => {
       // 데이터 전처리
       state.input.period = JSON.stringify(state.startDate) + " ~ " + JSON.stringify(state.endDate)
-      aService.createActivity(state.input, state.pid).then(res => { 
+      aService.createActivity(state.input, state.pid, state.uid, state.galleryDto, state.file)
+      .then(res => { 
         state.aInfo = res.data
       })
       state.displayActivityModal = false
@@ -185,6 +199,18 @@ export default {
 
       // 입력을 완료하였으면, Form 내 값을 모두 초기화 한다.
       resetForm()
+    }
+
+    const getFileInfo = e => {
+      const formData = new FormData()
+      formData.append("file", e.files[0])
+
+      state.file = formData
+      console.log("업로드 할 파일 정보 : ", formData)
+      
+      // GalleryDto 설정을 해주자.
+      state.galleryDto.filePath = e.files[0].name
+      state.galleryDto.pid = state.pid
     }
 
     const resetForm = () => {
@@ -197,7 +223,7 @@ export default {
     }
     
     return {
-      state, v$, handleSubmit, submitted
+      state, v$, handleSubmit, submitted, getFileInfo
     }
   },
 
@@ -211,6 +237,7 @@ export default {
         if (res.data === 'NoData') {
           this.state.aInfo = ''
         }
+        // 데이터가 존재하는 경우
         else {
           this.state.aInfo = res.data
         }

@@ -48,5 +48,14 @@ public class GalleryService {
 	public Optional<Gallery> getGallery(Long gId) {
 		return galleryRepository.findById(gId);
 	}
-    
+
+	public void deleteGallery(Long id) {
+		galleryRepository.deleteById(id);
+	}
+
+	public Gallery findByPidAndSidAndSortation(Long pid, Long sid, String sortation) {
+		return galleryRepository.findByPidAndSidAndSortation(pid, sid, sortation);
+	}
+
+
 }

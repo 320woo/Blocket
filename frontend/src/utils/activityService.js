@@ -6,6 +6,7 @@ import * as pService from '@/utils/pService.js'
 
 const BASE_URL = vueConfig.devServer.proxy['/blocket'].target + "/api"
 const INFO_URL = BASE_URL + "/recruit/personalinfo"
+const FILE_URL = BASE_URL + "/recruit/Gallery"
 
 // 활동사항 가져오기. 
 export async function getActivities() {
@@ -41,8 +42,10 @@ export async function getActivities() {
 }
 
 // 활동사항 등록하기
-export async function createActivity(input, pid) {
+export async function createActivity(input, pid, uid, galleryDto, file) {
   let result = ''
+  // 유저 ID 추가하기
+  input.userId = uid
   await axios({
     url: INFO_URL + "/" + pid + "/activity",
     method: "POST",
@@ -54,6 +57,32 @@ export async function createActivity(input, pid) {
     // 등록한 후, 모든 목록을 반환한다.
   }).then(res => {
     result = res
+
+    console.log(res.data)
+    // res.data[res.data.length - 1]의 가장 마지막 항목이 새로 추가된 항목이다.
+    
+    // GalleryDto 등록한다.
+    galleryDto.sid = res.data[res.data.length -1].id
+    axios({
+      url: FILE_URL + "/saveInDB",
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: galleryDto,
+    })
+    .then(res => {
+      console.log("gallery 테이블 저장 결과", res)     
+      // 여기서 받아온 Gallery의 PK를 통해 파일을 최종적으로 업로드한다.
+      axios({
+        url: FILE_URL + "/" + res.data.id + "/S3Upload",
+        method: "POST",
+        data: file
+      })
+      .then(res => { 
+        console.log(res)
+      })
+    })
   })
   return result
 }

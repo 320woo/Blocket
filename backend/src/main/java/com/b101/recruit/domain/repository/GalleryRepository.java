@@ -12,5 +12,6 @@ public interface GalleryRepository extends JpaRepository<Gallery, Long> {
 
 	@Override
 	List<Gallery> findAll();
+	Gallery findByPidAndSidAndSortation(Long pid, Long sid, String sortation);
 	
 }

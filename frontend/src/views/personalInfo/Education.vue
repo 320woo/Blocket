@@ -213,7 +213,8 @@ export default {
 
       // 만약 처음으로 작성하는 거라면...
       if (state.id === '') {
-        eService.createFinalEducation(state.input, state.uid, state.pid, state.galleryDto, state.file).then(res => {
+        eService.createFinalEducation(state.input, state.uid, state.pid, state.galleryDto, state.file)
+        .then(res => {
           // 값 갱신하기
           state.eInfo.grades = res.grades
           state.eInfo.name = res.name
@@ -227,7 +228,7 @@ export default {
       }
       // 이미 작성되었다면
       else {
-        eService.updateFinalEducation(state.input, state.pid, state.id)
+        eService.updateFinalEducation(state.input, state.pid, state.id, state.galleryDto, state.file)
         .then(res => {
           // 값 갱신하기
           state.eInfo.grades = res.grades

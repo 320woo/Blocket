@@ -104,8 +104,12 @@
 
       <!-- 관련 서류 제출 -->
       <div class="p-field p-col-12">
-        <label for="file" class="for">증명서 첨부*</label>
-        <FileUpload mode="basic" name="demo[]" url="./" accept="image/*" :maxFileSize="10485760" @upload="onUpload" />
+        <label for="file" class="for" :class="{'p-invalid':v$.file.$invalid && submitted}">증명서 첨부*</label>
+        <FileUpload mode="basic" name="demo[]" url="./" accept="image/*" :class="{'p-invalid':v$.file.$invalid && submitted}"
+        :customUpload="true" :maxFileSize="10485760" @select="getFileInfo" v-model="v$.file.$model" />
+      <small v-if="(v$.file.$invalid && submitted) || v$.file.$pending.$response" class="p-error">
+        {{ v$.file.required.$message.replace('Value', 'file') }}
+      </small>
       </div>
       <div class="p-col-12" style="padding: 0;">
         <Button type="submit" label="저장" autofocus style="width: 100%;" />
@@ -153,6 +157,14 @@ export default {
         acquisitionDate: '',
         score: '',
       },
+      galleryDto: {
+        title: '',
+        filePath: '',
+        pid: '',
+        sid: '',
+        sortation: 'cert',
+      },
+      file: '',
     })
     const rules = {
       input: {
@@ -160,7 +172,8 @@ export default {
         sortation: { required },
         acquisitionDate: { required },
         score: { required },
-      }
+      },
+      file : { required },
     }
 
     const submitted = ref(false)
@@ -175,11 +188,24 @@ export default {
     }
     
     const createCertification = () => {
-      cService.createCertification(state.input, state.pid).then(res => {
+      cService.createCertification(state.input, state.pid, state.uid, state.galleryDto, state.file).
+      then(res => {
         state.cInfo = res
       })
       state.displayCertModal = false
       resetForm()
+    }
+
+    const getFileInfo = e => {
+      const formData = new FormData()
+      formData.append("file", e.files[0])
+
+      state.file = formData
+      console.log("업로드 할 파일 정보 : ", formData)
+      
+      // GalleryDto 설정을 해주자.
+      state.galleryDto.filePath = e.files[0].name
+      state.galleryDto.pid = state.pid
     }
 
     const resetForm = () => {
@@ -190,7 +216,7 @@ export default {
     }
 
     return {
-      state, v$, handleSubmit, submitted
+      state, v$, handleSubmit, submitted, getFileInfo
     }
   },
   methods: {

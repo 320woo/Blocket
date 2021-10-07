@@ -50,6 +50,7 @@ export async function getFinalEducation() {
 
 export async function createFinalEducation(input, uid, pid, galleryDto, file) {
   let result = ''
+  console.log("최종학력 등록합니다.")
   const temp = {
     "grades": input.grades,
     "userId": uid,
@@ -87,9 +88,6 @@ export async function createFinalEducation(input, uid, pid, galleryDto, file) {
       axios({
         url: FILE_URL + "/" + res.data.id + "/S3Upload",
         method: "POST",
-        headers: {
-          
-        },
         data: file
       })
       .then(res => { 
@@ -101,15 +99,16 @@ export async function createFinalEducation(input, uid, pid, galleryDto, file) {
 }
 
 
-export async function updateFinalEducation(input, pid, id) {
+export async function updateFinalEducation(input, pid, sid, galleryDto, file) {  // 이 때 sid는 최종학력 PK를 뜻한다.
   let result = ''
+  console.log("최종학력 수정합니다.")
   const temp = {
     "grades": input.grades,
     "name": input.name,
     "sortation": input.sortation,
   }
   await axios({
-    url: INFO_URL + "/" + pid + "/" + id + "/update",
+    url: INFO_URL + "/" + pid + "/" + sid + "/update",
     method: "PUT", 
     headers: {
       Authorization: "Bearer "+ store.state.user.accessToken,
@@ -117,9 +116,45 @@ export async function updateFinalEducation(input, pid, id) {
     },
     data: temp,
   })
-  .then(resp => {
-    // 수정한 객체를 받아온다.
-    result = resp.data
+  .then(res => {
+    result = res.data  // final_Education의 PK 포함.
+    // 수정했으면, 파일도 수정한다. 정확히는 기존에 있는 Verif, Gallery를 삭제하고 재등록
+    axios({
+      url: FILE_URL + "/" + pid + "/" + sid + "/edu/deleteGallery",
+      method: "DELETE",
+      headers: {
+        Authorization: "Bearer "+ store.state.user.accessToken,
+      }
+    })
+    .then(res => {
+      // 정상적으로 된 경우, Verif와 Gallery가 삭제되고 삭제된 Gallery의 PK를 반환한다. 
+      console.log(res)
+      // 다시 gallery와 파일, Verif를 등록한다.
+      galleryDto.sid = sid
+      axios({
+        url: FILE_URL + "/saveInDB",
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data: galleryDto,
+      })
+      .then(res => {
+        console.log("gallery 테이블 저장 결과", res)     
+        // 여기서 받아온 Gallery의 PK를 통해 파일을 최종적으로 업로드한다.
+        axios({
+          url: FILE_URL + "/" + res.data.id + "/S3Upload",
+          method: "POST",
+          data: file
+        })
+        .then(res => { 
+          console.log(res)
+        })
+      })
+
+    })
+    
+
   })
   return result
 }
