@@ -1,5 +1,5 @@
 <template>
-    <div class="p-col-6 p-offset-3">
+    <div class="p-col-6 p-offset-3" style="background-color: #F9F7F7;">
         <h2>검증 목록 조회</h2>        
 
         <div class="status">

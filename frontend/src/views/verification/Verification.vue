@@ -1,5 +1,5 @@
 <template>
-    <div class="p-grid p-jc-center vertical-container">
+    <div class="p-grid p-jc-center vertical-container" style="background-color: #F9F7F7;">
         <div  class="p-col-5">
         <Card id ="card" class="box box-stretched">
             <template #content>

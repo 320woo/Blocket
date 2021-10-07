@@ -18,7 +18,7 @@
       </span>
     </div>
 
-    <div v-else class="p-col" v-for="(cert,index) in state.cInfo" :key="cert.id" >
+    <div v-else class="p-col" v-for="(cert, idx) in state.cInfo" :key="cert.id" >
       <div class="p-mt-3">
         <div class="p-col-12">
           <strong>구분:</strong> {{ cert.sortation }}
@@ -32,17 +32,17 @@
         <div class="p-col-12">
           <strong>취득일:</strong> {{ cert.acquisitionDate }}  
         </div>
-        <div class="p-d-flex p-col-4">
-          <div class="p-mr-2">
-            <Button icon="pi pi-times" class="p-button-rounded p-button-text" @click="deleteCertification(cert.id)" />
-          </div> 
-        </div>
-        <div class="p-col-8">
-          {{ state.vInfo[index] }}
+
+        <div class="p-d-flex">
+          <div class="p-col-4">
+            <Button icon="pi pi-times" class="p-button-rounded p-button-text" @click="deleteCertification(cert.id)" />            
+          </div>
+          <div class="p-col-8" style="text-align: end; margin: auto;">
+            <span>{{ state.vInfo_cert[idx].currentStatus }}</span>
+          </div>
         </div>
       </div>
     </div>
-
   </div>
 
   <Dialog header="어학, 자격증" v-model:visible="state.displayCertModal" :style="{width: '30vw'}" :modal="true">
@@ -130,16 +130,15 @@ export default {
         state.input.userId = res[0].personalinfo.user.id
         state.cInfo = res
 
-        let vInfo = []
-        // 활동사항에 대한 gallery를 불러올 수 있다.
-        for (let i = 0 ; i < state.cInfo.length; i++ ) {
-          cService.findCertVerif(state.pid, state.cInfo[i].id).then(res => {
-            vInfo.push(res)
+        // 활동사항에 대한 검증 내역
+        const setVInfo = async () => {
+          await cService.findCertVerif(state.pid, state.cInfo)
+          .then(res => {
+            console.log(res)
+            state.vInfo_cert = res
           })
         }
-        console.log("자격증에 대한 내역을 불러왔습니다..", vInfo)
-        state.vInfo = vInfo
-
+        setVInfo()
       }
     })
 
@@ -148,7 +147,7 @@ export default {
       pid: '',
       displayCertModal: false,
       cInfo: '',
-      vInfo: '',    // 검증 내역
+      vInfo_cert: 'Nodata',    // 검증 내역
       // 어학, 자격증
       input: {
         userId: '',

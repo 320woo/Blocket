@@ -1,5 +1,5 @@
 <template>
-  <div id="nav">
+  <div id="nav" style="background-color: #F9F7F7; height: 1080px;">
     <Header></Header>
   <router-view id="view"/>
   </div>

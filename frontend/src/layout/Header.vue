@@ -1,5 +1,5 @@
 <template>
-    <header>
+    <header style="background-color: white;">
         <h1>
             <router-link to="/"><img :src="require(`@/assets/images/Blocket-logo.png`)"/></router-link>
         </h1>

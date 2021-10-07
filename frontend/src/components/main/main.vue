@@ -1,5 +1,5 @@
 <template>
-<div>
+<div style="background-color: #F9F7F7;">
    <div id="main">
             <div class="p-fluid p-formgrid p-grid">
                 <div class="p-field p-col-7">
