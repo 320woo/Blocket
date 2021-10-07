@@ -83,8 +83,9 @@ export function createWallet(email) {
 
 
 // 사용자의 진행상태를 트랜잭션으로 전송하기 (신상정보 등록완료 / 검증 진행중 / 검증 완료)
-export function saveState() {
-  console.log("데이터를 전송해보자.")
+export function saveState(fileHash) {
+  console.log("파일 해시는", fileHash)
+  let result = ''
   const web3 = createWeb3()
 
   const send_account = "0xf255FC9eF3778E688950649547D398B027D8b999" // 관리자 계정
@@ -100,7 +101,7 @@ export function saveState() {
       gasPrice: web3.utils.toHex(web3.utils.toWei('10', 'gwei')),
       from: send_account,
       to: receive_account,
-      data: '0xEAB280ECA69DEC9984EBA38C' // 검증완료라는 string 문구를 Hexadecimal 현태로 변환하여 저장한 것.
+      data: '0x' + fileHash, // 파일을 해시값으로 변경한 내용이 와야 한다.
     }
     
     const ethereumTx = require('ethereumjs-tx').Transaction
@@ -111,11 +112,10 @@ export function saveState() {
     const serializedTx = tx.serialize()
     const raw = '0x' + serializedTx.toString('hex')
     
-    web3.eth.sendSignedTransaction(raw) // hash가 리턴되는데, 트랜잭션을 전송한 hash값이다. 이 hash값을 이용해 etherscan.io에서 조회가 가능하다. 
+    result = web3.eth.sendSignedTransaction(raw) // hash가 리턴되는데, 트랜잭션을 전송한 hash값이다. 이 hash값을 이용해 etherscan.io에서 조회가 가능하다. 
     .on('transactionHash', console.log)
   })
-
-
+  console.log(result)
 }
 
 // 한 사용자가 전송한 모든 트랜잭션 조회하기

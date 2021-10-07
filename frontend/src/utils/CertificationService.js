@@ -115,3 +115,20 @@ export async function deleteCertification(pid, id) {
   })
   return result
 }
+
+
+export async function findCertVerif(pid, id) {
+  let result = ''
+  await axios({
+    url: INFO_URL + "/" + pid + "/" + id + "/findCertVerif",
+    method: "POST",
+    headers: {
+      Authorization:"Bearer "+ store.state.user.accessToken,
+    }
+  })
+  .then(res => {
+    // 검증 내역 객체를 불러온다.
+    result = res.data
+  })
+  return result
+}

@@ -113,3 +113,19 @@ export async function deleteActivity(pid, id) {
   })
   return result
 }
+
+export async function findActVerif(pid, id) {
+  let result = ''
+  await axios({
+    url: INFO_URL + "/" + pid + "/" + id + "/findActVerif",
+    method: "POST",
+    headers: {
+      Authorization:"Bearer "+ store.state.user.accessToken,
+    }
+  })
+  .then(res => {
+    // 검증 내역 객체를 불러온다.
+    result = res.data
+  })
+  return result
+}

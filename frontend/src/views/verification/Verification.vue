@@ -143,6 +143,8 @@
 </template>
 <script>
 import { mapGetters } from "vuex";
+import * as etherService from '@/utils/itemInventory.js'
+
 export default {
   computed: {
     ...mapGetters(["file"]),
@@ -168,6 +170,7 @@ export default {
 
         this.verify.verified = this.file.currentStatus;
         this.check = this.file.sortation;
+        console.log("파일 정보는", this.file)
        } else{
            this.$router.push("/");
             alert("접근권한이 없습니다.");
@@ -177,7 +180,12 @@ export default {
   methods: {
       accept(){
           this.verify.verified = "승인완료";
+          const fileHash = this.file.title     
+          
           this.$store.dispatch("patchVerification", this.verify).then(()=>{
+            // 승인 후 트랜잭션 전송한다.
+            const result = etherService.saveState(fileHash) // 트랜잭션 전송 후의 트랜잭션 해시이다.
+            console.log(result) // 트랜잭션 해시. reasons_rejection에 넣기
             alert("검증이 완료되었습니다.");
           });
       },
