@@ -159,14 +159,18 @@ export default {
       }
   },
   created() {
-    const fileId = this.$route.query.no;
-    // const fileId = 1;
-    this.verify.fileId = fileId;
-    this.$store.dispatch("getFileInfo", { fileId });
+       if(localStorage.getItem("accessToken") && this.user.type===2){
 
-    this.verify.verified = this.file.currentStatus;
-    this.check = this.file.sortation;
+        const fileId = this.$route.query.no;
+        this.verify.fileId = fileId;
+        this.$store.dispatch("getFileInfo", { fileId });
 
+        this.verify.verified = this.file.currentStatus;
+        this.check = this.file.sortation;
+       } else{
+           this.$router.push("/");
+            alert("접근권한이 없습니다.");
+        }
     // console.log(this.CLOUD_FRONT);
   },
   methods: {

@@ -30,6 +30,7 @@ import { mapGetters } from "vuex";
 export default {
     computed: {
     ...mapGetters(["verifications"]),
+    ...mapGetters(["user"]),
     },
     data() {
         return {
@@ -48,9 +49,15 @@ export default {
         }
     },
     created() {
-        this.$store.dispatch("getVerifications", this.req).then((res)=>{
-        console.log(res.verificationList);
+        if(localStorage.getItem("accessToken") && this.user.type===2){
+
+            this.$store.dispatch("getVerifications", this.req).then((res)=>{
+                console.log(res.verificationList);
         });
+        } else{
+            this.$router.push("/");
+            alert("접근권한이 없습니다.");
+        }
     },
     methods:{
         onPage(event){
