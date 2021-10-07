@@ -186,10 +186,22 @@ export default {
       createCertification()
     }
     
-    const createCertification = () => {
-      cService.createCertification(state.input, state.pid, state.uid, state.galleryDto, state.file).
+    const createCertification = async () => {
+      await cService.createCertification(state.input, state.pid, state.uid, state.galleryDto, state.file).
       then(res => {
         state.cInfo = res
+        console.log("자격증 생성하였습니다. 현재 목록:", state.cInfo)
+        // 등록한 후에 검증내역도 함께 불러와야 한다.
+        // 활동사항에 대한 검증 내역
+        const setVInfo = async () => {
+          await cService.findCertVerif(state.pid, state.cInfo)
+          .then(res => {
+            console.log("자격증 생성 후 검증 내역 목록을 다시 불러옵니다.", res)
+            console.log(res)
+            state.vInfo_cert = res
+          })
+        }
+        setVInfo()
       })
       state.displayCertModal = false
       resetForm()

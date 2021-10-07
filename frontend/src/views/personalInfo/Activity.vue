@@ -201,15 +201,27 @@ export default {
       }      
       createActivity()
     }
-    const createActivity = () => {
+    const createActivity = async () => {
       // 데이터 전처리
       state.input.period = JSON.stringify(state.startDate) + " ~ " + JSON.stringify(state.endDate)
-      aService.createActivity(state.input, state.pid, state.uid, state.galleryDto, state.file)
+      await aService.createActivity(state.input, state.pid, state.uid, state.galleryDto, state.file)
       .then(res => { 
         state.aInfo = res.data
       })
       state.displayActivityModal = false
       alert("활동사항을 저장하였습니다.")
+      console.log("활동사항을 저장하였습니다. 현재 목록:", state.aInfo)
+
+      // 검증 내역을 다시 불러온다.
+      const setVInfo = async () => {
+        await aService.findActVerif(state.pid, state.aInfo)
+        .then(res => {
+          console.log("활동사항 생성 후 검증 내역 목록을 다시 불러옵니다.", res)
+          console.log(res)
+          state.vInfo_act = res
+        })
+      }
+      setVInfo()
 
       // 입력을 완료하였으면, Form 내 값을 모두 초기화 한다.
       resetForm()
