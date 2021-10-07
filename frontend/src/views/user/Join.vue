@@ -199,7 +199,7 @@
                             store.dispatch("setUserEmail", this.email)
 
                             axios({
-                                url: 'http://localhost:8000/api/recruit/personalinfo',
+                                url: 'http://3.34.191.232:8000/api/recruit/personalinfo',
                                 method: 'POST',
                                 headers: {
                                     // 회원가입 로직이므로 토큰이 없다.
