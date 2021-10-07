@@ -13,12 +13,17 @@
                 </li>
             </ul>
             <ul class="menu" v-else>
-                <li>
-                    <router-link to="/personalInfo"><Button id="personal">내 정보</Button></router-link>
+                <li v-if="this.$store.state.user.type=='2'">
+                    <router-link to="/verificationList"><Button id="verification">검증목록</Button></router-link>
                 </li>
+                <span v-else-if="this.$store.state.user.type!='2'">
                 <li>
                     <router-link to="/modify"><Button id="modify" @click="me">회원 수정</Button></router-link>
                 </li>
+                <li>
+                    <router-link to="/personalInfo"><Button id="personal">내 정보</Button></router-link>
+                </li>
+                </span>
                 <li>
                     <Button id="join" @click="logout">로그 아웃</Button>
                 </li>
@@ -103,6 +108,19 @@ export default {
     }
 
     #personal:hover {
+        background-color: black;
+        color: white;
+    }
+    #verification {
+		position: absolute;
+        top: -5px;
+        right: 110px;
+		height: 30px;
+		width: 95px;
+        background-color : white; color : black; border : 1px solid black;
+	}
+
+	#verification:hover {
         background-color: black;
         color: white;
     }

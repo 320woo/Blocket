@@ -41,6 +41,8 @@ export function checkToken() {
 export function checkLogin() {
 
     if (store.state.user.accessToken !== null) {
+
+      console.log(store.state.user.type)
       if(store.state.user.type===2) router.push("/verificationList")
       else router.push("/")
     }
