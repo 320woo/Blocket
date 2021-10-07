@@ -71,7 +71,7 @@ public class UserController {
 				return ResponseEntity.ok(UserLoginPostRes.of(200, "로그인에 성공하였습니다.", JwtTokenUtil.createToken(user.getEmail())));
 			}
 		}
-		return ResponseEntity.status(404).body(UserLoginPostRes.of(404, "아이디 또는 비밀번호가 일치하지 않습니다.", null));
+		return ResponseEntity.ok(UserLoginPostRes.of(404, "아이디 또는 비밀번호가 일치하지 않습니다.", null));
 	}
 	
 	// 회원 가입에 필요한 아이디 중복체크
@@ -84,7 +84,7 @@ public class UserController {
 		if (!userService.confirmUserEmail(userEmail)) {
 			return ResponseEntity.status(200).body(BaseResponseBody.of(200, "회원가입 가능한 아이디입니다."));
 		}
-		return ResponseEntity.status(409).body(BaseResponseBody.of(409, "이미 존재하는 사용자 아이디입니다."));
+		return ResponseEntity.ok(BaseResponseBody.of(409, "이미 존재하는 사용자 아이디입니다."));
 	}
 	
 	// 로그인한 회원의 정보 조회

@@ -1,4 +1,5 @@
 <template>
+<div>
   <!-- 최종 학력 -->
   <div class="p-col profile">
     <Toast1/>
@@ -87,6 +88,7 @@
           <Button label="저장" icon="pi pi-check" @click="saveEducationModal" autofocus />
       </template>
   </Dialog>
+</div>
 </template>
 
 <script>  

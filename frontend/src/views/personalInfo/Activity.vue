@@ -1,4 +1,5 @@
 <template>
+  <div>
   <Toast1/>
   <!-- 활동 사항 -->
   <div class="p-col profile">
@@ -66,6 +67,7 @@
           <Button label="저장" icon="pi pi-check" @click="saveActivityModal" autofocus />
       </template>
   </Dialog>
+  </div>
 </template>
 
 <script>

@@ -141,17 +141,39 @@
             },
             check() {
                 this.$store.dispatch("checkEmail", { email: this.email });
+                setTimeout(() => {
+                    if(this.$store.state.user.check == 200)this.$toast.add({severity:'success', summary: '시스템 정보', group: 'center', detail:'회원가입 가능한 아이디입니다.', life: 1000})
+                    if(this.$store.state.user.check == 409)this.$toast.add({severity:'error', summary: '시스템 정보', group: 'center', detail:'이미 존재하는 사용자 아이디입니다.', life: 1000})
+                }, 500);
+                
             },
             checkValue() {
                 // 사용자 입력값 체크하기
                 let err = true;
-                let msg = "";
-                err && !this.email && ((msg = "이메일을 입력해주세요"), (err = false));
-                err && !this.password && ((msg = "비밀번호를 입력해주세요"), (err = false));
-                err && !this.name && ((msg = "이름을 입력해주세요"), (err = false));
-                err && !this.phoneNumber && ((msg = "연락처를 입력해주세요"), (err = false));
+                if(!this.email){
+                    this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'이메일을 입력해주세요.', life: 1000});
+                    err = false
+                    }
+                if(!this.password){
+                    this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'비밀번호를 입력해주세요.', life: 1000});
+                    err = false
+                }
+                if(!this.name){
+                    this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'이름을 입력해주세요.', life: 1000});
+                    err = false    
+                }
+                if(!this.phoneNumber){
+                    this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'연락처를 입력해주세요.', life: 1000}); 
+                    err = false
+                }
+                
+                if(!this.belong){
+                    this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'소속을 입력해주세요.', life: 1000}); 
+                    err = false
+                }
+
                 if (!err) 
-                    alert(msg);
+                    console.log("빈칸을 채워주세요")
                 else 
                     this.insertUser();
                 }
@@ -186,7 +208,6 @@
                                 },
                                 data: {
                                     'email': this.$store.state.user.userEmail
-
                                 }
                             }).then(
                                 // 신상정보를 등록하였으면, 지갑을 생성한다.

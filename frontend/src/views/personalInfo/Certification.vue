@@ -1,4 +1,5 @@
 <template>
+<div>
   <!-- 어학, 자격증 -->
   <div class="p-col profile">
     <div class="p-grid">
@@ -57,6 +58,7 @@
       <Button label="저장" icon="pi pi-check" @click="saveCertModal" autofocus />
     </template>
   </Dialog>
+</div>
 </template>
 
 <script>

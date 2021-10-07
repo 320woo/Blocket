@@ -11,6 +11,7 @@ var USER_URL = BASE_URL + "/recruit/users"
 export default createStore({
     state: {
         user: {
+            check: null,
             userId: 0,
             userEmail: null,
             username: null,
@@ -53,6 +54,10 @@ export default createStore({
         },
         setPersonalInfoId(state, payload) {
             state.user.personalInfoId = payload
+        },
+
+        check(state, payload) {
+            state.user.check = payload;
         }
     },
     actions: {
@@ -105,10 +110,13 @@ export default createStore({
                 .then(({data}) => {
                     console.log("메세지" + data.message)
                     if (data.statusCode == 200) {
-                        alert("가입이 가능한 이메일입니다.")
+                        return data.statusCode;
                     } else if(data.statusCode == 409) {
-                        alert("이미 있는 이메일입니다.")
+                        return data.statusCode;
                     }
+                }).then( data  => {
+                    console.log(data);
+                    context.commit("check",data)
                 })
         },
         userCheck(context) {
