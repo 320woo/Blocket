@@ -111,7 +111,7 @@
 
 ## :hammer: 시스템 아키텍처
 
-![image](./img/시스템아키텍처.png)
+![image](./img/시스템아키텍처.PNG)
 
 ## :monocle_face: 팀원 소개
 
