@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -37,7 +38,9 @@ import com.b101.common.model.response.BaseResponseBody;
 import com.b101.recruit.auth.CustomUserDetails;
 import com.b101.recruit.reponse.PersonalInfoPostRes;
 import com.b101.recruit.request.ActivityPostReq;
+import com.b101.recruit.request.MilitaryUpdatePatchReq;
 import com.b101.recruit.request.CertificatePostReq;
+import com.b101.recruit.request.DisabledUpdatePatchReq;
 import com.b101.recruit.request.FinalEducationPostReq;
 import com.b101.recruit.request.PersonalInfoPostReq;
 import com.b101.recruit.service.impl.GalleryService;
@@ -46,6 +49,7 @@ import com.b101.recruit.service.impl.S3Service;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
@@ -425,8 +429,42 @@ public class PersonalInfoController {
 			return ResponseEntity.status(200).body(result);
 		}
 	}
+	
+	// 병역사항 변경
+	@PatchMapping("/{personalInfoId}/military")
+	@ApiOperation(value = "보훈 정보 불러오기", notes = "보훈 정보를 불러온다.")
+	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
+			@ApiResponse(code = 500, message = "서버 오류") })
+	public ResponseEntity<PersonalInfo> updateMilitary(@PathVariable("personalInfoId") long pId,
+			@RequestBody @ApiParam(value = "검증 정보", required = true) MilitaryUpdatePatchReq mupr, @ApiIgnore Authentication authentication) {
+		if (authentication == null) {
+			return ResponseEntity.status(401).body(null);
+		}
+		else {
+			PersonalInfo personalInfo = service.updateMilitary(pId,mupr);
+			if(personalInfo!=null)
+				return ResponseEntity.status(200).body(personalInfo);
+			return ResponseEntity.status(404).body(null);
+		}
+	}
 
-
+	// 병역사항 변경
+	@PatchMapping("/{personalInfoId}/disabled")
+	@ApiOperation(value = "보훈 정보 불러오기", notes = "보훈 정보를 불러온다.")
+	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
+			@ApiResponse(code = 500, message = "서버 오류") })
+	public ResponseEntity<PersonalInfo> updateMilitary(@PathVariable("personalInfoId") long pId,
+			@RequestBody @ApiParam(value = "검증 정보", required = true) DisabledUpdatePatchReq dupr, @ApiIgnore Authentication authentication) {
+		if (authentication == null) {
+			return ResponseEntity.status(401).body(null);
+		}
+		else {
+			PersonalInfo personalInfo = service.updateDisabled(pId, dupr);
+			if(personalInfo!=null)
+				return ResponseEntity.status(200).body(personalInfo);
+			return ResponseEntity.status(404).body(null);
+		}
+	}
 
 
 
