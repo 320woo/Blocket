@@ -22,6 +22,7 @@
                     type="password"
                     id="password"
                     name="password"
+                    maxlength="12"
                     v-model="password"
                     ref="password"
                     class="InputText"
@@ -32,6 +33,7 @@
                 <InputText
                     type="text"
                     id="name"
+                    maxlength="8"
                     name="name"
                     v-model="name"
                     ref="name"

@@ -1,5 +1,6 @@
 <template>
     <header>
+        <Toast1/>
         <h1>
             <router-link to="/"><img :src="require(`@/assets/images/Blocket-logo.png`)"/></router-link>
         </h1>
@@ -30,17 +31,19 @@
 <script>
 // import http from "@/utils/http-common";
 // import axios from "@/utils/bearer";
-    export default {
-        data() {
-            return {}
+
+export default {
+    data() {
+        return {}
         },
-        methods: {
-            me() {
-                this.$store.dispatch("modify");
-            },
+    methods: {
+        me() {
+                this.$store.dispatch("userCheck"); 
+        },
             logout() {
-                this.$router.push("/");
+                this.$toast.add({severity: 'success', summary: '시스템 정보', detail: '로그아웃 완료', group: 'center', life: 1000});
                 this.$store.dispatch("logout");
+                this.$router.push("/");
             }
         },
     }

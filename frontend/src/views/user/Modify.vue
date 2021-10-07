@@ -6,6 +6,7 @@
                     <label for="username1">이메일</label>
                 </div>
                 <InputText
+                    readonly
                     type="text"
                     id="email"
                     name="email"
@@ -102,23 +103,27 @@
     </div>
 </template>
 <script>
-    import http from "@/utils/http-common";
-    // import axios from "@/utils/bearer";
+    // import http from "@/utils/http-common";
+    import * as pService from '@/utils/pService.js'
+    // import axios from 'axios'
 
     export default {
         name: "signup",
         computed: {},
+        setup() {
+          pService.checkToken()  
+        },
         data() {
             return {
                 show_brn : "",
                 solo: true,
                 company : false,
-                email: "",
+                email: this.$store.state.user.userEmail,
                 password: "",
-                name: "",
-                phoneNumber: "",
-                belong: "",
-                brn: "",
+                name: this.$store.state.user.username,
+                phoneNumber: this.$store.state.user.userphone,
+                belong: this.$store.state.user.userbelong,
+                brn: this.$store.state.user.userbrn,
                 type: "",
                 withdrawal: "",
                 id: ""
@@ -144,24 +149,23 @@
                 err && !this.password && ((msg = "비밀번호를 입력해주세요"), (err = false));
                 err && !this.name && ((msg = "이름을 입력해주세요"), (err = false));
                 err && !this.phoneNumber && ((msg = "연락처를 입력해주세요"), (err = false));
-                if (!err)alert(msg);
-                
+                if (!err) alert(msg);
                 else {
-                        http.patch("/api/recruit/users/me");
-                        // alert("수정 완료!")
-                        // this.$router.push("/");
+                    if (confirm("수정 하시겠습니까?")) {
+                        this.$store.dispatch("modify",
+                            {   
+                                belong: this.belong,
+                                brn: 0,
+                                name: this.name,
+                                phoneNumber: this.phoneNumber,
+                                type: 0
+                            });
+                    }
                 }
             },
             deleteUser() {
                 if (confirm("정말 탈퇴 하시겠습니까?")) {
-                if (localStorage.getItem("accessToken")) {
-                const url = "/api/recruit/users/me";
-                const headers = {
-                    Authentication: `Bearer ${localStorage.getItem("accessToken")}`,
-                };
-                console.log("에러" + http.delete(url), {headers});
-                return http.delete(url, { headers });
-            }
+                    pService.UserDelete();
                 }
             },
             home() {
