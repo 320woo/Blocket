@@ -68,13 +68,15 @@ public class VerificationService implements IVerificationService {
 		String verified = vlgr.getVerified();
 		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "registrationDate"));
 		if (verified.equals("")) {
-			Page<Verification> pageTuts = verificationRepository.findAll(pageable);
+			
+			Page<Verification> pageTuts = verificationRepository.findByGallery_SortationNotLike(pageable,"prop");
+//			Page<Verification> pageTuts = verificationRepository.findAll(pageable);
 			Page<VerificationDto> verList = pageTuts.map(m -> new VerificationDto(m.getId(),m.getPersonalinfo().getId(),m.getUserId(),m.getGallery().getId(),m.getRegistrationDate(),m.getCurrentStatus(),m.getReasonsRejection()));
 			
 //			Page<VerificationDto> verList = new PageImpl<>()
 			return verList;
 		} else {
-			Page<Verification> pageTuts = verificationRepository.findByCurrentStatusContaining(pageable, verified);
+			Page<Verification> pageTuts = verificationRepository.findByCurrentStatusContainingAndGallery_SortationNotLike(pageable, verified,"prop");
 			Page<VerificationDto> verList = pageTuts.map(m -> new VerificationDto(m.getId(),m.getPersonalinfo().getId(),m.getUserId(),m.getGallery().getId(),m.getRegistrationDate(),m.getCurrentStatus(),m.getReasonsRejection()));
 			return verList;
 		}
