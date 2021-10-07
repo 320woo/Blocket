@@ -54,8 +54,13 @@ public class VerificationService implements IVerificationService {
 		Optional<Verification> verification = verificationRepository.findByGalleryId(vcpr.getFileId());
 		if (verification.isPresent()) {
 			String status = vcpr.getVerified();
-			verification.get().setCurrentStatus(status);
-			verification.get().setReasonsRejection(vcpr.getReasonsRejection());
+			if(status.equals("승인완료")) { // 승인 -> verification 테이블의 reasonsRejection에 파일의 해쉬값을 저장
+				verification.get().setCurrentStatus(status);
+				verification.get().setReasonsRejection(verification.get().getGallery().getTitle());
+			}else if(status.equals("거절")) { // 승인 -> verification 테이블의 reasonsRejection에 반려 사유 저장
+				verification.get().setCurrentStatus(status);
+				verification.get().setReasonsRejection(vcpr.getReasonsRejection());				
+			}
 			return verificationRepository.save(verification.get());
 		}
 		return null;
