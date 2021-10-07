@@ -73,11 +73,11 @@
                     class="InputText"
                     placeholder="-를 제외하고 입력해주세요."
                     />
-                <span v-if="show_brn">
+                <span v-if="state.brn == 0"></span>    
+                <span v-else>
                 <div>
                     <label for="username1">사업자 등록번호</label>
                 </div>
-                
                 <InputText
                     type="text"
                     id="brn"
@@ -86,6 +86,7 @@
                     ref="brn"
                     class="InputText"/>
                 </span>
+
                 <div>
                     <div class="center-btn">
                         <Button class="p-button-info" @click="modifyUser">
@@ -124,8 +125,9 @@
             state.name = res.name
             state.belong = res.belong
             state.phoneNumber = res.phoneNumber
+            state.brn = res.brn
+            console.log(res);
           })
-
         const state = reactive({
             email :null,
             name : null,
@@ -140,23 +142,24 @@
             modifyUser() {
                 let err = true;
                 let msg = "";
-                if(!this.email){
+                if(!this.state.email){
                     this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'이메일을 입력해주세요.', life: 1000});
                     err = false
                     }
-                if(!this.password){
-                    this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'비밀번호를 입력해주세요.', life: 1000});
-                    err = false
-                }
-                if(!this.name){
+                if(!this.state.name){
                     this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'이름을 입력해주세요.', life: 1000});
                     err = false    
                 }
-                if(!this.belong){
+                if(!this.state.belong){
                     this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'소속을 입력해주세요.', life: 1000}); 
                     err = false
                 }
-                if(!this.phoneNumber){
+                if(!this.state.phoneNumber){
+                    this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'연락처를 입력해주세요.', life: 1000}); 
+                    err = false
+                }
+
+                if(!this.state.brn){
                     this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'연락처를 입력해주세요.', life: 1000}); 
                     err = false
                 }
@@ -164,8 +167,11 @@
 
                 if (!err) console.log(msg);
                 else {
-                    if (confirm("수정 하시겠습니까?")) {
-                        this.$store.dispatch("modify",
+                    this.$toast.add({severity: 'warn', summary: '시스템 정보', detail: '회원 정보를 수정하시겠습니까?', group: 'bc'});                    
+                }
+            },
+            onConfirm() {
+                this.$store.dispatch("modify",
                             {   
                                 belong: this.belong,
                                 brn: 0,
@@ -173,8 +179,10 @@
                                 phoneNumber: this.phoneNumber,
                                 type: 0
                             });
-                    }
-                }
+                this.$toast.removeGroup('bc');
+            },
+            onReject() {
+                this.$toast.removeGroup('bc');
             },
             deleteUser() {
                 if (confirm("정말 탈퇴 하시겠습니까?")) {

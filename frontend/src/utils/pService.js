@@ -36,7 +36,8 @@ export async function UserCheck() {
                 email: res.data.email,
                 name: res.data.name,
                 belong : res.data.belong,
-                phoneNumber : res.data.phoneNumber
+                phoneNumber : res.data.phoneNumber,
+                brn : res.data.brn
             }
         })
     return result;

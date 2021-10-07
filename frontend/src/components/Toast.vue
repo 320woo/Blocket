@@ -2,7 +2,7 @@
     <div>
         <Toast/>
         <Toast position="center" group="center"/>
-        <Toast position="bottom-center" group="bc">
+        <!-- <Toast position="bottom-center" group="bc">
             <template #message="slotProps">
                 <div class="p-d-flex p-flex-column">
                     <div class="p-text-center">
@@ -20,7 +20,7 @@
                     </div>
                 </div>
             </template>
-        </Toast>
+        </Toast> -->
     </div>
 </template>
 
