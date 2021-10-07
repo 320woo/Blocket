@@ -20,6 +20,7 @@ import com.b101.recruit.domain.entity.PersonalInfo;
 import com.b101.recruit.domain.entity.Verification;
 import com.b101.recruit.domain.repository.PersonalInfoRepository;
 import com.b101.recruit.domain.repository.VerificationRepository;
+import com.b101.recruit.request.VerificationAcceptPatchReq;
 import com.b101.recruit.request.VerificationListGetReq;
 import com.b101.recruit.request.VerificationUpdatePatchReq;
 import com.b101.recruit.service.IVerificationService;
@@ -54,13 +55,8 @@ public class VerificationService implements IVerificationService {
 		Optional<Verification> verification = verificationRepository.findByGalleryId(vcpr.getFileId());
 		if (verification.isPresent()) {
 			String status = vcpr.getVerified();
-			if(status.equals("승인완료")) { // 승인 -> verification 테이블의 reasonsRejection에 파일의 해쉬값을 저장
-				verification.get().setCurrentStatus(status);
-				verification.get().setReasonsRejection(verification.get().getGallery().getTitle());
-			}else if(status.equals("거절")) { // 승인 -> verification 테이블의 reasonsRejection에 반려 사유 저장
-				verification.get().setCurrentStatus(status);
-				verification.get().setReasonsRejection(vcpr.getReasonsRejection());				
-			}
+			verification.get().setCurrentStatus(status);
+			verification.get().setReasonsRejection(vcpr.getReasonsRejection());
 			return verificationRepository.save(verification.get());
 		}
 		return null;
@@ -116,6 +112,17 @@ public class VerificationService implements IVerificationService {
 	@Override
 	public void deleteByGallery(Gallery gallery) {
 		verificationRepository.deleteByGallery(gallery);
+	}
+
+	@Override
+	public Verification acceptVerification(VerificationAcceptPatchReq vapr) {
+		Optional<Verification> verification = verificationRepository.findByGalleryId(vapr.getGalleryId());
+		if(verification.isPresent()) {
+			String tHash = vapr.getTHash();
+			verification.get().setReasonsRejection(tHash);
+			return verificationRepository.save(verification.get());
+		}
+		return null;
 	}
 }
 

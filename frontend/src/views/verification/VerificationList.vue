@@ -18,7 +18,7 @@
             <Column field="reasonsRejection" header="반려사유"></Column>
         </DataTable>
         <div v-if="verifications">
-        <Paginator id="paginator" :first="verifications.pageable.offset" :rows="verifications.size" :totalRecords="verifications.totalElements" @page="onPage($event)">
+        <Paginator style="background-color: #F9F7F7;" id="paginator" :first="verifications.pageable.offset" :rows="verifications.size" :totalRecords="verifications.totalElements" @page="onPage($event)">
         </Paginator>
         </div>
         <div v-else>
