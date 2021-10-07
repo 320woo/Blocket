@@ -16,7 +16,7 @@ module.exports = {
     
     proxy: {
       '/blocket': {
-        target: 'http://3.34.191.232/'
+        target: 'http://3.34.191.232'
       }
     },
     
