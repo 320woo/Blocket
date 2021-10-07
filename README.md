@@ -122,7 +122,7 @@
 
 ## :dizzy: 주요 기능
 
-``
+![image](./img/주요기능.PNG)
 
 <img src="https://www.notion.so/78776694eb764a62a5f7f0e739fbb586#1a81bf15c1a145a1b7ef55d822fdd698" width="500">
 
