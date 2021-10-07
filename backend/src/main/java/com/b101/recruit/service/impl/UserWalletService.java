@@ -36,7 +36,14 @@ public class UserWalletService implements IUserWalletService {
         userWallet.setAddress(userWalletRegisterPostReq.getAddress());
         userWallet.setBalance(userWalletRegisterPostReq.getBalance());
         userWallet.setReceiving_count(userWalletRegisterPostReq.getReceiving_count());
-        userWalletRepository.save(userWallet);
+
+        // 저장하기 전, 이미 해당 계정으로 저장된 wallet이 있는지 확인한다.
+        Optional<UserWallet> temp = userWalletRepository.findById(user.getId());
+
+        // isPresent가 true이면 이미 값이 존재한다는 뜻이다.
+        if (!temp.isPresent()) {
+            userWalletRepository.save(userWallet);
+        }
     }
 
     @Override

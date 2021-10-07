@@ -18,6 +18,10 @@ import ToastService from 'primevue/toastservice';
 import Toast from 'primevue/toast';
 import Toast1 from "@/components/Toast.vue";
 
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import Paginator from 'primevue/paginator';
+import Card from 'primevue/card';
 
 import 'primeflex/primeflex.css'
 import './assets/public.css'
@@ -27,6 +31,8 @@ import 'primeicons/primeicons.css'
 
 
 createApp(App)
+const CLOUD_FRONT_DOMAIN_NAME = "d11bfjty6ba1yx.cloudfront.net";
+const app = createApp(App)
   .use(PrimeVue)  
   .use(store)
   .use(router)
@@ -44,4 +50,10 @@ createApp(App)
   .component("Checkbox", Checkbox)
   .component("Calendar", Calendar)
   .component("FileUpload", FileUpload)
-  .mount("#app");
+  .component("DataTable", DataTable)
+  .component("Column", Column)
+  .component("Paginator", Paginator)
+  .component("Card", Card);
+ 
+  app.config.globalProperties.CLOUD_FRONT= CLOUD_FRONT_DOMAIN_NAME;
+  app.mount("#app");

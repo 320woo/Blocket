@@ -18,19 +18,24 @@ export default createStore({
             userbelong: null,
             userbrn: null,
             userphone : null,
+            type:0,
             walletAddress: null,
             accessToken: null,
             show: true,
             personalInfoId: 0,
-        }
+        },
+        file:{},
+        verifications:{},
     },
     mutations: {
         setUserId(state, id) {
             state.user.userId = id
         },
         setUserEmail(state, userEmail) {
-            console.log("vuex 데이터 주입: 이메일")
             state.user.userEmail = userEmail
+        },
+        setUserType(state, type) {
+            state.user.type = type
         },
         setWalletAddress(state, address) {
             state.user.walletAddress = address
@@ -44,6 +49,7 @@ export default createStore({
         login(state, payload) {
             state.user.accessToken = payload.accessToken;
             state.user.show = false;
+            state.user.type=payload.type;
         },
         userinfo(state, payload) {
             console.log(payload.name);
@@ -58,7 +64,18 @@ export default createStore({
 
         check(state, payload) {
             state.user.check = payload;
-        }
+        },
+        
+        setFile(state,payload){
+            state.file = payload;
+        },
+        setVerifications(state,payload){
+            state.verifications = payload;
+        },
+        setFileVerified(state,payload){
+            state.file.currentStatus = payload.currentStatus;
+            state.file.reasonsRejection = payload.reasonsRejection;
+        },
     },
     actions: {
         setUserEmail({ commit }, payload){
@@ -154,8 +171,62 @@ export default createStore({
                 //     console.log(err);
                 // });
             
+        },
+    getFileInfo(context,payload){
+                console.log(payload);
+            if(localStorage.getItem("accessToken")){
+                const url = "/api/recruit/Gallery/galleryDetail/";
+                return http.get(url+payload.fileId).then((res)=>{
+                    console.log(res.data);
+                    context.commit("setFile",res.data)
+                })
+            }
+        },
+        patchVerification(context,payload){
+            console.log(payload);
+            if(localStorage.getItem("accessToken")){
+                const url = "/api/recruit/verification";
+                const headers = {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                };
+                return http.patch(url,payload,{headers}).then((res)=>{
+                    if(res.data.statusCode==200){
+                        console.log(res.data);
+                        context.commit("setFileVerified",res.data);
+                    }
+                }).catch((err)=>{
+                    console.log(err);
+                });
+            }
+        },
+        async getVerifications(context,payload){
+            let result="";
+            if(localStorage.getItem("accessToken")){
+                const url = "/api/recruit/verification/list";
+                const headers = {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                };
+                await http.post(url,payload,{headers}).then((res)=>{
+                        console.log(res.data.verificationList);
+                        context.commit("setVerifications",res.data.verificationList);
+                        result = res.data;
+                }).catch((err)=>{
+                     console.log(err);
+                });
+            }
+            return result;
         }
     },
-    getters: {},
-    modules: {}
+    getters: {
+        user(state){
+            return state.user;
+        },
+        file(state){
+            return state.file;
+        },
+        verifications(state){
+            return state.verifications;
+        },
+    },
+    modules: {},
 });

@@ -5,62 +5,59 @@ import * as pService from '@/utils/pService.js'
 
 const BASE_URL = vueConfig.devServer.proxy['/blocket'].target + "/api"
 const INFO_URL = BASE_URL + "/recruit/personalinfo"
+const FILE_URL = BASE_URL + "/recruit/Gallery"
 
 
 export async function getFinalEducation() {
   let result = ''
   let pid = ''
-  // 여기서 아예 신상정보를 가져오자.
+  let uid = ''
+  // 신상정보 PK 가져오기.
   await pService.getMyInfo().then(res => {
     pid = res.id
+    uid = res.user.id
   })
-
+  
   await axios.get(INFO_URL + "/" + pid + "/myFinalEducation", {
     headers:{
       Authorization:"Bearer "+ store.state.user.accessToken
     }
   })
   .then(res => {
-    if (res.data.length === 0) {  // 만약 저장되어 있는 최종 학력이 존재하지 않는경우
+    // 데이터가 없으면 신상정보 PK와 유저 PK만 반환한다.
+    if (res.data.length === 0) {
       result = {
-        userId: store.state.user.userId,
-        pid: pid,
-        isWritten: false, 
+        grades: '',
+        id: '',
+        name: '',
+        sortation: '',
+        personalinfo: {
+          id: pid,
+          user: {
+            id: uid,
+          }
+        },
       }
-    } 
-    else {  // 저장되어 있는 최종학력이 존재하는 경우 ...
-      const name = res.data[0].name.split(" ")
-      const gradeInfo = res.data[0].grades.split("/")
-
-      result = {
-      id: res.data[0].id,
-      pid: pid,
-      isWritten: true, 
-      userId: store.state.user.userId,
-      grades: gradeInfo[0],
-      totalScore: gradeInfo[1],
-      schoolInfoObj: name[0],
-      majorInfoObj: name[1],
-      schoolName: name[0],
-      majorName: name[1],
-      sortation: res.data[0].sortation,
-      }
-    }      
+    }
+    else {
+      result = res.data[0] // 위와 달리 학력에 대한 정보가 포함되어 있다.
+    }
   })
   return result
 }
 
 
-export async function createFinalEducation(myGrade) {
+export async function createFinalEducation(input, uid, pid, galleryDto, file) {
+  let result = ''
+  console.log("최종학력 등록합니다.")
   const temp = {
-    "grades": myGrade.grades + "/" + myGrade.totalScore,
-    "id": myGrade.id,
-    "userId": myGrade.userId,
-    "name": myGrade.schoolName + " " + myGrade.majorName,
-    "sortation": myGrade.sortation,
+    "grades": input.grades,
+    "userId": uid,
+    "name": input.name,
+    "sortation": input.sortation,
   }
   await axios({
-    url: INFO_URL + "/" + myGrade.pid + "/finaleducation",
+    url: INFO_URL + "/" + pid + "/finaleducation",
     method: "POST", 
     headers: {
       Authorization: "Bearer "+ store.state.user.accessToken,
@@ -69,23 +66,48 @@ export async function createFinalEducation(myGrade) {
     data: temp,
   })
   .then(res => {
-    console.log(res)
+    
+    console.log("생성함!!", res)
+    // 생성한 객체를 받아온다.
+    result = res.data
+    // gallery 테이블에 데이터를 저장해준다.
+    galleryDto.sid = result.id
+    
+    axios({
+      url: FILE_URL + "/saveInDB",
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: galleryDto,
+    })
+    .then(res => {
+      console.log("gallery 테이블 저장 결과", res)     
+      // 여기서 받아온 Gallery의 PK를 통해 파일을 최종적으로 업로드한다.
+      axios({
+        url: FILE_URL + "/" + res.data.id + "/S3Upload",
+        method: "POST",
+        data: file
+      })
+      .then(res => { 
+        console.log(res)
+      })
+    })
   })
+  return result
 }
 
 
-export async function updateFinalEducation(myGrade) {
-  
+export async function updateFinalEducation(input, pid, sid, galleryDto, file) {  // 이 때 sid는 최종학력 PK를 뜻한다.
   let result = ''
+  console.log("최종학력 수정합니다.")
   const temp = {
-    "grades": myGrade.grades + "/" + myGrade.totalScore,
-    "id": myGrade.pid,
-    "userId": myGrade.userId,
-    "name": myGrade.schoolInfoObj.schoolName + " " + myGrade.majorInfoObj.mClass,
-    "sortation": myGrade.sortation,
+    "grades": input.grades,
+    "name": input.name,
+    "sortation": input.sortation,
   }
   await axios({
-    url: INFO_URL + "/" + myGrade.pid + "/" + myGrade.id + "/update",
+    url: INFO_URL + "/" + pid + "/" + sid + "/update",
     method: "PUT", 
     headers: {
       Authorization: "Bearer "+ store.state.user.accessToken,
@@ -93,11 +115,45 @@ export async function updateFinalEducation(myGrade) {
     },
     data: temp,
   })
-  .then(
-    result = {
-      schoolName: myGrade.schoolInfoObj.schoolName,
-      majorName: myGrade.majorInfoObj.mClass,
-    }
-  )
+  .then(res => {
+    result = res.data  // final_Education의 PK 포함.
+    // 수정했으면, 파일도 수정한다. 정확히는 기존에 있는 Verif, Gallery를 삭제하고 재등록
+    axios({
+      url: FILE_URL + "/" + pid + "/" + sid + "/edu/deleteGallery",
+      method: "DELETE",
+      headers: {
+        Authorization: "Bearer "+ store.state.user.accessToken,
+      }
+    })
+    .then(res => {
+      // 정상적으로 된 경우, Verif와 Gallery가 삭제되고 삭제된 Gallery의 PK를 반환한다. 
+      console.log(res)
+      // 다시 gallery와 파일, Verif를 등록한다.
+      galleryDto.sid = sid
+      axios({
+        url: FILE_URL + "/saveInDB",
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data: galleryDto,
+      })
+      .then(res => {
+        console.log("gallery 테이블 저장 결과", res)     
+        // 여기서 받아온 Gallery의 PK를 통해 파일을 최종적으로 업로드한다.
+        axios({
+          url: FILE_URL + "/" + res.data.id + "/S3Upload",
+          method: "POST",
+          data: file
+        })
+        .then(res => { 
+          console.log(res)
+        })
+      })
+
+    })
+    
+
+  })
   return result
 }

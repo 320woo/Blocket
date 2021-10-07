@@ -227,6 +227,11 @@ public class PersonalInfoService implements IPersonalInfoService {
 	}
 
 	@Override
+	public Optional<List<Certificate>> getCertification(Long id) {
+		return certificateRepository.findByPersonalinfo_id(id);
+	}
+
+	@Override
 	public Certificate createCertificate(Long id, CertificatePostReq certificate) {
 		Certificate cer = new Certificate();
 		cer.setName(certificate.getName());
@@ -239,15 +244,15 @@ public class PersonalInfoService implements IPersonalInfoService {
 		return certificateRepository.save(cer);
 	}
 
-	@Override
-	public Certificate updateCertificate(Long pId, Long cId, CertificatePostReq certificate) {
-		Certificate cer = certificateRepository.getOne(cId);
-		cer.setName(certificate.getName());
-		cer.setSortation(certificate.getSortation());
-		cer.setAcquisitionDate(certificate.getAcquisitionDate());
-		cer.setScore(certificate.getScore());
-		return certificateRepository.save(cer);
-	}
+//	@Override
+//	public Certificate updateCertificate(Long pId, Long cId, CertificatePostReq certificate) {
+//		Certificate cer = certificateRepository.getOne(cId);
+//		cer.setName(certificate.getName());
+//		cer.setSortation(certificate.getSortation());
+//		cer.setAcquisitionDate(certificate.getAcquisitionDate());
+//		cer.setScore(certificate.getScore());
+//		return certificateRepository.save(cer);
+//	}
 
 	@Override
 	public void deleteCertificate(Long pId, Long cId) {
@@ -272,21 +277,20 @@ public class PersonalInfoService implements IPersonalInfoService {
 		return activityRepository.save(act);
 	}
 
-	@Override
-	public Activity updateActivity(Long pId, Long aId, ActivityPostReq activity) {
-		Activity act = activityRepository.getOne(aId);
-		act.setName(activity.getName());
-		act.setActivity(activity.getActivity());
-		act.setPeriod(activity.getPeriod());
-		act.setDescription(activity.getDescription());
-		return activityRepository.save(act);
-	}
+//	@Override
+//	public Activity updateActivity(Long pId, Long aId, ActivityPostReq activity) {
+//		Activity act = activityRepository.getOne(aId);
+//		act.setName(activity.getName());
+//		act.setActivity(activity.getActivity());
+//		act.setPeriod(activity.getPeriod());
+//		act.setDescription(activity.getDescription());
+//		return activityRepository.save(act);
+//	}
 
 	@Override
 	public void deleteActivity(Long pId, Long aId) {
 		activityRepository.deleteById(aId);
 	}
-
 
 	@Override
 	public Optional<List<FinalEducation>> getFinalEducation(Long personalInfoId) {
@@ -318,6 +322,17 @@ public class PersonalInfoService implements IPersonalInfoService {
 	@Override
 	public void deleteFinalEducation(Long pId, Long fId) {
 		finaleducationRepository.deleteById(fId);		
+	}
+
+	public Object getSortationDetail(String sortation, Long sId) {
+		if(sortation.equals("act")) {
+			return activityRepository.findById(sId).get();
+		}else if(sortation.equals("cert")) {
+			return certificateRepository.findById(sId).get();
+		}else if(sortation.equals("edu")) {
+			return finaleducationRepository.findById(sId).get();
+		}
+		return null;
 	}
 
 }

@@ -31,10 +31,12 @@ public interface IPersonalInfoService {
 	long getAllPersonalInfoCount();
 	
 	List<PersonalInfoPostReq> getAllPersonalInfo(Pageable pageable, String email);
-	
+
+	Optional<List<Certificate>> getCertification(Long id);
+
 	Certificate createCertificate(Long id, CertificatePostReq certificate);
 	
-	Certificate updateCertificate(Long pId, Long cId, CertificatePostReq certificate);
+//	Certificate updateCertificate(Long pId, Long cId, CertificatePostReq certificate);
 	
 	void deleteCertificate(Long pId, Long cId);
 
@@ -42,7 +44,7 @@ public interface IPersonalInfoService {
 
 	Activity createActivity(Long id, ActivityPostReq activity);
 	
-	Activity updateActivity(Long pId, Long aId, ActivityPostReq activity);
+//	Activity updateActivity(Long pId, Long aId, ActivityPostReq activity);
 	
 	void deleteActivity(Long pId, Long aId);
 

@@ -12,6 +12,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import com.b101.recruit.domain.entity.*;
+import com.b101.recruit.service.impl.VerificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,11 +63,18 @@ public class PersonalInfoController {
 	
 	@Autowired
 	private PersonalInfoService service;
+
+	@Autowired
+	private GalleryService gService;
+
+	@Autowired
+	private VerificationService vService;
 	
 	// 저장할 기본 디렉토리 설정 application.property 파일에 설정하고 가져온다.
 	@Value("${server.tomcat.basedir}")
 	private String basedir;
-	
+
+
 	@PostMapping()
 	@ApiOperation(value = "신상정보 등록", notes = "기본 신상정보를 등록한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
@@ -83,7 +92,8 @@ public class PersonalInfoController {
 		}
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
 	}
-	
+
+
 	@GetMapping("/{personalinfoId}")
 	@ApiOperation(value = "신상정보 상세내용", notes = "신상정보의 상세 내용을 확인한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
@@ -94,7 +104,8 @@ public class PersonalInfoController {
 		PersonalInfoPostRes personalinfo = service.getonePersonalInfo(id, email);
 		return ResponseEntity.status(200).body(personalinfo);
 	}
-	
+
+
 	@GetMapping("/pic")
 	@ApiOperation(value = "신상정보에 등록된 사진 정보")
 	public void housepic(@RequestParam("sfolder") String sfolder, @RequestParam("ofile") String ofile,
@@ -125,17 +136,19 @@ public class PersonalInfoController {
 			e.printStackTrace();
 		}
 	}
-	
-	@PutMapping("/{personalinfoId}")
+
+
+	@PutMapping("/{personalinfoId}/updatePersonalInfo")
 	@ApiOperation(value = "신상정보 수정", notes = "신상정보를 수정한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
 		@ApiResponse(code = 500, message = "서버 오류") })
-	public ResponseEntity<BaseResponseBody> updatePersonalInfo(@PathVariable(name = "personalinfoId") Long id,
+	public ResponseEntity<PersonalInfo> updatePersonalInfo(@PathVariable(name = "personalinfoId") Long id,
 			@RequestBody PersonalInfoPostReq personalinfoPostReq) {
 		PersonalInfo result = service.updatePersonalInfo(id, personalinfoPostReq);
-		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+		return ResponseEntity.status(200).body(result);
 	}
-	
+
+
 	@DeleteMapping("/{personalinfoId}")
 	@ApiOperation(value = "신상정보 삭제", notes = "신상정보를 삭제한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
@@ -144,7 +157,8 @@ public class PersonalInfoController {
 		service.deletePersonalInfo(id);
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
 	}
-	
+
+
 	@GetMapping("/allCount")
 	@ApiOperation(value = "신상정보 전체 카운트", notes = "페이지 구성")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
@@ -153,7 +167,8 @@ public class PersonalInfoController {
 		long size = service.getAllPersonalInfoCount();
 		return ResponseEntity.status(200).body(size);
 	}
-	
+
+
 	@GetMapping("/all")
 	@ApiOperation(value = "신상정보 전체 목록", notes = "페이지랑 한페이지에 들어갈 사이즈 >> ?size=10&page=1")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
@@ -164,36 +179,73 @@ public class PersonalInfoController {
 		List<PersonalInfoPostReq> personalinfoList = service.getAllPersonalInfo(pageable, email);
 		return ResponseEntity.status(200).body(personalinfoList);
 	}
-	
+
+
+	@GetMapping("/{personalinfoId}/myCertificate")
+	@ApiOperation(value = "어학, 자격증 조회", notes = "어학, 자격증을 조회한다.")
+	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
+			@ApiResponse(code = 500, message = "서버 오류") })
+	public ResponseEntity<Optional<List<Certificate>>> getCertification(@PathVariable("personalinfoId") Long id,
+		@ApiIgnore Authentication authentication) {
+		if (authentication == null) {
+			return ResponseEntity.status(401).body(null);
+		}
+		else {
+			Optional<List<Certificate>> result = service.getCertification(id);
+			return ResponseEntity.status(200).body(result);
+		}
+	}
+
+
 	@PostMapping("/{personalinfoId}/certificate")
 	@ApiOperation(value = "어학, 자격증 등록", notes = "어학, 자격증을 등록한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
 		@ApiResponse(code = 500, message = "서버 오류") })
-	public ResponseEntity<BaseResponseBody> createCertificate(@PathVariable(name = "personalinfoId") Long id,
-			@RequestBody CertificatePostReq certificate) {
-		Certificate certificate2 = service.createCertificate(id, certificate);
-		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+	public ResponseEntity<Optional<List<Certificate>>> createCertificate(@PathVariable(name = "personalinfoId") Long id,
+			@RequestBody CertificatePostReq certificate, @ApiIgnore Authentication authentication) {
+
+		if (authentication == null) {
+			return ResponseEntity.status(401).body(null);
+		}
+		else {
+			Certificate certificate2 = service.createCertificate(id, certificate);
+			return getCertification(id, authentication);
+		}
 	}
 	
-	@PutMapping("/{personalinfoId}/{certificateId}")
-	@ApiOperation(value = "어학, 자격증 수정", notes = "어학, 자격증을 수정한다.")
-	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
-		@ApiResponse(code = 500, message = "서버 오류") })
-	public ResponseEntity<Certificate> updateCertificate(@PathVariable(name = "personalinfoId") Long pId,
-			@PathVariable(name = "certificateId") Long cId, @RequestBody CertificatePostReq certificate) {
-		Certificate certificate2 = service.updateCertificate(pId, cId, certificate);
-		return ResponseEntity.status(200).body(certificate2);
-	}
-	
-	@DeleteMapping("/{personalinfoId}/{certificateId}")
+//	@PutMapping("/{personalinfoId}/{certificateId}")
+//	@ApiOperation(value = "어학, 자격증 수정", notes = "어학, 자격증을 수정한다.")
+//	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
+//		@ApiResponse(code = 500, message = "서버 오류") })
+//	public ResponseEntity<Certificate> updateCertificate(@PathVariable(name = "personalinfoId") Long pId,
+//			@PathVariable(name = "certificateId") Long cId, @RequestBody CertificatePostReq certificate) {
+//		Certificate certificate2 = service.updateCertificate(pId, cId, certificate);
+//		return ResponseEntity.status(200).body(certificate2);
+//	}
+
+	@Transactional
+	@DeleteMapping("/{personalinfoId}/{certificateId}/CertDelete")
 	@ApiOperation(value = "어학, 자격증 삭제", notes = "어학, 자격증을 삭제한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
 		@ApiResponse(code = 500, message = "서버 오류") })
-	public ResponseEntity<BaseResponseBody> deleteCertificate(@PathVariable(name = "personalinfoId") Long pId,
-			@PathVariable(name = "certificateId") Long cId) {
-		service.deleteCertificate(pId, cId);
-		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+	public ResponseEntity<Optional<List<Certificate>>> deleteCertificate(@PathVariable(name = "personalinfoId") Long pId,
+			@PathVariable(name = "certificateId") Long cId, @ApiIgnore Authentication authentication) {
+		if (authentication == null) {
+			return ResponseEntity.status(401).body(null);
+		}
+		else {
+			// 어학, 자격증 삭제하기 전에 Verifaction, gallery 삭제하기
+			Gallery result = gService.findByPidAndSidAndSortation(pId, cId, "cert");
+			// Verification 삭제
+			vService.deleteByGallery(result);
+			// 갤러리 파일 삭제
+			gService.deleteGallery(result.getId());
+			// 어학, 자격증 삭제
+			service.deleteCertificate(pId, cId);
+			return getCertification(pId, authentication);
+		}
 	}
+
 
 	@GetMapping("/{personalinfoId}/myActivity")
 	@ApiOperation(value = "활동사항 조회", notes = "활동사항을 조회한다.")
@@ -208,7 +260,6 @@ public class PersonalInfoController {
 			Optional<List<Activity>> result = service.getActivities(id);
 			return ResponseEntity.status(200).body(result);
 		}
-
 	}
 
 
@@ -216,31 +267,56 @@ public class PersonalInfoController {
 	@ApiOperation(value = "활동사항 등록", notes = "활동사항을 등록한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
 		@ApiResponse(code = 500, message = "서버 오류") })
-	public ResponseEntity<BaseResponseBody> createActivity(@PathVariable(name = "personalinfoId") Long id,
-			@RequestBody ActivityPostReq activity) {
-		Activity activity2 = service.createActivity(id, activity);
-		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+	public ResponseEntity<Optional<List<Activity>>> createActivity(@PathVariable(name = "personalinfoId") Long id,
+			@RequestBody ActivityPostReq activity, @ApiIgnore Authentication authentication) {
+
+		if (authentication == null) {
+			return ResponseEntity.status(401).body(null);
+		}
+		else {
+			Activity activity2 = service.createActivity(id, activity);
+			// 등록한 후, 모든 목록을 불러온다.
+			return getActivities(id, authentication);
+		}
 	}
-	
-	@PutMapping("/{personalinfoId}/{activityId}")
-	@ApiOperation(value = "활동사항 수정", notes = "활동사항을 수정한다.")
-	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
-		@ApiResponse(code = 500, message = "서버 오류") })
-	public ResponseEntity<Activity> updateActivity(@PathVariable(name = "personalinfoId") Long pId,
-			@PathVariable(name = "activityId") Long aId, @RequestBody ActivityPostReq activity) {
-		Activity activity2 = service.updateActivity(pId, aId, activity);
-		return ResponseEntity.status(200).body(activity2);
-	}
-	
-	@DeleteMapping("/{personalinfoId}/{activityId}")
+
+
+//	@PutMapping("/{personalinfoId}/{activityId}/update")
+//	@ApiOperation(value = "활동사항 수정", notes = "활동사항을 수정한다.")
+//	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
+//		@ApiResponse(code = 500, message = "서버 오류") })
+//	public ResponseEntity<Activity> updateActivity(@PathVariable(name = "personalinfoId") Long pId,
+//			@PathVariable(name = "activityId") Long aId, @RequestBody ActivityPostReq activity) {
+//		Activity activity2 = service.updateActivity(pId, aId, activity);
+//		return ResponseEntity.status(200).body(activity2);
+//	}
+
+
+	@Transactional
+	@DeleteMapping("/{personalinfoId}/{activityId}/ActDelete")
 	@ApiOperation(value = "활동사항 삭제", notes = "활동사항을 삭제한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
 		@ApiResponse(code = 500, message = "서버 오류") })
-	public ResponseEntity<BaseResponseBody> deleteActivity(@PathVariable(name = "personalinfoId") Long pId,
-			@PathVariable(name = "activityId") Long aId) {
-		service.deleteActivity(pId, aId);
-		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+	public ResponseEntity<Optional<List<Activity>>> deleteActivity(@PathVariable(name = "personalinfoId") Long pId,
+			@PathVariable(name = "activityId") Long aId, @ApiIgnore Authentication authentication) {
+		if ( authentication == null ) {
+			return ResponseEntity.status(401).body(null);
+		}
+		else {
+			// 1. gallery 객체 먼저 찾기
+			Gallery result = gService.findByPidAndSidAndSortation(pId, aId, "act");
+
+			// Verification 삭제
+			vService.deleteByGallery(result);
+			// 갤러리 파일 삭제
+			gService.deleteGallery(result.getId());
+			// 활동사항 삭제
+			service.deleteActivity(pId, aId);
+			// 목록 반환.
+			return getActivities(pId, authentication);
+		}
 	}
+
 
 	@GetMapping("{personalInfoId}/myFinalEducation")
 	@ApiOperation(value = "최종학력 조회", notes = "최종학력을 조회한다.")
@@ -258,16 +334,14 @@ public class PersonalInfoController {
 	@ApiOperation(value = "최종학력 등록", notes = "최종학력을 등록한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
 		@ApiResponse(code = 500, message = "서버 오류") })
-	public ResponseEntity<BaseResponseBody> createFinalEducation(@RequestBody FinalEducationPostReq FinalEducationPostReq, @PathVariable(name = "personalinfoId") Long id
+	public ResponseEntity<FinalEducation> createFinalEducation(@RequestBody FinalEducationPostReq FinalEducationPostReq, @PathVariable(name = "personalinfoId") Long id
 			) {
 
 		logger.info("최종 학력 등록 메서드");
 		logger.info("PersonalInfoId: {}", id);
 
-		// 이미 기존에 작성한 글이 있는지 조회한다.
-
-		FinalEducation finaleducation2 = service.createFinalEducation(id, FinalEducationPostReq);
-		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+		FinalEducation result = service.createFinalEducation(id, FinalEducationPostReq);
+		return ResponseEntity.status(200).body(result);
 	}
 
 	@PutMapping("/{personalinfoId}/{finaleducationId}/update")
@@ -275,19 +349,25 @@ public class PersonalInfoController {
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
 		@ApiResponse(code = 500, message = "서버 오류") })
 	public ResponseEntity<FinalEducation> updateFinalEducation(@PathVariable(name = "personalinfoId") Long pId,
-			@PathVariable(name = "finaleducationId") Long fId, @RequestBody FinalEducationPostReq finaleducation) {
-		FinalEducation finaleducation2 = service.updateFinalEducation(pId, fId, finaleducation);
-		return ResponseEntity.status(200).body(finaleducation2);
+			@PathVariable(name = "finaleducationId") Long fId, @RequestBody FinalEducationPostReq finaleducation,
+		   @ApiIgnore Authentication authentication) {
+		if (authentication == null) {
+			return ResponseEntity.status(401).body(null);
+		}
+		else {
+			FinalEducation finaleducation2 = service.updateFinalEducation(pId, fId, finaleducation);
+			return ResponseEntity.status(200).body(finaleducation2);
+		}
 	}
 	
-	@DeleteMapping("/{personalinfoId}/{finaleducationId}/delete")
-	@ApiOperation(value = "최종학력 삭제", notes = "최종학력을 삭제한다.")
-	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
-		@ApiResponse(code = 500, message = "서버 오류") })
-	public ResponseEntity<BaseResponseBody> deleteFinalEducation(@PathVariable(name = "personalinfoId") Long pId,
-			@PathVariable(name = "finaleducationId") Long fId) {
-		service.deleteFinalEducation(pId, fId);
-		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
-	}
+//	@DeleteMapping("/{personalinfoId}/{finaleducationId}/delete")
+//	@ApiOperation(value = "최종학력 삭제", notes = "최종학력을 삭제한다.")
+//	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
+//		@ApiResponse(code = 500, message = "서버 오류") })
+//	public ResponseEntity<BaseResponseBody> deleteFinalEducation(@PathVariable(name = "personalinfoId") Long pId,
+//			@PathVariable(name = "finaleducationId") Long fId) {
+//		service.deleteFinalEducation(pId, fId);
+//		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
+//	}
 	
 }

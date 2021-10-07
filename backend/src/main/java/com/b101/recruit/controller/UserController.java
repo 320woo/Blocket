@@ -68,7 +68,7 @@ public class UserController {
 		System.out.println(user.getEmail());
 		if (user != null) {
 			if (passwordEncoder.matches(password, user.getPassword())) {
-				return ResponseEntity.ok(UserLoginPostRes.of(200, "로그인에 성공하였습니다.", JwtTokenUtil.createToken(user.getEmail())));
+				return ResponseEntity.ok(UserLoginPostRes.of(200, "로그인에 성공하였습니다.", JwtTokenUtil.createToken(user.getEmail()),user.getType()));
 			}
 		}
 		return ResponseEntity.ok(UserLoginPostRes.of(404, "아이디 또는 비밀번호가 일치하지 않습니다.", null));

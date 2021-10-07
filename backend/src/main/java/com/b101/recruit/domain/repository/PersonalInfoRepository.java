@@ -11,8 +11,7 @@ import java.util.List;
 @Repository
 public interface PersonalInfoRepository extends JpaRepository<PersonalInfo, Long> {
 
-	Long findUserIdById(Long id);
 	List<PersonalInfo> findByUserId(long userId);
-	
+	PersonalInfo findOneById(Long id);
 	
 }

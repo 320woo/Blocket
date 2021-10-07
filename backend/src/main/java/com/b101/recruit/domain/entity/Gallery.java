@@ -26,7 +26,7 @@ public class Gallery{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(length = 50, nullable = false)
+	@Column(nullable = false)
     private String title;
 
     @Column(columnDefinition = "TEXT")

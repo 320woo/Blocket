@@ -1,6 +1,7 @@
 package com.b101.recruit.service;
 
 
+import com.b101.recruit.domain.entity.Gallery;
 import org.springframework.data.domain.Page;
 
 import com.b101.recruit.domain.dto.GalleryDto;
@@ -30,6 +31,12 @@ public interface IVerificationService {
 
 	Page<VerificationDto> getVerificationList(VerificationListGetReq vlgr);
 
-	Verification createVerification(GalleryDto galleryDto) throws NullPointerException;
+	Verification createVerification(Gallery gallery) throws NullPointerException;
+
+	Verification getVerification(Long gId);
+
+	void deleteByGallery(Gallery gallery);
+
+//	VerificationDto findByCertificationId(Long cId);
 
 }
