@@ -132,7 +132,7 @@
 
 ---
 
-<img src="![image](./img/git_branch.PNG)" width="400" height="200"/>
+<img src=![image](./img/git_branch.PNG) width="400" height="200"/>
 
 - master : 공식 릴리즈 기록 브랜치
 - develop : 출시할 버전 개발 브랜치
