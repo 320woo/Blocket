@@ -113,3 +113,20 @@ export async function deleteActivity(pid, id) {
   })
   return result
 }
+
+export async function findActVerif(pid, aInfo) {
+  let result = []
+  for (let i = 0; i < aInfo.length; i++) {
+    await axios({
+      url: INFO_URL + "/" + pid + "/" + aInfo[i].id + "/findActVerif",
+      method: "POST",
+      headers: {
+        Authorization:"Bearer "+ store.state.user.accessToken,
+      }
+    })
+    .then(res => {
+      result.push(res.data)
+    })
+  }
+  return result
+}

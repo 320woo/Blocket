@@ -19,7 +19,7 @@
       </span>
     </div>
 
-    <div v-else class="p-col" v-for="cert in state.cInfo" :key="cert.id" >
+    <div v-else class="p-col" v-for="(cert, idx) in state.cInfo" :key="cert.id" >
       <div class="p-mt-3">
         <div class="p-col-12">
           <strong>구분:</strong> {{ cert.sortation }}
@@ -33,31 +33,17 @@
         <div class="p-col-12">
           <strong>취득일:</strong> {{ cert.acquisitionDate }}  
         </div>
-        <div class="p-d-flex p-col-4">
-          <div class="p-mr-2">
-            <Button icon="pi pi-times" class="p-button-rounded p-button-text" @click="deleteCertification(cert.id)" />
-          </div> 
+
+        <div class="p-d-flex">
+          <div class="p-col-4">
+            <Button icon="pi pi-times" class="p-button-rounded p-button-text" @click="deleteCertification(cert.id)" />            
+          </div>
+          <div class="p-col-8" style="text-align: end; margin: auto;">
+            <span>{{ state.vInfo_cert[idx].currentStatus }}</span>
+          </div>
         </div>
       </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     </div>
-
   </div>
 
   <Dialog header="어학, 자격증" v-model:visible="state.displayCertModal" :style="{width: '30vw'}" :modal="true">
@@ -134,15 +120,27 @@ export default {
   setup() {
     // Created
     cService.getCertification().then(res => {
+      // 데이터가 한건도 없는 경우
       if (res.data === 'NoData') {
         state.uid = res.uid
         state.pid = res.pid
       }
+      // 데이터가 한 건이라도 존재하는 경우
       else {
         state.pid = res[0].personalinfo.id
         state.uid = res[0].personalinfo.user.id
         state.input.userId = res[0].personalinfo.user.id
         state.cInfo = res
+
+        // 활동사항에 대한 검증 내역
+        const setVInfo = async () => {
+          await cService.findCertVerif(state.pid, state.cInfo)
+          .then(res => {
+            console.log(res)
+            state.vInfo_cert = res
+          })
+        }
+        setVInfo()
       }
     })
 
@@ -151,6 +149,7 @@ export default {
       pid: '',
       displayCertModal: false,
       cInfo: '',
+      vInfo_cert: 'Nodata',    // 검증 내역
       // 어학, 자격증
       input: {
         userId: '',

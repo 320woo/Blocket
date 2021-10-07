@@ -19,6 +19,7 @@
                 </div>
             </template>
         </Toast>
+    <div style="background-color: #F9F7F7;">
         <div class="login-form">
             <Panel header="Blocket을 체험해보세요." id="panel">
                 <div>
@@ -103,7 +104,7 @@
                     </div>
                 </div>
             </Panel>
-
+        </div>
         </div>
     </div>
 </template>

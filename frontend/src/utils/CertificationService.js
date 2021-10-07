@@ -115,3 +115,21 @@ export async function deleteCertification(pid, id) {
   })
   return result
 }
+
+
+export async function findCertVerif(pid, cInfo) {
+  let result = []
+  for (let i = 0; i < cInfo.length; i++) {
+    await axios({
+      url: INFO_URL + "/" + pid + "/" + cInfo[i].id + "/findCertVerif",
+      method: "POST",
+      headers: {
+        Authorization:"Bearer "+ store.state.user.accessToken,
+      }
+    })
+    .then(res => {
+      result.push(res.data)
+    })
+  }
+  return result
+}

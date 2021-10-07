@@ -21,7 +21,7 @@
       </span>
     </div>
 
-    <div v-else class="p-col" v-for="act in state.aInfo" :key="act.id">
+    <div v-else class="p-col" v-for="(act, idx) in state.aInfo" :key="act.id">
       <div class="p-mt-3">
         <div class="p-col-12">
           <strong>활동구분:</strong> {{ act.activity }}
@@ -35,10 +35,13 @@
         <div class="p-col-12">
           <strong>기간:</strong> {{ act.period }}  
         </div>
-        <div class="p-d-flex p-col-4">
-          <div class="p-mr-2">
-            <Button icon="pi pi-times" class="p-button-rounded p-button-text" @click="deleteActivity(act.id)" />
-          </div> 
+        <div class="p-d-flex">
+          <div class="p-col-4">
+            <Button icon="pi pi-times" class="p-button-rounded p-button-text" @click="deleteActivity(act.id)" />            
+          </div>
+          <div class="p-col-8" style="text-align: end; margin: auto;">
+            <span>{{ state.vInfo_act[idx].currentStatus }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -141,6 +144,16 @@ export default {
         state.uid = res[0].personalinfo.user.id
         state.input.userId = res[0].personalinfo.user.id
         state.aInfo = res
+
+        // 활동사항에 대한 검증 내역
+        const setVInfo = async () => {
+          await aService.findActVerif(state.pid, state.aInfo)
+          .then(res => {
+            console.log(res)
+            state.vInfo_act = res
+          })
+        }
+        setVInfo()
       }
     })
 
@@ -152,6 +165,7 @@ export default {
       endDate: '',
       // 활동 사항
       aInfo: '',
+      vInfo_act: 'Nodata',      // 검증 내역
       // 새로 입력한 값을 저장하는 변수
       input: {          
         userId: '', 

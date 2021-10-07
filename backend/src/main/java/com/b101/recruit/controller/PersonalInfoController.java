@@ -369,5 +369,67 @@ public class PersonalInfoController {
 //		service.deleteFinalEducation(pId, fId);
 //		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "Success"));
 //	}
+
+
+	// 활동사항에 대한 검증 내용 불러오기
+	@PostMapping("/{personalInfoId}/{activityId}/findActVerif")
+	@ApiOperation(value = "활동사항에 대한 검증 내용 불러오기", notes = "활동 사항에 대한 검증 내역을 불러온다.")
+	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
+			@ApiResponse(code = 500, message = "서버 오류") })
+	public ResponseEntity<Verification> findActVerif(@PathVariable("personalInfoId") long pid,
+													 @PathVariable("activityId") long aid, @ApiIgnore Authentication authentication) {
+		if (authentication == null) {
+			return ResponseEntity.status(401).body(null);
+		}
+		else {
+			Gallery gallery = gService.findByPidAndSidAndSortation(pid, aid, "act");
+			// 갤러리 통해서 검증 내역 확인할 수 있다.
+			Verification result = vService.getVerification(gallery.getId());
+			return ResponseEntity.status(200).body(result);
+		}
+	}
+
+	// 어학, 자격증에 대한 검증 내용 불러오기
+	@PostMapping("/{personalInfoId}/{certId}/findCertVerif")
+	@ApiOperation(value = "어학, 자격증에 대한 검증 내용 불러오기", notes = "어학, 자격증에 대한 검증 내역을 불러온다.")
+	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
+			@ApiResponse(code = 500, message = "서버 오류") })
+	public ResponseEntity<Verification> findCertVerif(@PathVariable("personalInfoId") long pid,
+													 @PathVariable("certId") long cid, @ApiIgnore Authentication authentication) {
+		if (authentication == null) {
+			return ResponseEntity.status(401).body(null);
+		}
+		else {
+			Gallery gallery = gService.findByPidAndSidAndSortation(pid, cid, "cert");
+			// 갤러리 통해서 검증 내역 확인할 수 있다.
+			Verification result = vService.getVerification(gallery.getId());
+			return ResponseEntity.status(200).body(result);
+		}
+	}
+
+
+	// 최종학력에 대한 검증 내용 불러오기
+	@PostMapping("/{personalInfoId}/{eduId}/findEduVerif")
+	@ApiOperation(value = "최종학력에 대한 검증 내용 불러오기", notes = "최종학력에 대한 검증 내역을 불러온다.")
+	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
+			@ApiResponse(code = 500, message = "서버 오류") })
+	public ResponseEntity<Verification> findEduVerif(@PathVariable("personalInfoId") long pid,
+													  @PathVariable("eduId") long eid, @ApiIgnore Authentication authentication) {
+		if (authentication == null) {
+			return ResponseEntity.status(401).body(null);
+		}
+		else {
+			Gallery gallery = gService.findByPidAndSidAndSortation(pid, eid, "edu");
+			// 갤러리 통해서 검증 내역 확인할 수 있다.
+			Verification result = vService.getVerification(gallery.getId());
+			return ResponseEntity.status(200).body(result);
+		}
+	}
+
+
+
+
+
+
 	
 }

@@ -21,4 +21,7 @@ public interface VerificationRepository extends JpaRepository<Verification, Long
 	String findCurrentStatusByGalleryId(Long gId);
 	void deleteByGallery(Gallery gallery);
 //	Verification findBySid(Long cId);
+	Page<Verification> findByGallery_SortationNotLike(Pageable pageable, String prop);
+	Page<Verification> findByCurrentStatusContainingAndGallery_SortationNotLike(Pageable pageable, String verified,
+			String prop);
 }
