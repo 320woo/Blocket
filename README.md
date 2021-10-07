@@ -16,7 +16,7 @@
 
 ### 블록체인 기반 개인정보 검증 서비스
 
-![image](./uploads/a3b28788037b3c6b229955d623256f35/image.png)
+![image](./img/주제.PNG)
 
 ## :monocle_face: 개요
 
