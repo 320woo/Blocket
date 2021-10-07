@@ -1,6 +1,15 @@
 <template>
-    <div class="p-grid">
-        <Panel class="p-col-6 p-offset-3">
+    <div class="p-grid p-jc-center vertical-container">
+        <div  class="p-col-5">
+        <Card id ="card" class="box box-stretched">
+            <template #content>
+                <!-- <img alt="file_img" :src="'https://'+CLOUD_FRONT+'/test.PNG-20213107023156'" style="width: 100%"> -->
+                <img alt="file_img" :src="'https://'+CLOUD_FRONT+'/'+file.filePath" style="width: 100%">
+            </template>
+        </Card>
+        </div>
+        <div class="p-col-5">
+        <Panel id="panel" class="box box-stretched">
             <template #header>
                 <div class="header-font">{{file.title}}</div>
             </template>
@@ -129,7 +138,7 @@
             </div>
 
         </Panel>
-
+    </div>
     </div>
 </template>
 <script>
@@ -146,17 +155,19 @@ export default {
               fileId:0,
               verified:'',
               reasonsRejection:'',
-          }
+          },
       }
   },
   created() {
-    // const fileId = this.$route.query.no;
-    const fileId = 1;
+    const fileId = this.$route.query.no;
+    // const fileId = 1;
     this.verify.fileId = fileId;
     this.$store.dispatch("getFileInfo", { fileId });
 
     this.verify.verified = this.file.currentStatus;
     this.check = this.file.sortation;
+
+    // console.log(this.CLOUD_FRONT);
   },
   methods: {
       accept(){
@@ -176,11 +187,11 @@ export default {
 }
 </script>
 <style>
-    #panel {
+    /* #panel {
         display: block;
         width: 40%;
         margin: auto;
-    }
+    } */
     .InputText {
         width: 100%;
     }
@@ -190,4 +201,9 @@ export default {
     #accept-btn:hover {
         background-color: #212D4E;
     }
+    /* #card{
+                display: block;
+        width: 40%;
+        margin: auto;
+    } */
 </style>
