@@ -71,6 +71,7 @@ public class VerificationController {
 			return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
 		}
 	}
+
 	
 	// 검증 목록 조회
 	@PostMapping("/list")
