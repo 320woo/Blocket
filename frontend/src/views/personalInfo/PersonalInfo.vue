@@ -461,6 +461,10 @@ export default {
     saveArmyModal() {
       var totalarmy = this.state.checkarmy + "/" + this.state.kind + "/" + this.state.discharge + "/" + this.state.start + " ~ " + this.state.end;
       console.log("병역 컬럼 : " + totalarmy)
+      this.$store.dispatch("Army",
+      {
+        army : totalarmy
+      })
 
       this.$toast.add({severity:'success', summary: '시스템 정보', group: 'center', detail:'병역 사항 등록완료', life: 1000});
       this.state.displayArmyModal = false
@@ -471,9 +475,13 @@ export default {
     },
 
     saveDisabledModal() {
-      if(this.state.Disabled_check == false)console.log("없을때 : " + this.state.personalInfo.disabled)
-      if(this.state.Disabled_check == true)console.log("설명이 있을때 : " + this.state.personalInfo.disabled + "/" +this.state.description)
-      
+      var disabled = '';
+      if(this.state.Disabled_check == false)disabled = this.state.personalInfo.disabled;
+      if(this.state.Disabled_check == true)disabled = this.state.personalInfo.disabled + "/" +this.state.description;
+      this.$store.dispatch("Disabled",
+      {
+        disabled : disabled
+      })
       this.$toast.add({severity:'success', summary: '시스템 정보', group: 'center', detail:'장애 여부 등록완료', life: 1000});
       this.state.displayDisabledModal = false;
     }

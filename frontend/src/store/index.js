@@ -159,16 +159,50 @@ export default createStore({
                         console.log("수정 완료");
                     }
                 }).catch((err)=>{
-                    
-                    
-                    
                     console.log(err);
                 });
             }
             
         },
 
-    getFileInfo(context,payload){
+        Disabled(context, payload) {
+            console.log("장애 여부 정보 들어옴" + context);
+            console.log(payload)
+            if (localStorage.getItem("accessToken")) {
+                const url = "/api/recruit/users/me";
+                const headers = {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                };
+                return http.patch(url,payload,{headers}).then((res)=>{
+                    if(res.data.statusCode==200){
+                        console.log("장애 여부 등록완료");
+                    }
+                }).catch((err)=>{
+                    console.log(err);
+                });
+            }
+            
+        },
+
+        Army(context, payload) {
+            console.log("병역 정보 들어옴" + context);
+            console.log(payload)
+            if (localStorage.getItem("accessToken")) {
+                const url = "/api/recruit/users/me";
+                const headers = {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                };
+                return http.patch(url,payload,{headers}).then((res)=>{
+                    if(res.data.statusCode==200){
+                        console.log("병역 등록완료");
+                    }
+                }).catch((err)=>{
+                    console.log(err);
+                });
+            }
+        },
+
+        getFileInfo(context,payload){
                 console.log(payload);
             if(localStorage.getItem("accessToken")){
                 const url = "/api/recruit/Gallery/galleryDetail/";
