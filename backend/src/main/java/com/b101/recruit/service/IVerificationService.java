@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import com.b101.recruit.domain.dto.GalleryDto;
 import com.b101.recruit.domain.dto.VerificationDto;
 import com.b101.recruit.domain.entity.Verification;
+import com.b101.recruit.request.VerificationAcceptPatchReq;
 import com.b101.recruit.request.VerificationListGetReq;
 import com.b101.recruit.request.VerificationUpdatePatchReq;
 
@@ -36,6 +37,8 @@ public interface IVerificationService {
 	Verification getVerification(Long gId);
 
 	void deleteByGallery(Gallery gallery);
+
+	Verification acceptVerification(VerificationAcceptPatchReq vapr);
 
 //	VerificationDto findByCertificationId(Long cId);
 
