@@ -16,7 +16,7 @@
 
 ### 블록체인 기반 개인정보 검증 서비스
 
-``
+![image](/uploads/a3b28788037b3c6b229955d623256f35/image.png)
 
 ## :monocle_face: 개요
 
@@ -111,7 +111,7 @@
 
 ## :hammer: 시스템 아키텍처
 
-``
+![image](/uploads/2f5e50986021b4a417be182e6ead50af/image.png)
 
 ## :monocle_face: 팀원 소개
 
