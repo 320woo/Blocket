@@ -1,4 +1,5 @@
 <template>
+<div>
   <!-- 어학, 자격증 -->
   <div class="p-col profile">
     <div class="p-grid">
@@ -102,6 +103,7 @@
       </div>
     </form>
   </Dialog>
+</div>
 </template>
 
 <script>

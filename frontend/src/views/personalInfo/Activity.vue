@@ -1,4 +1,6 @@
 <template>
+  <div>
+  <Toast1/>
   <!-- 활동 사항 -->
   <div class="p-col profile">
     <div class="p-grid">
@@ -114,6 +116,7 @@
       </div>
     </form>
   </Dialog>
+  </div>
 </template>
 
 <script>
@@ -244,6 +247,19 @@ export default {
   methods: {
     openActivityModal() {
       this.state.displayActivityModal = true
+    },
+    saveActivityModal() {
+      if (this.state.isWritten === false) {
+        aService.createActivity(this.state.input).then(
+          this.$toast.add({severity:'success', summary: '시스템 정보', group: 'center', detail:'활동 사항 등록완료', life: 1000})
+        )
+      }
+
+      this.state.displayActivityModal = false
+    },
+    onUpload() {
+      // toast는 메시지를 오버레이하기 위해 필요한 툴이다.
+      // this.toast.add({severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000});
     },
     deleteActivity(id) {
       aService.deleteActivity(this.state.pid, id).then(res => {

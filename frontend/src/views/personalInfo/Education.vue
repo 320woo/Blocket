@@ -1,6 +1,8 @@
 <template>
+<div>
   <!-- 최종 학력 -->
   <div class="p-col profile">
+    <Toast1/>
     <div class="p-grid">
       <div class="p-col-10">
         <span class="header-font">최종 학력</span>
@@ -118,6 +120,7 @@
       
     </form>  
   </Dialog>
+</div>
 </template>
 
 <script>  

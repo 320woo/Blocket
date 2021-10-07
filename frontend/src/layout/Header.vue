@@ -1,5 +1,6 @@
 <template>
     <header style="background-color: white;">
+        <Toast1/>
         <h1>
             <router-link to="/"><img :src="require(`@/assets/images/Blocket-logo.png`)"/></router-link>
         </h1>
@@ -45,6 +46,7 @@ export default {
                 this.$store.dispatch("userCheck"); 
         },
             logout() {
+                this.$toast.add({severity: 'success', summary: '시스템 정보', detail: '로그아웃 완료', group: 'center', life: 1000});
                 this.$store.dispatch("logout");
                 this.$router.push("/");
             }

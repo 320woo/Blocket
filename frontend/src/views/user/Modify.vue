@@ -1,4 +1,24 @@
 <template>
+    <div>
+        <Toast position="bottom-center" group="bc">
+            <template #message="slotProps">
+                <div class="p-d-flex p-flex-column">
+                    <div class="p-text-center">
+                        <i class="pi pi-exclamation-triangle" style="font-size: 3rem"></i>
+                        <h4>{{slotProps.message.summary}}</h4>
+                        <p>{{slotProps.message.detail}}</p>
+                    </div>
+                    <div class="p-grid p-fluid">
+                        <div class="p-col-6">
+                            <Button id="bt" class="p-button-success" label="Yes" @click="onConfirm"></Button>
+                        </div>
+                        <div class="p-col-6">
+                            <Button id="bt" class="p-button-secondary" label="No" @click="onReject"></Button>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </Toast>
     <div style="background-color: #F9F7F7;">
         <div class="login-form">
             <Panel header="Blocket을 체험해보세요." id="panel">
@@ -10,10 +30,9 @@
                     type="text"
                     id="email"
                     name="email"
-                    v-model="email"
-                    ref="email"
+                    v-model="state.email"
                     class="InputText"/>
-                <div>
+                <!-- <div>
                     <label for="username1">비밀번호</label>
                 </div>
                 <InputText
@@ -23,7 +42,7 @@
                     v-model="password"
                     ref="password"
                     class="InputText"
-                    placeholder="6자 이상"/>
+                    placeholder="6자 이상"/> -->
                 <div>
                     <label for="username1">이름</label>
                 </div>
@@ -31,19 +50,8 @@
                     type="text"
                     id="name"
                     name="name"
-                    v-model="name"
-                    ref="name"
+                    v-model="state.name"
                     class="InputText"/>
-                <div>
-                <span class="center-btn">
-                    <div>
-                <input type="checkbox" id="checkbox" v-model="solo" @click="Solo">
-                    <label for="checkbox" class="checkbox">개인</label>
-                <input type="checkbox" id="checkbox" v-model="company" @click="Company">
-                    <label for="checkbox" class="checkbox">기업</label>
-                    </div>
-                </span>
-                </div>
                 <div>
                     <label for="username1">소속</label>
                 </div>
@@ -51,8 +59,7 @@
                     type="text"
                     id="belong"
                     name="belong"
-                    v-model="belong"
-                    ref="belong"
+                    v-model="state.belong"
                     class="InputText"/>
                 <div>
                     <label for="username1">연락처</label>
@@ -61,9 +68,8 @@
                     type="text"
                     id="phoneNumber"
                     name="phoneNumber"
-                    v-model="phoneNumber"
+                    v-model="state.phoneNumber"
                     maxlength="11"
-                    ref="phoneNumber"
                     class="InputText"
                     placeholder="-를 제외하고 입력해주세요."
                     />
@@ -76,7 +82,7 @@
                     type="text"
                     id="brn"
                     name="brn"
-                    v-model="brn"
+                    v-model="state.brn"
                     ref="brn"
                     class="InputText"/>
                 </span>
@@ -98,58 +104,65 @@
                     </div>
                 </div>
             </Panel>
-
+        </div>
         </div>
     </div>
 </template>
 <script>
     // import http from "@/utils/http-common";
     import * as pService from '@/utils/pService.js'
+    import { reactive } from 'vue'
     // import axios from 'axios'
 
     export default {
         name: "signup",
         computed: {},
         setup() {
-          pService.checkToken()  
-        },
-        data() {
-            return {
-                show_brn : "",
-                solo: true,
-                company : false,
-                email: this.$store.state.user.userEmail,
-                password: "",
-                name: this.$store.state.user.username,
-                phoneNumber: this.$store.state.user.userphone,
-                belong: this.$store.state.user.userbelong,
-                brn: this.$store.state.user.userbrn,
-                type: "",
-                withdrawal: "",
-                id: ""
-            };
+        //   pService.checkToken()  
+          pService.UserCheck().then(res => {  // 각 함수는 비동기 처리하였음
+            state.email = res.email
+            state.name = res.name
+            state.belong = res.belong
+            state.phoneNumber = res.phoneNumber
+          })
+
+        const state = reactive({
+            email :null,
+            name : null,
+            belong : null,
+            phoneNumber : null
+        })
+    return {
+      state,
+    }
         },
         methods: {
-            Solo() {
-                this.solo = true;
-                this.company = false;
-                this.type = "회원"
-                this.show_brn = false;
-            },
-            Company() {
-                this.solo = false;
-                this.company = true;
-                this.type = "기업"
-                this.show_brn = true;
-            },
             modifyUser() {
                 let err = true;
                 let msg = "";
-                err && !this.email && ((msg = "이메일을 입력해주세요"), (err = false));
-                err && !this.password && ((msg = "비밀번호를 입력해주세요"), (err = false));
-                err && !this.name && ((msg = "이름을 입력해주세요"), (err = false));
-                err && !this.phoneNumber && ((msg = "연락처를 입력해주세요"), (err = false));
-                if (!err) alert(msg);
+                if(!this.email){
+                    this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'이메일을 입력해주세요.', life: 1000});
+                    err = false
+                    }
+                if(!this.password){
+                    this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'비밀번호를 입력해주세요.', life: 1000});
+                    err = false
+                }
+                if(!this.name){
+                    this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'이름을 입력해주세요.', life: 1000});
+                    err = false    
+                }
+                if(!this.belong){
+                    this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'소속을 입력해주세요.', life: 1000}); 
+                    err = false
+                }
+                if(!this.phoneNumber){
+                    this.$toast.add({severity:'warn', summary: '시스템 정보', group: 'center', detail:'연락처를 입력해주세요.', life: 1000}); 
+                    err = false
+                }
+                
+
+                if (!err) console.log(msg);
                 else {
                     if (confirm("수정 하시겠습니까?")) {
                         this.$store.dispatch("modify",
@@ -200,6 +213,7 @@
 
     .InputText {
         width: 100%;
+        margin-bottom: 20px;
     }
 
     #panel {
@@ -225,4 +239,17 @@
     .center-btn {
         text-align: center;
     }
+</style>
+<style lang="scss" scoped>
+#bt {
+    min-width: 10rem;
+    margin-right: .5rem;
+}
+
+@media screen and (max-width: 960px) {
+    #bt {
+        width: 100%;
+        margin-bottom: .5rem;
+    }
+}
 </style>
