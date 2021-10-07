@@ -20,13 +20,26 @@ export function UserDelete() {
     })
 }
 
-export function UserCheck() {
+export async function UserCheck() {
     console.log("유저정보 check")
-    return axios.get(USER_URL + "/me", {
+    let result = ''
+    await axios
+        .get(USER_URL + "/me", {
         headers: {
             Authorization: "Bearer " + store.state.user.accessToken
         }
     })
+        .then(res => {
+            console.log("데이터 : " + res.data.email);
+            result = {
+                email: res.data.email,
+                name: res.data.name,
+                belong : res.data.belong,
+                phoneNumber : res.data.phoneNumber
+            }
+        })
+    return result;
+    
 }
 
 // 토큰 확인 함수

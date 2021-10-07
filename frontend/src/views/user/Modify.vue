@@ -10,8 +10,7 @@
                     type="text"
                     id="email"
                     name="email"
-                    v-model="email"
-                    ref="email"
+                    v-model="state.email"
                     class="InputText"/>
                 <div>
                     <label for="username1">비밀번호</label>
@@ -31,19 +30,8 @@
                     type="text"
                     id="name"
                     name="name"
-                    v-model="name"
-                    ref="name"
+                    v-model="state.name"
                     class="InputText"/>
-                <div>
-                <span class="center-btn">
-                    <div>
-                <input type="checkbox" id="checkbox" v-model="solo" @click="Solo">
-                    <label for="checkbox" class="checkbox">개인</label>
-                <input type="checkbox" id="checkbox" v-model="company" @click="Company">
-                    <label for="checkbox" class="checkbox">기업</label>
-                    </div>
-                </span>
-                </div>
                 <div>
                     <label for="username1">소속</label>
                 </div>
@@ -51,8 +39,7 @@
                     type="text"
                     id="belong"
                     name="belong"
-                    v-model="belong"
-                    ref="belong"
+                    v-model="state.belong"
                     class="InputText"/>
                 <div>
                     <label for="username1">연락처</label>
@@ -61,9 +48,8 @@
                     type="text"
                     id="phoneNumber"
                     name="phoneNumber"
-                    v-model="phoneNumber"
+                    v-model="state.phoneNumber"
                     maxlength="11"
-                    ref="phoneNumber"
                     class="InputText"
                     placeholder="-를 제외하고 입력해주세요."
                     />
@@ -76,7 +62,7 @@
                     type="text"
                     id="brn"
                     name="brn"
-                    v-model="brn"
+                    v-model="state.brn"
                     ref="brn"
                     class="InputText"/>
                 </span>
@@ -105,6 +91,7 @@
 <script>
     // import http from "@/utils/http-common";
     import * as pService from '@/utils/pService.js'
+    import { reactive } from 'vue'
     // import axios from 'axios'
 
     export default {
@@ -112,22 +99,22 @@
         computed: {},
         setup() {
           pService.checkToken()  
-        },
-        data() {
-            return {
-                show_brn : "",
-                solo: true,
-                company : false,
-                email: this.$store.state.user.userEmail,
-                password: "",
-                name: this.$store.state.user.username,
-                phoneNumber: this.$store.state.user.userphone,
-                belong: this.$store.state.user.userbelong,
-                brn: this.$store.state.user.userbrn,
-                type: "",
-                withdrawal: "",
-                id: ""
-            };
+          pService.UserCheck().then(res => {  // 각 함수는 비동기 처리하였음
+            state.email = res.email
+            state.name = res.name
+            state.belong = res.belong
+            state.phoneNumber = res.phoneNumber
+          })
+
+        const state = reactive({
+            email :null,
+            name : null,
+            belong : null,
+            phoneNumber : null
+        })
+    return {
+      state,
+    }
         },
         methods: {
             Solo() {
