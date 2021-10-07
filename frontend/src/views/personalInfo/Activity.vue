@@ -37,10 +37,24 @@
         </div>
         <div class="p-d-flex">
           <div class="p-col-4">
-            <Button icon="pi pi-times" class="p-button-rounded p-button-text" @click="deleteActivity(act.id)" />            
+            
           </div>
           <div class="p-col-8" style="text-align: end; margin: auto;">
-            <span>{{ state.vInfo_act[idx].currentStatus }}</span>
+            <Button icon="pi pi-times" class="p-button-rounded p-button-text" @click="deleteActivity(act.id)" />         
+            
+            
+            <!-- 검증완료일 때 -->
+            <div v-if="state.state.vInfo_act[idx].currentStatus === '검증완료'">
+              <Button label="승인" class="p-button-raised p-button-success p-button-text" />
+            </div>
+            <div v-if="state.state.vInfo_act[idx].currentStatus === '검증대기'">
+              <Button label="검증대기" class="p-button-raised p-button-info p-button-text" />
+            </div>
+            <div v-else>
+              <Button label="거부" class="p-button-raised p-button-warning p-button-text" />
+            </div>
+
+            
           </div>
         </div>
       </div>
@@ -156,7 +170,7 @@ export default {
         setVInfo()
       }
     })
-
+    
     const state = reactive({
       pid: '',          // 신상정보 PK
       uid: '',          // User PK
