@@ -1,3 +1,4 @@
+import createPersistedState from 'vuex-persistedstate'
 import {createStore} from "vuex";
 import http from "@/utils/http-common";
 // import axios from "@/utils/bearer";
@@ -184,8 +185,13 @@ export default createStore({
                     if(res.data.statusCode==200){
                         console.log(res.data);
                         context.commit("setFileVerified",res.data);
+
+                        
                     }
                 }).catch((err)=>{
+                    
+                    
+                    
                     console.log(err);
                 });
             }
@@ -198,6 +204,7 @@ export default createStore({
                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 };
                 await http.post(url,payload,{headers}).then((res)=>{
+            
                         console.log(res.data.verificationList);
                         context.commit("setVerifications",res.data.verificationList);
                         result = res.data;
@@ -220,4 +227,5 @@ export default createStore({
         },
     },
     modules: {},
+    plugins: [ createPersistedState() ],
 });
