@@ -43,13 +43,13 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 @RequestMapping("/api/recruit/Gallery")
 public class GalleryController {
-	
+
 	private S3Service s3Service;
-	
+
 	private GalleryService galleryService;
 
 	private VerificationService vService;
-	
+
 	private PersonalInfoService pService;
 
 	@GetMapping("/gallery")
@@ -73,6 +73,47 @@ public class GalleryController {
 		// 파일을 저장하였으므로, 검증 객체를 새로 생성한다.
 		vService.createVerification(result);
 		return result;
+	}
+
+	// 개인 프로필 업로드
+	@PostMapping("/{personalInfoId}/profileUpload")
+	public String profileUpload(@RequestBody MultipartFile file,
+								@PathVariable("personalInfoId") Long pid) throws IOException  {
+		SimpleDateFormat date = new SimpleDateFormat("yyyymmddHHmmss");
+		String fileName = file.getOriginalFilename() + "-" + date.format(new Date());
+
+		GalleryDto galleryDto = new GalleryDto();
+
+		// 이전에 등록한 이미지가 있는지를 확인해야 한다.
+		Optional<Gallery> result = galleryService.getPropImg(pid, "prop");
+		if (result.isPresent() == true) {
+			// 기존의 객체가 존재한다면
+			galleryDto.setId(result.get().getId());
+		}
+
+		// gallery에 저장해야 한다.
+		galleryDto.setPid(pid);
+		galleryDto.setFilePath(fileName);
+		galleryDto.setSortation("prop");
+		galleryDto.setTitle("해당사항없음");
+		galleryService.savePost(galleryDto);
+
+		s3Service.upload(fileName, file);
+		return fileName;
+	}
+
+	// 개인 프로필 이미지 가져오기
+	@PostMapping("/{personalInfoId}/getPropImg")
+	public String getPropImg(@PathVariable("personalInfoId") Long pid) {
+		// 갤러리에서 pid, sortaion 이용해서 프로필 이미지 찾기.
+		Optional<Gallery> result = galleryService.getPropImg(pid, "prop");
+		if (result.isPresent() == false) {
+			// 등록한 객체가 없는 경우
+			return "등록이미지없음";
+		}
+		else {
+			return result.get().getFilePath();
+		}
 	}
 
 
@@ -110,7 +151,7 @@ public class GalleryController {
 		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "성공적으로 파일을 업로드하였습니다."));
 	}
 
-	
+
 	@GetMapping("/galleryDetail/{galleryId}")
 	@ApiOperation(value = "파일 상세조회", notes = "파일 정보를 불러온다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 401, message = "토큰 인증 실패"),
@@ -148,5 +189,5 @@ public class GalleryController {
 			return result.getId().toString();
 		}
 	}
-	
+
 }

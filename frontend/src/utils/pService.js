@@ -10,6 +10,7 @@ const BASE_URL = vueConfig
     .target + "/api"
 const USER_URL = BASE_URL + "/recruit/users"
 const INFO_URL = BASE_URL + "/recruit/personalinfo"
+const FILE_URL = BASE_URL + "/recruit/Gallery"
 
 export function UserDelete() {
   console.log("탈퇴 pService : " + store.state.user.accessToken);
@@ -43,6 +44,36 @@ export function checkLogin() {
       if(store.state.user.type===2) router.push("/verificationList")
       else router.push("/")
     }
+}
+
+// 사용자 프로필 업로드
+export async function savePropImg(pid, file) {
+  let result = 'ㅋㅋㅋㅋ'
+  await axios({
+    url: FILE_URL + "/" + pid + "/profileUpload", 
+    method: "POST",
+    data: file
+  })
+  .then(res => {
+    console.log('사용자 프로필을 업로드하였습니다.', res)
+    result = res.data
+    console.log("result는 ", result)
+  })
+  return result
+}
+
+// 사용자 프로필 이미지 가져오기
+export async function getPropImg(pid) {
+  let result = ''
+  await axios({
+    url: FILE_URL + "/" + pid + "/getPropImg",
+    method: "POST",
+  })
+  .then(res => {
+    console.log("getPropImg ", res.data)
+    result = res
+  })
+  return result
 }
 
 // 신상정보 불러오기

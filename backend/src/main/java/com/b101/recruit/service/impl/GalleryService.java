@@ -57,5 +57,9 @@ public class GalleryService {
 		return galleryRepository.findByPidAndSidAndSortation(pid, sid, sortation);
 	}
 
+	public Optional<Gallery> getPropImg(Long pid, String sortation) {
+		return galleryRepository.findByPidAndSortation(pid, sortation);
+	}
+
 
 }

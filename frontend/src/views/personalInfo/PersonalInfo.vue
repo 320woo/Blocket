@@ -9,15 +9,18 @@
           <!-- 배경 이미지 부분 -->
           <img class="bg-img" :src="state.defaultImage" alt="">
           <!-- 사용자 프로필 이미지 부분 -->
-          <div class="user-img-frame">
+          <div class="user-img-frame" style="overflow: hidden;">
             <div class="sub-frame">
-              <img class="user-img" :src="state.defaultUserImage" alt="">
+              <img class="user-img" :src="state.propImage" alt="" width="100px" height="100px" style="border-radius: 100px; object-fit:cover;">
             </div>
           </div>
           <!-- 사용자 프로필 이미지 수정 버튼 -->
           <div class="user-img-mod-frame">
             <div class="mod-sub-frame">
-              <Button icon="pi pi-pencil" class="p-button-rounded p-button-text" @click="changeImg" />
+              <label for="ex_file">
+                <i class="pi pi-pencil"></i>
+              </label>
+              <input type="file" id="ex_file" @change="propUpdate"/>
             </div>
           </div>
           <!-- 인적 사항 부분 -->
@@ -247,6 +250,18 @@ export default {
       // 신상정보 PK 저장하기
       state.pid = res.id
 
+      // 갤러리에서 사용자 프로필 찾아오기.
+      pService.getPropImg(res.id).then(res => {
+        
+        if (res.data === '등록이미지없음') {
+          console.log("등록한 프로필 이미지 없습니다.")
+        } else {
+          console.log("created in setup():", res.data)
+          // 프로필 이미지 경로 재설정해주자.
+          state.propImage = 'https://' + 'd11bfjty6ba1yx.cloudfront.net' + '/' + res.data
+        }
+      })
+
       // 사용자 이름, 소속, 이메일 설정
       state.user.name = res.user.name
       state.user.belong = res.user.belong
@@ -275,7 +290,7 @@ export default {
         email: '',
       },
       defaultImage: defaultImage,
-      defaultUserImage: defaultUserImage,
+      propImage: defaultUserImage,
       // Modal창 on, off
       displayInfoModal: false,
       displayArmyModal: false,
@@ -294,6 +309,7 @@ export default {
         dateBirth: '',
         gender: '',
       },
+      propFile: '', // 프로필 이미지 전용
     })
     const rules = {
       input: {
@@ -315,6 +331,22 @@ export default {
       saveInfoModal()
     }
 
+    const propUpdate = e => {
+      const formData = new FormData()
+      formData.append("file", e.target.files[0])
+
+      state.propFile = formData
+
+      // 바로 업로드 진행하자.
+      pService.savePropImg(state.pid, state.propFile).then(res =>{
+        // 이때 res는 새로 저장한 이미지의 경로이다.
+        alert("프로필을 업데이트하였습니다.", res)
+        state.propImage = 'https://' + 'd11bfjty6ba1yx.cloudfront.net' + '/' + res
+
+        
+      })
+    }
+
     const saveInfoModal = () => {
       // 신상정보 변경사항 저장. (영문이름, 성별, 주소, 생년월일)
       pService.saveInfoModal(state.pid, state.input).then(res => {
@@ -333,7 +365,7 @@ export default {
     }
 
     return {
-      state, v$, handleSubmit, submitted
+      state, v$, handleSubmit, submitted, propUpdate
     }
   },
 

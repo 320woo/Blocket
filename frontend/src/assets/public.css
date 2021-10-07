@@ -27,11 +27,32 @@
   position: relative;
 }
 .user-img-mod-frame { /* 사용자 프로필 이미지 수정 버튼 프레임 */
-  height: 20px;
-  width: 20px;
+  display: inline-block;
+  height: 30px;
+  width: 30px;
+  background-color: #112D4E;
+  color: white;
   position: absolute;
-  top: 25%;
-  left: 23%;
+  top: 30%;
+  left: 20%;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 0.8rem;
+  
+}
+.user-img-mod-frame * {
+  vertical-align: middle;
+  cursor: pointer;
+}
+#ex_file {
+  position: absolute; 
+  width: 20px; 
+  height: 20px; 
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip:rect(0,0,0,0); 
+  border: 0;
 }
 .mod-sub-frame { /* 사용자 프로필 수정 버튼 내 sub 프레임( 배치 때문에 ) */ 
   position: relative;
