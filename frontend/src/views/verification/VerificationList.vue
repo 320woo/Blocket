@@ -5,7 +5,9 @@
             <Button id="sort-btn" class="p-ml-1" @click="clickStatus">검색</Button>
         </div>
 
-        <DataTable v-if="verifications" :value="verifications.content" responsiveLayout="scroll" class="p-m-3">
+        <DataTable v-if="verifications" :value="verifications.content"
+        v-model:selection="selectedProduct" @rowUnselect="onRowUnselect" selectionMode="single" dataKey="id"
+        @rowSelect="onRowSelect" class="p-m-3">
             <Column field="id" header="검증ID"></Column>
             <Column field="userId" header="사용자번호"></Column>
             <Column field="galleryId" header="파일ID"></Column>
@@ -32,6 +34,7 @@ export default {
     data() {
         return {
             selectStatus:null,
+            selectedProduct: null,
             req:{
                 page:1,
                 size:10,
@@ -51,12 +54,16 @@ export default {
     },
     methods:{
         onPage(event){
-            this.req.page = event.page;
+            this.req.page = event.page+1;
+            console.log(this.req.page);
             this.$store.dispatch("getVerifications", this.req);
         },
         clickStatus(){
             this.req.verified = this.selectStatus.name;
             this.$store.dispatch("getVerifications", this.req);
+        },
+        onRowSelect(event){
+            this.$router.push("/verification?no=" + event.data.galleryId);
         }
     }
 }
