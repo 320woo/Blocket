@@ -16,6 +16,7 @@ import com.b101.recruit.reponse.PersonalInfoPostRes;
 import com.b101.recruit.request.ActivityPostReq;
 import com.b101.recruit.request.CertificatePostReq;
 import com.b101.recruit.request.FinalEducationPostReq;
+import com.b101.recruit.request.MilitaryUpdatePatchReq;
 import com.b101.recruit.request.PersonalInfoPostReq;
 
 public interface IPersonalInfoService {
@@ -55,5 +56,9 @@ public interface IPersonalInfoService {
 	FinalEducation updateFinalEducation(Long pId, Long fId, FinalEducationPostReq finaleducation);
 	
 	void deleteFinalEducation(Long pId, Long fId);
+
+	Object getSortationDetail(String sortation, Long sId);
+
+	PersonalInfo updateMilitary(long pId, MilitaryUpdatePatchReq mupr);
 	
 }

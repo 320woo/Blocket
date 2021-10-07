@@ -28,7 +28,9 @@ import com.b101.recruit.domain.repository.UserRepository;
 import com.b101.recruit.reponse.PersonalInfoPostRes;
 import com.b101.recruit.request.ActivityPostReq;
 import com.b101.recruit.request.CertificatePostReq;
+import com.b101.recruit.request.DisabledUpdatePatchReq;
 import com.b101.recruit.request.FinalEducationPostReq;
+import com.b101.recruit.request.MilitaryUpdatePatchReq;
 import com.b101.recruit.request.PersonalInfoPostReq;
 import com.b101.recruit.service.IPersonalInfoService;
 
@@ -324,6 +326,7 @@ public class PersonalInfoService implements IPersonalInfoService {
 		finaleducationRepository.deleteById(fId);		
 	}
 
+	@Override
 	public Object getSortationDetail(String sortation, Long sId) {
 		if(sortation.equals("act")) {
 			return activityRepository.findById(sId).get();
@@ -331,6 +334,25 @@ public class PersonalInfoService implements IPersonalInfoService {
 			return certificateRepository.findById(sId).get();
 		}else if(sortation.equals("edu")) {
 			return finaleducationRepository.findById(sId).get();
+		}
+		return null;
+	}
+
+	@Override
+	public PersonalInfo updateMilitary(long pId, MilitaryUpdatePatchReq mupr) {
+		Optional<PersonalInfo> personalInfo = personalinfoRepository.findById(pId);
+		if(personalInfo.isPresent()) {
+			personalInfo.get().setMilitaryService(mupr.getMilitaryService());
+			return personalinfoRepository.save(personalInfo.get());
+		}
+		return null;
+	}
+	
+	public PersonalInfo updateDisabled(long pId, DisabledUpdatePatchReq dupr) {
+		Optional<PersonalInfo> personalInfo = personalinfoRepository.findById(pId);
+		if(personalInfo.isPresent()) {
+			personalInfo.get().setDisabled(dupr.getDisabled());
+			return personalinfoRepository.save(personalInfo.get());
 		}
 		return null;
 	}
