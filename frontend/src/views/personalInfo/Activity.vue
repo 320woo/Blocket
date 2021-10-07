@@ -19,7 +19,7 @@
       </span>
     </div>
 
-    <div v-else class="p-col" v-for="act in state.aInfo" :key="act.id">
+    <div v-else class="p-col" v-for="(act, index) in state.aInfo" :key="act.id">
       <div class="p-mt-3">
         <div class="p-col-12">
           <strong>활동구분:</strong> {{ act.activity }}
@@ -37,6 +37,9 @@
           <div class="p-mr-2">
             <Button icon="pi pi-times" class="p-button-rounded p-button-text" @click="deleteActivity(act.id)" />
           </div> 
+        </div>
+        <div class="p-col-8">
+          {{ state.vInfo[index] }}
         </div>
       </div>
     </div>
@@ -138,6 +141,16 @@ export default {
         state.uid = res[0].personalinfo.user.id
         state.input.userId = res[0].personalinfo.user.id
         state.aInfo = res
+
+        let vInfo = []
+        // 활동사항에 대한 gallery를 불러올 수 있다.
+        for (let i = 0 ; i < state.aInfo.length; i++ ) {
+          aService.findActVerif(state.pid, state.aInfo[i].id).then(res => {
+            vInfo.push(res)
+          })
+        }
+        console.log("검증 내역을 불러왔습니다..", vInfo)
+        state.vInfo = vInfo
       }
     })
 
@@ -149,6 +162,7 @@ export default {
       endDate: '',
       // 활동 사항
       aInfo: '',
+      vInfo: '',      // 검증 내역
       // 새로 입력한 값을 저장하는 변수
       input: {          
         userId: '', 
