@@ -17,6 +17,7 @@ import FileUpload from 'primevue/fileupload'
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Paginator from 'primevue/paginator';
+import Card from 'primevue/card';
 
 import 'primeflex/primeflex.css'
 import './assets/public.css'
@@ -24,7 +25,8 @@ import 'primevue/resources/primevue.min.css'
 import 'primevue/resources/themes/bootstrap4-light-blue/theme.css'
 import 'primeicons/primeicons.css'
 
-createApp(App)
+const CLOUD_FRONT_DOMAIN_NAME = "d11bfjty6ba1yx.cloudfront.net";
+const app = createApp(App)
   .use(PrimeVue)  
   .use(store)
   .use(router)
@@ -42,4 +44,7 @@ createApp(App)
   .component("DataTable", DataTable)
   .component("Column", Column)
   .component("Paginator", Paginator)
-  .mount("#app");
+  .component("Card", Card);
+ 
+  app.config.globalProperties.CLOUD_FRONT= CLOUD_FRONT_DOMAIN_NAME;
+  app.mount("#app");
