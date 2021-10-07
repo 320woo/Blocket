@@ -4,10 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+import com.b101.common.model.response.BaseResponseBody;
 import com.b101.recruit.service.impl.VerificationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,20 +59,38 @@ public class GalleryController {
 
         return "/gallery";
     }
-	
-	@PostMapping("{personalInfoId}/gallery/{sid}/{sortation}")	// edu, act, cert
-	// form으로부터 넘어온 파일 객체를 받기 위해, MultipartFile 타입의 파라미터를 작성
-	public String execWrite(GalleryDto galleryDto,
-							MultipartFile file,
-							@PathVariable("personalInfoId") long pid, @PathVariable("sid") long sid, @PathVariable("sortation") String sortation) throws IOException, NoSuchAlgorithmException {
+
+    @PostMapping("/saveInDB")
+	public Gallery createGallery(@RequestBody GalleryDto galleryDto) {
+		SimpleDateFormat date = new SimpleDateFormat("yyyymmddHHmmss");
+		String fileName = galleryDto.getFilePath() + date.format(new Date());
+		galleryDto.setFilePath(fileName);
+
+		// DB에 저장한 객체를 반환한다. 이 객체를 반환받아, 다시 S3에 파일로 저장하는 걸 진행해야 한다.
+		Gallery result = galleryService.savePost(galleryDto);
+
+		// 파일을 저장하였으므로, 검증 객체를 새로 생성한다.
+		vService.createVerification(result);
+		return result;
+	}
+
+
+	@PostMapping("/{galleryId}/S3Upload")
+	public ResponseEntity<BaseResponseBody> execWrite(@RequestBody MultipartFile file, @PathVariable("galleryId") Long gid) throws IOException, NoSuchAlgorithmException {
+		System.out.println(file.toString());
+
+		Gallery gallery = galleryService.getGallery(gid).get();
+		GalleryDto galleryDto = new GalleryDto();
+		galleryDto.setPid(gallery.getPid());
+		galleryDto.setSid(gallery.getSid());
+		galleryDto.setFilePath(gallery.getFilePath());
+		galleryDto.setSortation(gallery.getSortation());
+		galleryDto.setId(gallery.getId());
+
+		System.out.println("서버에 올릴 파일 이름은..." + gallery.getFilePath().toString());
 
 		// s3Service는 AWS S3의 비즈니스 로직을 담당하며, 파일을 조작
-//		String imgPath = s3Service.upload(file);
 		String imgPath = s3Service.upload(galleryDto.getFilePath(), file);
-		galleryDto.setFilePath(imgPath);
-		galleryDto.setPid(pid);
-		galleryDto.setSid(sid);
-		galleryDto.setSortation(sortation);
 
 		// 파일을 해시값으로 변환하기 (SHA-256 알고리즘을 사용)
 		MessageDigest mdSHA256 = MessageDigest.getInstance("SHA-256"); // NoSuchAlgorithmException 을 throws 해야 한다
@@ -84,14 +105,12 @@ public class GalleryController {
 		}
 
 		galleryDto.setTitle(String.valueOf(hexSHA256hash)); // 변환한 해시값을 title 에 담는다.
-
-		// galleryService는 DB에 데이터를 조작하기 위한 서비스
+		// 변경사항 저장하기
 		galleryService.savePost(galleryDto);
 
-		vService.createVerification(galleryDto);
-
-		return "redirect:/gallery";
+		return ResponseEntity.status(200).body(BaseResponseBody.of(200, "성공적으로 파일을 업로드하였습니다."));
 	}
+
 	
 	@GetMapping("/galleryDetail/{galleryId}")
 	@ApiOperation(value = "파일 상세조회", notes = "파일 정보를 불러온다.")

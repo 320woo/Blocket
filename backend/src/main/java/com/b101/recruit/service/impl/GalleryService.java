@@ -21,8 +21,8 @@ public class GalleryService {
 	
 	private GalleryRepository galleryRepository;
 	
-	public void savePost(GalleryDto galleryDto) {
-		galleryRepository.save(galleryDto.toEntity());
+	public Gallery savePost(GalleryDto galleryDto) {
+		return galleryRepository.save(galleryDto.toEntity());
 	}
 	
 	public List<GalleryDto> getList() {

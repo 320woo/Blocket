@@ -105,22 +105,6 @@
           <div class="p-col">내용내용</div>
         </div>
 
-
-        <!-- 보훈사항 기재 -->
-        <div class="p-col profile">
-          <div class="p-grid">
-            <div class="p-col-10">
-              <span class="header-font">보훈 사항</span>
-            </div>
-
-            <div class="p-col-2 edit-div">
-              <Button icon="pi pi-plus" class="p-button-rounded p-button-text" />
-            </div>
-          </div>
-          <div class="p-col">내용내용</div>
-        </div>
-
-
         <!-- 장애인 여부 기재 -->
         <div class="p-col profile">
           <div class="p-grid">

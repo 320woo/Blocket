@@ -11,60 +11,115 @@
       </div>
     </div>
 
-    <div class="p-col">내용내용</div>
+    <div v-if="state.cInfo === ''">
+      입력한 자격증이 없습니다.
+      <span style="color: blue; cursor: pointer; display: inline-block;" @click="state.displayCertModal = true">
+        <strong>새로 입력하기</strong>
+      </span>
+    </div>
+
+    <div v-else class="p-col" v-for="cert in state.cInfo" :key="cert.id" >
+      <div class="p-mt-3">
+        <div class="p-col-12">
+          <strong>구분:</strong> {{ cert.sortation }}
+        </div>
+        <div class="p-col-12">
+          <strong>이름:</strong> {{ cert.name }}
+        </div>
+        <div class="p-col-12">
+          <strong>점수 | 등급:</strong> {{ cert.score }}  
+        </div>
+        <div class="p-col-12">
+          <strong>취득일:</strong> {{ cert.acquisitionDate }}  
+        </div>
+        <div class="p-d-flex p-col-4">
+          <div class="p-mr-2">
+            <Button icon="pi pi-times" class="p-button-rounded p-button-text" @click="deleteCertification(cert.id)" />
+          </div> 
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
 
   </div>
 
   <Dialog header="어학, 자격증" v-model:visible="state.displayCertModal" :style="{width: '30vw'}" :modal="true">
-    <div class="p-field">
-      <label for="certName">이름*</label>
-      <InputText id="certName" class="input-text" type="certName" aria-describedby="username1-help" placeholder="예: 국제 공인 네트워크 자격증" />
-    </div>
-
-    <div class="p-field">
-      <label for="certType">구분*</label>
-      <select name="certType" id="certType" class="select">
-        <option value="1">어학</option>
-        <option value="2">국가공인 자격증 </option>
-        <option value="3">민간 자격증</option>
-        <option value="4">기타</option>
-      </select>
-    </div> 
-
-    <div class="p-fluid p-grid p-formgrid">
-      <div class="p-field p-col-12">
-        <label for="certScore">취득점수, 등급</label>
-        <!-- Error msg 출력 -->
-        <div></div>
-        <InputText id="certScore" class="input-text" type="certScore" aria-describedby="username1-help" />
+    <form @submit.prevent="handleSubmit(!v$.$invalid)">
+      <div class="p-field">
+        <label for="name" :class="{'p-invalid':v$.input.name.$invalid && submitted}">이름*</label>
+        <InputText id="name" class="input-text" :class="{'p-invalid':v$.input.name.$invalid && submitted}"
+        type="certName" v-model="v$.input.name.$model" placeholder="예: 국제 공인 네트워크 자격증" />
+        <small v-if="(v$.input.name.$invalid && submitted) || v$.input.name.$pending.$response" class="p-error">
+          {{ v$.input.name.required.$message.replace('Value', '이름') }}
+        </small>
       </div>
-      
-      <div class="p-field p-col-12">
-        <label for="certIcon">취득기간*</label>
-        <Calendar id="certIcon" class="calendar" v-model="state.acquisitionDate" :showIcon="true" />
-        <!-- Error msg 출력 -->
-        <div></div>
+
+      <div class="p-field">
+        <label for="certType" :class="{'p-invalid':v$.input.sortation.$invalid && submitted}">구분*</label>
+        <select name="certType" id="certType" class="select" :class="{'p-invalid':v$.input.sortation.$invalid && submitted}" v-model="v$.input.sortation.$model">
+          <option value="1">어학</option>
+          <option value="2">국가공인 자격증 </option>
+          <option value="3">민간 자격증</option>
+          <option value="4">기타</option>
+        </select>
+        <small v-if="(v$.input.sortation.$invalid && submitted) || v$.input.sortation.$pending.$response" class="p-error">
+          {{ v$.input.sortation.required.$message.replace('Value', '구분') }}
+        </small>
+      </div> 
+
+      <div class="p-fluid p-grid p-formgrid">
+        <div class="p-field p-col-12">
+          <label for="score" :class="{'p-invalid':v$.input.score.$invalid && submitted}">취득점수, 등급</label>
+          <InputText id="score" class="input-text" :class="{'p-invalid':v$.input.score.$invalid && submitted}" type="score" v-model="v$.input.score.$model" />
+          <small v-if="(v$.input.score.$invalid && submitted) || v$.input.score.$pending.$response" class="p-error">
+            {{ v$.input.score.required.$message.replace('Value', '점수') }}
+          </small>
+        </div>
+        
+        <div class="p-field p-col-12">
+          <label for="certIcon" :class="{'p-invalid':v$.input.acquisitionDate.$invalid && submitted}">취득기간*</label>
+          <Calendar id="certIcon" class="calendar" :class="{'p-invalid':v$.input.acquisitionDate.$invalid && submitted}"
+          v-model="v$.input.acquisitionDate.$model" :showIcon="true" />
+          <small v-if="(v$.input.acquisitionDate.$invalid && submitted) || v$.input.acquisitionDate.$pending.$response" class="p-error">
+            {{ v$.input.acquisitionDate.required.$message.replace('Value', '취득기간') }}
+          </small>
+        </div>
       </div>
-    </div>
 
-    <!-- 관련 서류 제출 -->
-    <div class="p-field p-md-6">
-      <label for="file" class="for">증명서 첨부*</label>
-      <FileUpload mode="basic" name="demo[]" url="./" accept="image/*" :maxFileSize="1000000" @upload="onUpload" />
-    </div>
-
-    <template #footer>
-      <Button label="저장" icon="pi pi-check" @click="saveCertModal" autofocus />
-    </template>
+      <!-- 관련 서류 제출 -->
+      <div class="p-field p-col-12">
+        <label for="file" class="for">증명서 첨부*</label>
+        <FileUpload mode="basic" name="demo[]" url="./" accept="image/*" :maxFileSize="10485760" @upload="onUpload" />
+      </div>
+      <div class="p-col-12" style="padding: 0;">
+        <Button type="submit" label="저장" autofocus style="width: 100%;" />
+      </div>
+    </form>
   </Dialog>
 </template>
 
 <script>
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 
 // vuelidate를 이용한 validataion
-// import { required } from '@vuelidate/validators'
-// import { useVuelidate } from '@vuelidate/core'
+import { required } from '@vuelidate/validators'
+import { useVuelidate } from '@vuelidate/core'
 
 import * as cService from '@/utils/CertificationService.js'
 
@@ -84,8 +139,6 @@ export default {
         state.cInfo = res
       }
     })
-    
-
 
     const state = reactive({
       uid: '',
@@ -95,15 +148,49 @@ export default {
       // 어학, 자격증
       input: {
         userId: '',
-        certName: '',
-        certsortation: '',
+        name: '',
+        sortation: '',
         acquisitionDate: '',
-        certScore: '',
+        score: '',
       },
     })
+    const rules = {
+      input: {
+        name: { required },
+        sortation: { required },
+        acquisitionDate: { required },
+        score: { required },
+      }
+    }
+
+    const submitted = ref(false)
+    const v$ = useVuelidate(rules, state)
+
+    const handleSubmit = (isFormValid) => {
+      submitted.value = true
+      if (!isFormValid) { 
+        return
+      }      
+      createCertification()
+    }
+    
+    const createCertification = () => {
+      cService.createCertification(state.input, state.pid).then(res => {
+        state.cInfo = res
+      })
+      state.displayCertModal = false
+      resetForm()
+    }
+
+    const resetForm = () => {
+      state.input.name = ''
+      state.input.sortation = ''
+      state.input.acquisitionDate = ''
+      state.input.score = ''
+    }
 
     return {
-      state,
+      state, v$, handleSubmit, submitted
     }
   },
   methods: {
@@ -111,10 +198,20 @@ export default {
     openCertModal() {
       this.state.displayCertModal = true
     },
-    // 어학, 자격증 저장
-    saveCertModal() {
-      this.state.displayCertModal = false
-    },
+    // 자격증 삭제하기
+    deleteCertification(id) {
+      cService.deleteCertification(this.state.pid, id).then(res => {
+        // 데이터가 없는 경우
+        if (res.data === 'NoData') {
+          this.state.cInfo = ''
+        }
+        // 데이터가 존재하는 경우
+        else {
+          this.state.cInfo = res.data
+        }
+      })
+      alert("삭제하였습니다.")
+    }
   }
 }
 </script>

@@ -66,7 +66,6 @@
           {{ v$.sName.required.$message.replace('Value', '학교명') }}
         </small>
       </div>
-
       <!-- 학과 이름 검색 -->
       <div class="p-field p-col-6">
         <label for="majorName" :class="{'p-invalid':v$.mName.$invalid && submitted}">학과명*</label>
@@ -85,8 +84,7 @@
           {{ v$.myG.required.$message.replace('Value', '평균학점') }}
         </small>
       </div>
-
-
+      <!-- 4,3 or 4,5 -->
       <div class="p-field p-col-3">
         <label for="scoreType">학점 기준</label>
         <select name="scoreType" id="scoreType" class="select" v-model="state.tScore">
@@ -94,7 +92,6 @@
           <option value="4.5">4.5</option>
         </select>
       </div>
-
       <!-- 학교 분류 ex) 고등학교, 대학교, 대학원,,, -->
       <div class="p-field p-col-12">
         <label for="sortation">학교분류*</label>
@@ -108,8 +105,12 @@
       
       <!-- 졸업 증명서 첨부 -->
       <div class="p-field p-col-12">
-        <label for="file" class="for">졸업 증명서 첨부*</label>
-        <FileUpload mode="basic" name="demo[]" url="./" accept="image/*" :maxFileSize="1000000" @upload="onUpload" />
+        <label for="file" class="for" :class="{'p-invalid':v$.file.$invalid && submitted}">졸업 증명서 첨부*</label>
+        <FileUpload mode="basic" name="demo[]" url="./" accept="image/*" :class="{'p-invalid':v$.file.$invalid && submitted}"
+        :customUpload="true" :maxFileSize="10485760" @select="getFileInfo" v-model="v$.file.$model" />
+        <small v-if="(v$.file.$invalid && submitted) || v$.file.$pending.$response" class="p-error">
+          {{ v$.file.required.$message.replace('Value', 'file') }}
+        </small>
       </div>
       <div class="p-col-12">
         <Button type="submit" label="저장" autofocus style="width: 100%;" />
@@ -171,6 +172,14 @@ export default {
         name: '',
         sortation: '',
       },
+      galleryDto: {
+        title: '',
+        filePath: '',
+        pid: '',
+        sid: '',
+        sortation: 'edu',
+      },
+      file: '',
       sName: '',
       mName: '',
       myG: '',
@@ -181,6 +190,7 @@ export default {
       sName: { required },
       mName: { required },
       myG: { required },
+      file: { required },
     }
 
     const submitted = ref(false)
@@ -191,10 +201,10 @@ export default {
       if (!isFormValid) {
         return
       }      
-      saveEducationModal()
+      createFinalEducation()
     }
 
-    const saveEducationModal = () => {
+    const createFinalEducation = () => {
       // 기본적으로, 파일이 반드시 선택되어 있어야 한다.
 
       // 최종 학력 등록하기
@@ -203,7 +213,7 @@ export default {
 
       // 만약 처음으로 작성하는 거라면...
       if (state.id === '') {
-        eService.createFinalEducation(state.input, state.uid, state.pid).then(res => {
+        eService.createFinalEducation(state.input, state.uid, state.pid, state.galleryDto, state.file).then(res => {
           // 값 갱신하기
           state.eInfo.grades = res.grades
           state.eInfo.name = res.name
@@ -211,6 +221,7 @@ export default {
 
           // 등록한 final_education의 id를 저장해야 한다.
           state.id = res.id
+
           alert("등록하였습니다.")
         })
       }
@@ -226,6 +237,18 @@ export default {
         })
       }
       state.displayEducationModal = false
+    }
+
+    const getFileInfo = e => {
+      const formData = new FormData()
+      formData.append("file", e.files[0])
+
+      state.file = formData
+      console.log("업로드 할 파일 정보 : ", formData)
+      
+      // GalleryDto 설정을 해주자.
+      state.galleryDto.filePath = e.files[0].name
+      state.galleryDto.pid = state.pid
     }
 
     onMounted(() => {
@@ -246,7 +269,7 @@ export default {
       filteredColleges,
       majors, 
       filteredMajors,
-      v$, handleSubmit, submitted
+      v$, handleSubmit, submitted, getFileInfo
     }
   },
   methods: {
@@ -277,11 +300,6 @@ export default {
           this.filteredMajors = FilterService.filter(this.majors, ['mClass'], event.query.trim(), FilterMatchMode.CONTAINS)
         }
       })
-    },
-    // 졸업 증명서 파일 첨부
-    onUpload() {
-      // toast는 메시지를 오버레이하기 위해 필요한 툴이다.
-      // this.toast.add({severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000});
     },
   }
 }

@@ -6,6 +6,7 @@ import * as pService from '@/utils/pService.js'
 
 const BASE_URL = vueConfig.devServer.proxy['/blocket'].target + "/api"
 const INFO_URL = BASE_URL + "/recruit/personalinfo"
+const FILE_URL = BASE_URL + "/recruit/Gallery"
 
 
 export async function getFinalEducation() {
@@ -47,7 +48,7 @@ export async function getFinalEducation() {
 }
 
 
-export async function createFinalEducation(input, uid, pid) {
+export async function createFinalEducation(input, uid, pid, galleryDto, file) {
   let result = ''
   const temp = {
     "grades": input.grades,
@@ -65,9 +66,36 @@ export async function createFinalEducation(input, uid, pid) {
     data: temp,
   })
   .then(res => {
+    
     console.log("생성함!!", res)
     // 생성한 객체를 받아온다.
     result = res.data
+    // gallery 테이블에 데이터를 저장해준다.
+    galleryDto.sid = result.id
+    
+    axios({
+      url: FILE_URL + "/saveInDB",
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: galleryDto,
+    })
+    .then(res => {
+      console.log("gallery 테이블 저장 결과", res)     
+      // 여기서 받아온 Gallery의 PK를 통해 파일을 최종적으로 업로드한다.
+      axios({
+        url: FILE_URL + "/" + res.data.id + "/S3Upload",
+        method: "POST",
+        headers: {
+          
+        },
+        data: file
+      })
+      .then(res => { 
+        console.log(res)
+      })
+    })
   })
   return result
 }

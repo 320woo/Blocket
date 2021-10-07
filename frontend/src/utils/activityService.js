@@ -81,7 +81,6 @@ export async function deleteActivity(pid, id) {
     else {
       result = res
     }
-    
   })
   return result
 }

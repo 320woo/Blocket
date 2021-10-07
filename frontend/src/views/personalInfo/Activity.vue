@@ -99,7 +99,7 @@
       <!-- 관련 서류 제출 -->
       <div class="p-field p-col-12">
         <label for="file" class="for">활동 증명서 첨부*</label>
-        <FileUpload mode="basic" name="demo[]" url="./" accept="image/*" :maxFileSize="1000000" @upload="onUpload" />
+        <FileUpload mode="basic" name="demo[]" url="./" accept="image/*" :maxFileSize="10485760" @upload="onUpload" />
       </div>
 
       <div class="p-col-12" style="padding: 0;">

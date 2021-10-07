@@ -18,9 +18,6 @@ import com.b101.recruit.domain.dto.VerificationDto;
 import com.b101.recruit.domain.entity.Gallery;
 import com.b101.recruit.domain.entity.PersonalInfo;
 import com.b101.recruit.domain.entity.Verification;
-import com.b101.recruit.domain.repository.ActivityRepository;
-import com.b101.recruit.domain.repository.CertificateRepository;
-import com.b101.recruit.domain.repository.FinalEducationRepository;
 import com.b101.recruit.domain.repository.PersonalInfoRepository;
 import com.b101.recruit.domain.repository.VerificationRepository;
 import com.b101.recruit.request.VerificationListGetReq;
@@ -37,18 +34,18 @@ public class VerificationService implements IVerificationService {
 	PersonalInfoRepository personalInfoRepository;
 
 	@Override
-	public Verification createVerification(GalleryDto galleryDto) throws NullPointerException {
+	public Verification createVerification(Gallery gallery) throws NullPointerException {
 
 		Verification verification = new Verification();
-		Gallery gallery = new Gallery(galleryDto.getId(), galleryDto.getTitle(), galleryDto.getFilePath(),
-				galleryDto.getPid(), galleryDto.getSid(), galleryDto.getSortation());
-//		verification.setPersonalinfo(galleryDto.getPid());
-		PersonalInfo personalInfo = personalInfoRepository.findById(gallery.getPid()).get();
+
+		PersonalInfo personalInfo = personalInfoRepository.findOneById(gallery.getPid());
+		Long userId = personalInfo.getUser().getId();
+
 		verification.setPersonalinfo(personalInfo);
 		verification.setCurrentStatus("승인대기");
 		verification.setGallery(gallery);
-		Long userId = personalInfoRepository.findUserIdById(gallery.getPid());
 		verification.setUserId(userId);
+
 		return verificationRepository.save(verification);
 	}
 
@@ -109,3 +106,4 @@ public class VerificationService implements IVerificationService {
 //	}
 
 }
+

@@ -42,3 +42,48 @@ export async function getCertification() {
   })
   return result
 }
+
+
+export async function createCertification(input, pid) {
+  let result = ''
+  await axios({
+    url: INFO_URL + "/" + pid + "/certificate",
+    method: "POST",
+    headers: {
+      Authorization: "Bearer "+ store.state.user.accessToken,
+      'Content-Type': 'application/json',
+    },
+    data: input
+  })
+  .then(res => {
+    result = res.data
+  })
+  return result
+}
+
+
+export async function deleteCertification(pid, id) {
+  let result = ''
+  await axios({
+    url: INFO_URL + "/" + pid + "/" + id + "/CertDelete", 
+    method: "DELETE",
+    headers: {
+      Authorization:"Bearer "+ store.state.user.accessToken,
+    }
+  })
+  .then(res => {
+    // 데이터가 없는 경우
+    if (res.data.length === 0) {
+      result = {
+        data: 'NoData',
+        uid: null,
+        pid: null,
+      }
+    }
+    // 데이터가 하나 이상 존재하는 경우
+    else {
+      result = res
+    }
+  })
+  return result
+}
