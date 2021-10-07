@@ -126,13 +126,13 @@
 
 <img src="https://www.notion.so/78776694eb764a62a5f7f0e739fbb586#1a81bf15c1a145a1b7ef55d822fdd698" width="500">
 
-# :octocat: Git
+# 🦨 Git
 
 ## :twisted_rightwards_arrows: Git 워크플로우
 
 ---
 
-<img src="/uploads/d63bb38dc49d1d0f5717009854207ddf/git_branch.svg" width="400" height="200"/>
+<img src="![image](./img/git_branch.PNG)" width="400" height="200"/>
 
 - master : 공식 릴리즈 기록 브랜치
 - develop : 출시할 버전 개발 브랜치
