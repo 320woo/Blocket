@@ -283,7 +283,7 @@ export default {
   components: { Activity, Education, Certification, Toast1 },
   setup() {
     // Created
-    // pService.checkToken() // 토큰 정보 확인
+    pService.checkToken() // 토큰 정보 확인
     pService.getMyInfo().then(res => {
       
       // 신상정보 PK 저장하기

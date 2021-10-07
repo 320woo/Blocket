@@ -173,11 +173,11 @@
             onConfirm() {
                 this.$store.dispatch("modify",
                             {   
-                                belong: this.belong,
-                                brn: 0,
-                                name: this.name,
-                                phoneNumber: this.phoneNumber,
-                                type: 0
+                                name: this.state.name,
+                                type: 0,
+                                belong: this.state.belong,
+                                phoneNumber: this.state.phoneNumber,
+                                brn: this.state.brn,
                             });
                 this.$toast.removeGroup('bc');
             },

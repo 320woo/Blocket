@@ -144,35 +144,52 @@ export default createStore({
                 }
             }).then(({data}) => {
                 context.commit("userinfo", data);
-                
-
             })
         },
-        modify(context, data) {
+        modify(context, payload) {
             console.log("수정 들어옴" + context);
-            console.log("토큰 :  " + this.state.user.accessToken);
-            axios.patch(USER_URL + "/me", {
-                headers: {
-                    Authorization: "Bearer " + this.state.user.accessToken
-                }
-            },data)
-                // const url = USER_URL + "/me";
-                // const headers = {
-                //     Authorization: "Bearer " + localStorage.getItem("accessToken"),
-                // }
-                // return axios.patch(url, { headers }, data,)
-                //     .then((res) => {
-                //     if(res.data.statusCode==200){
-                //         console.log(res.data);
-                //         // alert(res.data.message);
-                //     }   
-                // }).catch((err)=>{
-                //     //  alert(err.data.message);
-                //     // alert(err);
-                //     console.log(err);
-                // });
+            console.log(payload.belong)
+            if (localStorage.getItem("accessToken")) {
+                const url = "/api/recruit/users/me";
+                const headers = {
+                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                };
+                return http.patch(url,payload,{headers}).then((res)=>{
+                    if(res.data.statusCode==200){
+                        console.log("수정 완료");
+                    }
+                }).catch((err)=>{
+                    
+                    
+                    
+                    console.log(err);
+                });
+            }
             
         },
+        // patchVerification(context,payload){
+        //     console.log(payload);
+        //     if(localStorage.getItem("accessToken")){
+        //         const url = "/api/recruit/verification";
+        //         const headers = {
+        //             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        //         };
+        //         return http.patch(url,payload,{headers}).then((res)=>{
+        //             if(res.data.statusCode==200){
+        //                 console.log(res.data);
+        //                 context.commit("setFileVerified",res.data);
+
+                        
+        //             }
+        //         }).catch((err)=>{
+                    
+                    
+                    
+        //             console.log(err);
+        //         });
+        //     }
+        // },
+
     getFileInfo(context,payload){
                 console.log(payload);
             if(localStorage.getItem("accessToken")){
