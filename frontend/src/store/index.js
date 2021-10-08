@@ -167,13 +167,14 @@ export default createStore({
 
         Disabled(context, payload) {
             console.log("장애 여부 정보 들어옴" + context);
-            console.log(payload)
+            console.log(payload.disabled)
             if (localStorage.getItem("accessToken")) {
-                const url = "/api/recruit/users/me";
+                const url = "/api/recruit/personalinfo/" + payload.pid + "/disabled";
                 const headers = {
                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 };
-                return http.patch(url,payload,{headers}).then((res)=>{
+                const disabled = payload.disabled;
+                return http.patch(url, { disabled },{headers}).then((res)=>{
                     if(res.data.statusCode==200){
                         console.log("장애 여부 등록완료");
                     }
@@ -186,13 +187,14 @@ export default createStore({
 
         Army(context, payload) {
             console.log("병역 정보 들어옴" + context);
-            console.log(payload)
+            console.log(payload.army)
             if (localStorage.getItem("accessToken")) {
-                const url = "/api/recruit/users/me";
+                const url = "/api/recruit/personalinfo/" + payload.pid + "/military";
                 const headers = {
                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 };
-                return http.patch(url,payload,{headers}).then((res)=>{
+                const militaryService = payload.army;
+                return http.patch(url, { militaryService }, { headers }).then((res) => {
                     if(res.data.statusCode==200){
                         console.log("병역 등록완료");
                     }
@@ -222,14 +224,9 @@ export default createStore({
                 return http.patch(url,payload,{headers}).then((res)=>{
                     if(res.data.statusCode==200){
                         console.log(res.data);
-                        context.commit("setFileVerified",res.data);
-
-                        
+                        context.commit("setFileVerified",res.data);    
                     }
                 }).catch((err)=>{
-                    
-                    
-                    
                     console.log(err);
                 });
             }
