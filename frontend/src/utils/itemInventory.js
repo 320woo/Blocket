@@ -5,6 +5,7 @@ import {
   BLOCKCHAIN_URL,
   // BLOCKCHAIN_WEBSOCKET_URL,
 } from '../config'
+import store from '../store'
 
 const BASE_URL = vueConfig.devServer.proxy['/blocket'].target + "/api"
 const WALLET_URL = BASE_URL + "/wallet"
@@ -83,9 +84,7 @@ export function createWallet(email) {
 
 
 // 사용자의 진행상태를 트랜잭션으로 전송하기 (신상정보 등록완료 / 검증 진행중 / 검증 완료)
-export function saveState(fileHash) {
-  console.log("파일 해시는", fileHash)
-  let result = ''
+export async function saveState(vid, fileHash) {
   const web3 = createWeb3()
 
   const send_account = "0xf255FC9eF3778E688950649547D398B027D8b999" // 관리자 계정
@@ -112,17 +111,36 @@ export function saveState(fileHash) {
     const serializedTx = tx.serialize()
     const raw = '0x' + serializedTx.toString('hex')
     
-    result = web3.eth.sendSignedTransaction(raw) // hash가 리턴되는데, 트랜잭션을 전송한 hash값이다. 이 hash값을 이용해 etherscan.io에서 조회가 가능하다. 
-    .on('transactionHash', console.log)
+    web3.eth.sendSignedTransaction(raw)
+    .on('transactionHash', function(hash){
+      const temp = {
+        galleryId: vid,
+        tHash: hash,
+      }
+      const URL = "http://localhost:8000/api/recruit/verification/accept"
+      const headers = {
+        Authorization: "Bearer "+ store.state.user.accessToken,
+      }
+      
+      axios.patch(URL, { temp }, { headers }).then((res) => {
+        console.log(res)
+      })
+
+      // axios({
+      //   url: 
+      //   method: "PATCH",
+      //   headers: {
+          
+      //   },
+      //   data: temp
+      // })
+      // .then(res => {
+      //   console.log("트랜잭션 해시 저장 결과:", res)
+      // })  
+    })
   })
-  console.log(result)
 }
 
-// 한 사용자가 전송한 모든 트랜잭션 조회하기
-export function getAllTransactions() {
-
-  
-}
 
 // 파일로 privateKey 저장하기
 export function saveToFile_Chrome(fileName, content) {
