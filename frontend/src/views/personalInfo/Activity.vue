@@ -36,26 +36,23 @@
           <strong>기간:</strong> {{ act.period }}  
         </div>
         <div class="p-d-flex">
-          <div class="p-col-4">
-            
-          </div>
-          <div class="p-col-8" style="text-align: end; margin: auto;">
-            <Button icon="pi pi-times" class="p-button-rounded p-button-text" @click="deleteActivity(act.id)" />         
-            
-            
+          <div class="p-col-4"></div>
+          <div class="p-d-flex p-col-8 p-jc-end" style="text-align: end; margin: auto;">
+            <Button label="삭제" class="p-button-raised p-button-info p-button-text" @click="deleteActivity(act.id)" 
+            style="margin-right: 10px;" />
             <!-- 검증완료일 때 -->
-            <div v-if="state.state.vInfo_act[idx].currentStatus === '검증완료'">
-              <Button label="승인" class="p-button-raised p-button-success p-button-text" />
+            <div v-if="state.vInfo_act[idx].currentStatus === '승인완료'">
+              <Button label="승인" class="p-button-raised p-button-success p-button-text" @click="goToEtherScan(state.vInfo_act[idx].reasonsRejection)"/>
             </div>
-            <div v-if="state.state.vInfo_act[idx].currentStatus === '검증대기'">
-              <Button label="검증대기" class="p-button-raised p-button-info p-button-text" />
-            </div>
-            <div v-else>
+            <div v-else-if="state.vInfo_act[idx].currentStatus === '거절'">
               <Button label="거부" class="p-button-raised p-button-warning p-button-text" />
             </div>
-
-            
+            <div v-else>
+              <Button label="승인대기" class="p-button-raised p-button-info p-button-text" />
+            </div>
           </div>
+
+          
         </div>
       </div>
     </div>
@@ -136,6 +133,7 @@
 <script>
 import { reactive, ref } from 'vue'
 import * as aService from '@/utils/activityService.js'
+import moment from 'moment';
 
 // vuelidate를 이용한 validataion
 import { required } from '@vuelidate/validators'
@@ -220,7 +218,10 @@ export default {
     }
     const createActivity = async () => {
       // 데이터 전처리
-      state.input.period = JSON.stringify(state.startDate) + " ~ " + JSON.stringify(state.endDate)
+      state.startDate = moment(state.startDate).format("YY.MM.DD");
+      state.endDate = moment(state.endDate).format("YY.MM.DD");
+      console.log(state.startDate+"~"+state.endDate);
+      state.input.period = state.startDate+"~"+state.endDate;
       await aService.createActivity(state.input, state.pid, state.uid, state.galleryDto, state.file)
       .then(res => { 
         state.aInfo = res.data
@@ -283,9 +284,8 @@ export default {
 
       this.state.displayActivityModal = false
     },
-    onUpload() {
-      // toast는 메시지를 오버레이하기 위해 필요한 툴이다.
-      // this.toast.add({severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000});
+    goToEtherScan(url) {
+      location.replace("https://ropsten.etherscan.io/tx/" + url)
     },
     deleteActivity(id) {
       aService.deleteActivity(this.state.pid, id).then(res => {
