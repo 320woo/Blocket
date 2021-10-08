@@ -115,28 +115,20 @@ export async function saveState(vid, fileHash) {
     .on('transactionHash', function(hash){
       const temp = {
         galleryId: vid,
-        tHash: hash,
+        thash: hash,
       }
-      const URL = "http://localhost:8000/api/recruit/verification/accept"
-      const headers = {
-        Authorization: "Bearer "+ store.state.user.accessToken,
-      }
-      
-      axios.patch(URL, { temp }, { headers }).then((res) => {
-        console.log(res)
-      })
 
-      // axios({
-      //   url: 
-      //   method: "PATCH",
-      //   headers: {
-          
-      //   },
-      //   data: temp
-      // })
-      // .then(res => {
-      //   console.log("트랜잭션 해시 저장 결과:", res)
-      // })  
+      axios({
+        url: "http://localhost:8000/api/recruit/verification/accept",
+        method: "PATCH",
+        headers: {
+          Authorization: "Bearer "+ store.state.user.accessToken,  
+        },
+        data: temp
+      })
+      .then(res => {
+        console.log("트랜잭션 해시 저장 결과:", res)
+      })
     })
   })
 }

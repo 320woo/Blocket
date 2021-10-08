@@ -56,6 +56,11 @@ public class VerificationController {
 		if (authentication == null) {
 			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
 		} else {
+			System.out.println("넘어온 값 확인");
+			System.out.println(vapr.getGalleryId());
+			System.out.println(vapr.getTHash());
+			System.out.println("ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ");
+
 			CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
 			String userEmail = userDetails.getUsername();
 
