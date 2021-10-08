@@ -42,9 +42,9 @@
             style="margin-right: 10px;" />
             <!-- 검증완료일 때 -->
             <div v-if="state.vInfo_act[idx].currentStatus === '승인완료'">
-              <Button label="승인" class="p-button-raised p-button-success p-button-text" @click="goToEtherScan(state.vInfo_act.reasonsRejection)"/>
+              <Button label="승인" class="p-button-raised p-button-success p-button-text" @click="goToEtherScan(state.vInfo_act[idx].reasonsRejection)"/>
             </div>
-            <div v-if="state.vInfo_act[idx].currentStatus === '거절'">
+            <div v-else-if="state.vInfo_act[idx].currentStatus === '거절'">
               <Button label="거부" class="p-button-raised p-button-warning p-button-text" />
             </div>
             <div v-else>
@@ -138,7 +138,6 @@ import moment from 'moment';
 // vuelidate를 이용한 validataion
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import router from '../../router'
 
 export default {
   name: 'Activity', 
@@ -286,7 +285,7 @@ export default {
       this.state.displayActivityModal = false
     },
     goToEtherScan(url) {
-      router.push("https://ropsten.etherscan.io/tx/" + url)
+      location.replace("https://ropsten.etherscan.io/tx/" + url)
     },
     deleteActivity(id) {
       aService.deleteActivity(this.state.pid, id).then(res => {
