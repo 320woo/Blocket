@@ -21,6 +21,7 @@ import com.b101.recruit.domain.entity.Verification;
 import com.b101.recruit.reponse.VerificationListRes;
 import com.b101.recruit.reponse.VerificationRes;
 import com.b101.recruit.reponse.VerificationUpdatePatchRes;
+import com.b101.recruit.request.VerificationAcceptPatchReq;
 import com.b101.recruit.request.VerificationDetailGetReq;
 import com.b101.recruit.request.VerificationListGetReq;
 import com.b101.recruit.request.VerificationUpdatePatchReq;
@@ -45,10 +46,39 @@ public class VerificationController {
 	@Autowired
 	VerificationService verificationService;
 	
+	@PatchMapping("/accept")
+	@ApiOperation(value = "검증 승인 변경", notes = "검증 상태를 변경한다.")
+	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
+		@ApiResponse(code = 401, message = "로그인 인증 실패"),@ApiResponse(code = 403, message = "잘못된 요청")})
+	public ResponseEntity<? extends BaseResponseBody> verifyCertificate(
+			@RequestBody @ApiParam(value = "검증 정보", required = true) VerificationAcceptPatchReq vapr,
+			@ApiIgnore Authentication authentication) {
+		if (authentication == null) {
+			return ResponseEntity.status(401).body(BaseResponseBody.of(401, "로그인 인증 실패"));
+		} else {
+			System.out.println("넘어온 값 확인");
+			System.out.println(vapr.getGalleryId());
+			System.out.println(vapr.getTHash());
+			System.out.println("ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ");
+
+			CustomUserDetails userDetails = (CustomUserDetails) authentication.getDetails();
+			String userEmail = userDetails.getUsername();
+
+			User user = userService.findByUserEmail(userEmail);
+
+			if (user != null &&user.getType()==2) {
+				Verification verification = verificationService.acceptVerification(vapr);
+				if(verification!=null)
+					return ResponseEntity.ok(VerificationUpdatePatchRes.of(200, "변경이 완료되었습니다.", verification));
+			}
+
+			return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
+		}
+	}
 	
 	// 검증 상태 변경
 	@PatchMapping("")
-	@ApiOperation(value = "자격증 검증 상태 변경", notes = "자격증 검증 상태를 변경한다.")
+	@ApiOperation(value = "검증 상태 변경", notes = "자격증 검증 상태를 변경한다.")
 	@ApiResponses({ @ApiResponse(code = 200, message = "성공"), @ApiResponse(code = 400, message = "실패"),
 		@ApiResponse(code = 401, message = "로그인 인증 실패"),@ApiResponse(code = 403, message = "잘못된 요청")})
 	public ResponseEntity<? extends BaseResponseBody> verifyCertificate(
@@ -71,6 +101,7 @@ public class VerificationController {
 			return ResponseEntity.status(403).body(BaseResponseBody.of(403, "잘못된 요청입니다."));
 		}
 	}
+
 	
 	// 검증 목록 조회
 	@PostMapping("/list")

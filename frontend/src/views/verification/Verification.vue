@@ -144,6 +144,7 @@
 <script>
 import { mapGetters } from "vuex";
 import * as etherService from '@/utils/itemInventory.js'
+import router from '../../router'
 
 export default {
   computed: {
@@ -184,9 +185,8 @@ export default {
           
           this.$store.dispatch("patchVerification", this.verify).then(()=>{
             // 승인 후 트랜잭션 전송한다.
-            const result = etherService.saveState(fileHash) // 트랜잭션 전송 후의 트랜잭션 해시이다.
-            console.log(result) // 트랜잭션 해시. reasons_rejection에 넣기
-            alert("검증이 완료되었습니다.");
+            etherService.saveState(this.file.id, fileHash) // 트랜잭션 전송 후의 트랜잭션 해시이다.
+            router.push("/verificationList")
           });
       },
       refuse(){

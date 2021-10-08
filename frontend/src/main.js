@@ -17,6 +17,7 @@ import FileUpload from 'primevue/fileupload'
 import ToastService from 'primevue/toastservice';
 import Toast from 'primevue/toast';
 import Toast1 from "@/components/Toast.vue";
+import Tooltip from 'primevue/tooltip'
 
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -37,6 +38,7 @@ const app = createApp(App)
   .use(store)
   .use(router)
   .use(ToastService)
+  .component("Tooltip", Tooltip)
   .component("Toast1", Toast1)
   .component("Toast", Toast)
   .component("InputText", InputText)
@@ -57,3 +59,4 @@ const app = createApp(App)
  
   app.config.globalProperties.CLOUD_FRONT= CLOUD_FRONT_DOMAIN_NAME;
   app.mount("#app");
+  
