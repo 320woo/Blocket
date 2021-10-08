@@ -184,9 +184,9 @@ export default createStore({
             }
             
         },
-
-        Army(context, payload) {
-            console.log("병역 정보 들어옴" + context);
+        
+        async Army(context, payload) {
+            console.log(context);
             console.log(payload.army)
             if (localStorage.getItem("accessToken")) {
                 const url = "/api/recruit/personalinfo/" + payload.pid + "/military";
@@ -194,13 +194,11 @@ export default createStore({
                     Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
                 };
                 const militaryService = payload.army;
-                return http.patch(url, { militaryService }, { headers }).then((res) => {
+                await http.patch(url, { militaryService }, { headers }).then((res) => {
                     if(res.data.statusCode==200){
                         console.log("병역 등록완료");
                     }
-                }).catch((err)=>{
-                    console.log(err);
-                });
+                })
             }
         },
 

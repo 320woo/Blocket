@@ -465,6 +465,8 @@ export default {
       {
         army : totalarmy,
         pid : this.state.pid
+      }).then((res)=>{
+          console.log("병역 정보들" + res); 
       })
 
       this.$toast.add({severity:'success', summary: '시스템 정보', group: 'center', detail:'병역 사항 등록완료', life: 1000});
