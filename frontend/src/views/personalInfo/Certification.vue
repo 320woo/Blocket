@@ -108,6 +108,7 @@
 
 <script>
 import { reactive, ref } from 'vue'
+import moment from 'moment';
 
 // vuelidate를 이용한 validataion
 import { required } from '@vuelidate/validators'
@@ -189,6 +190,7 @@ export default {
     }
     
     const createCertification = async () => {
+      state.input.acquisitionDate =  moment(state.input.acquisitionDate).format("YY.MM.DD");
       await cService.createCertification(state.input, state.pid, state.uid, state.galleryDto, state.file).
       then(res => {
         state.cInfo = res

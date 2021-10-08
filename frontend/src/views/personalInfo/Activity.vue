@@ -136,6 +136,7 @@
 <script>
 import { reactive, ref } from 'vue'
 import * as aService from '@/utils/activityService.js'
+import moment from 'moment';
 
 // vuelidate를 이용한 validataion
 import { required } from '@vuelidate/validators'
@@ -220,7 +221,10 @@ export default {
     }
     const createActivity = async () => {
       // 데이터 전처리
-      state.input.period = JSON.stringify(state.startDate) + " ~ " + JSON.stringify(state.endDate)
+      state.startDate = moment(state.startDate).format("YY.MM.DD");
+      state.endDate = moment(state.endDate).format("YY.MM.DD");
+      console.log(state.startDate+"~"+state.endDate);
+      state.input.period = state.startDate+"~"+state.endDate;
       await aService.createActivity(state.input, state.pid, state.uid, state.galleryDto, state.file)
       .then(res => { 
         state.aInfo = res.data
