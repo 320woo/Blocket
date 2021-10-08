@@ -181,5 +181,5 @@
 
 # :speaker: 애플리케이션 배포
 
-    요거는 포팅매뉴얼 참고
+   [포팅매뉴얼](https://lab.ssafy.com/s05-blockchain/S05P21B101/-/blob/master/exec/%ED%8F%AC%ED%8C%85_%EB%A7%A4%EB%89%B4%EC%96%BC.pdf)
 
