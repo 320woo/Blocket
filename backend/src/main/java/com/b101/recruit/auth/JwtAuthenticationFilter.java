@@ -73,7 +73,6 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter{
 						return jwtAuthentication;
 					}
 			}
-
 			return null;
 		}
 		return null;

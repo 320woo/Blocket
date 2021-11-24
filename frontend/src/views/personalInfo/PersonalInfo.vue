@@ -150,7 +150,7 @@
     <form @submit.prevent="handleSubmit(!v$.$invalid)" class="p-fluid p-grid p-formgrid">
       <div class="p-field p-col-12">
         <label for="gender">성별</label>
-        <select name="gender" id="gender" class="select" v-model="state.input.gender">
+        <select name="gender" id="gender" class="select" v-model="v$.input.gender.$model">
           <option value="남성">남성</option>
           <option value="여성">여성</option>
         </select>
@@ -384,10 +384,11 @@ export default {
     const v$ = useVuelidate(rules, state)
 
     const handleSubmit = (isFormValid) => {
+      console.log("기본정보 저장..!!!", isFormValid)
       submitted.value = true
-      if (!isFormValid) {
-        return
-      }      
+      // if (!isFormValid) {
+      //   return
+      // }      
       saveInfoModal()
     }
 
