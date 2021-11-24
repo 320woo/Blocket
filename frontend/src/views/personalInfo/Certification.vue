@@ -60,10 +60,10 @@
       <div class="p-field">
         <label for="certType" :class="{'p-invalid':v$.input.sortation.$invalid && submitted}">구분*</label>
         <select name="certType" id="certType" class="select" :class="{'p-invalid':v$.input.sortation.$invalid && submitted}" v-model="v$.input.sortation.$model">
-          <option value="1">어학</option>
-          <option value="2">국가공인 자격증 </option>
-          <option value="3">민간 자격증</option>
-          <option value="4">기타</option>
+          <option value="어학">어학</option>
+          <option value="국가공인 자격증">국가공인 자격증 </option>
+          <option value="민간 자격증">민간 자격증</option>
+          <option value="기타">기타</option>
         </select>
         <small v-if="(v$.input.sortation.$invalid && submitted) || v$.input.sortation.$pending.$response" class="p-error">
           {{ v$.input.sortation.required.$message.replace('Value', '구분') }}

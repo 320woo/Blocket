@@ -41,7 +41,10 @@ public class JwtTokenUtil {
 	public static String createToken(String userId) {
 		Claims claims = Jwts.claims().setSubject(userId);
 		Date now = new Date();
-		return Jwts.builder().setClaims(claims).setIssuer(ISSUER).setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
+		return Jwts.builder()
+				.setClaims(claims)
+				.setIssuer(ISSUER)
+				.setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
 				.setExpiration(new Date(now.getTime() + expirationTime))
 				.signWith(SignatureAlgorithm.HS256, secretKey)
 				.compact();
